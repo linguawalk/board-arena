@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+</head>
+<body>
+  <main class="board-panel">
+    <div id="go-board-container" class="board-container"></div>
+
+    <aside class="board-controls">
+      <h1>바둑 대국</h1>
+
+      <label for="board-size">보드 크기</label>
+      <select id="board-size" class="board-size-select">
+        <option value="9">9 x 9 (입문)</option>
+        <option value="13">13 x 13 (중급)</option>
+        <option value="15">15 x 15</option>
+        <option value="19" selected>19 x 19 (정식)</option>
+      </select>
+
+      <div id="turn-indicator">현재 차례: 흑</div>
+      <div id="move-log" style="font-size: 13px; color: #555; max-height: 200px; overflow-y: auto;"></div>
+
+      <button id="pass-btn">패스</button>
+      <button id="resign-btn">기권</button>
+    </aside>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+
+    const container = document.getElementById('go-board-container');
+    const sizeSelect = document.getElementById('board-size');
+    const turnIndicator = document.getElementById('turn-indicator');
+    const moveLog = document.getElementById('move-log');
+
+    function logLine(text) {
+      const p = document.createElement('div');
+      p.textContent = text;
+      moveLog.prepend(p);
+    }
+
+    let board = new GoBoard({
+      container,
+      size: parseInt(sizeSelect.value, 10),
+      onMove: (result) => {
+        if (!result.valid) {
+          logLine(`착수 실패: ${result.reason}`);
+          return;
+        }
+        if (result.pass) {
+          logLine(`패스 (다음 차례: ${result.nextTurn === 'B' ? '흑' : '백'})`);
+        } else {
+          const capturedText = result.captured.length ? ` / ${result.captured.length}점 따냄` : '';
+          logLine(`(${result.x}, ${result.y}) 착수${capturedText}`);
+        }
+        turnIndicator.textContent = `현재 차례: ${result.nextTurn === 'B' ? '흑' : '백'}`;
+      },
+    });
+
+    sizeSelect.addEventListener('change', () => {
+      const newSize = parseInt(sizeSelect.value, 10);
+      board.changeSize(newSize);
+      turnIndicator.textContent = '현재 차례: 흑';
+      moveLog.innerHTML = '';
+      logLine(`보드 크기를 ${newSize} x ${newSize}로 변경`);
+    });
+
+    document.getElementById('pass-btn').addEventListener('click', () => board.pass());
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      logLine('기권 처리 (추후 구현: 결과 저장 및 복기 화면 이동)');
+    });
+  </script>
+</body>
+</html>
