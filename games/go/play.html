@@ -22,7 +22,21 @@
         <option value="19" selected>19 x 19 (정식)</option>
       </select>
 
+      <label for="game-mode">대국 상대</label>
+      <select id="game-mode" class="board-size-select">
+        <option value="human">사람 vs 사람</option>
+        <option value="ai" selected>사람 vs AI</option>
+      </select>
+
+      <label for="ai-level">AI 난이도</label>
+      <select id="ai-level" class="board-size-select">
+        <option value="beginner">입문 (무작위)</option>
+        <option value="casual" selected>초급 (따내기 우선)</option>
+      </select>
+      <p style="font-size:12px;color:#888;margin:0;">※ 지금은 임시 휴리스틱 AI입니다. 추후 KataGo 엔진으로 교체 예정.</p>
+
       <div id="turn-indicator">현재 차례: 흑</div>
+      <div id="ai-thinking" style="font-size:13px;color:var(--accent);display:none;">AI가 생각 중...</div>
       <div id="move-log" style="font-size: 13px; color: #555; max-height: 200px; overflow-y: auto;"></div>
 
       <button id="pass-btn">패스</button>
@@ -32,11 +46,17 @@
 
   <script type="module">
     import { GoBoard } from './js/go-board.js';
+    import { GoEngineAdapter } from './js/go-engine-adapter.js';
 
     const container = document.getElementById('go-board-container');
     const sizeSelect = document.getElementById('board-size');
+    const modeSelect = document.getElementById('game-mode');
+    const levelSelect = document.getElementById('ai-level');
     const turnIndicator = document.getElementById('turn-indicator');
+    const aiThinking = document.getElementById('ai-thinking');
     const moveLog = document.getElementById('move-log');
+
+    const AI_COLOR = 'W'; // AI는 항상 백을 둠 (사람이 흑 선)
 
     function logLine(text) {
       const p = document.createElement('div');
@@ -44,23 +64,59 @@
       moveLog.prepend(p);
     }
 
-    let board = new GoBoard({
-      container,
-      size: parseInt(sizeSelect.value, 10),
-      onMove: (result) => {
-        if (!result.valid) {
-          logLine(`착수 실패: ${result.reason}`);
-          return;
-        }
-        if (result.pass) {
-          logLine(`패스 (다음 차례: ${result.nextTurn === 'B' ? '흑' : '백'})`);
+    let engine = new GoEngineAdapter({ level: levelSelect.value });
+    let board;
+
+    function createBoard(size) {
+      board = new GoBoard({
+        container,
+        size,
+        onMove: handleMoveResult,
+      });
+    }
+
+    function handleMoveResult(result) {
+      if (!result.valid) {
+        logLine(`착수 실패: ${result.reason}`);
+        return;
+      }
+      if (result.pass) {
+        logLine(`패스 (다음 차례: ${result.nextTurn === 'B' ? '흑' : '백'})`);
+      } else {
+        const capturedText = result.captured.length ? ` / ${result.captured.length}점 따냄` : '';
+        logLine(`(${result.x}, ${result.y}) 착수${capturedText}`);
+      }
+      turnIndicator.textContent = `현재 차례: ${result.nextTurn === 'B' ? '흑' : '백'}`;
+
+      // AI 모드이고, 다음 차례가 AI 색이면 AI에게 수를 요청
+      if (modeSelect.value === 'ai' && result.nextTurn === AI_COLOR) {
+        requestAiMove();
+      }
+    }
+
+    async function requestAiMove() {
+      aiThinking.style.display = 'block';
+      try {
+        const move = await engine.requestMove(
+          board.state,
+          AI_COLOR,
+          board.width,
+          board.height,
+          board.koState
+        );
+        if (move.pass) {
+          board.pass();
         } else {
-          const capturedText = result.captured.length ? ` / ${result.captured.length}점 따냄` : '';
-          logLine(`(${result.x}, ${result.y}) 착수${capturedText}`);
+          board.handleInput(move.x, move.y);
         }
-        turnIndicator.textContent = `현재 차례: ${result.nextTurn === 'B' ? '흑' : '백'}`;
-      },
-    });
+      } catch (err) {
+        logLine(`AI 오류: ${err.message}`);
+      } finally {
+        aiThinking.style.display = 'none';
+      }
+    }
+
+    createBoard(parseInt(sizeSelect.value, 10));
 
     sizeSelect.addEventListener('change', () => {
       const newSize = parseInt(sizeSelect.value, 10);
@@ -68,6 +124,15 @@
       turnIndicator.textContent = '현재 차례: 흑';
       moveLog.innerHTML = '';
       logLine(`보드 크기를 ${newSize} x ${newSize}로 변경`);
+    });
+
+    modeSelect.addEventListener('change', () => {
+      logLine(modeSelect.value === 'ai' ? 'AI 대국 모드로 전환' : '2인 대국 모드로 전환');
+    });
+
+    levelSelect.addEventListener('change', () => {
+      engine = new GoEngineAdapter({ level: levelSelect.value });
+      logLine(`AI 난이도를 "${levelSelect.options[levelSelect.selectedIndex].text}"로 변경`);
     });
 
     document.getElementById('pass-btn').addEventListener('click', () => board.pass());
