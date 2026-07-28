@@ -1,0 +1,63 @@
+:root {
+  --board-wood: #dcb35c;
+  --board-line: #3a2a17;
+  --board-star: #3a2a17;
+  --stone-black: #1a1a1a;
+  --stone-white: #f5f5f0;
+  --accent: #2f6f4f;
+}
+
+.board-panel {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.board-container {
+  aspect-ratio: 1 / 1;
+  width: min(90vw, 560px);
+}
+
+.board-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.board-size-select {
+  padding: 8px 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Go 보드 전용 */
+.go-board-bg {
+  fill: var(--board-wood);
+}
+.go-grid-line {
+  stroke: var(--board-line);
+  stroke-width: 1.2;
+}
+.go-star-point {
+  fill: var(--board-star);
+}
+.go-stone-black {
+  fill: var(--stone-black);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+.go-stone-white {
+  fill: var(--stone-white);
+  stroke: #999;
+  stroke-width: 0.5;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}
+.go-hit-area {
+  fill: transparent;
+  cursor: pointer;
+}
+.go-hit-area:hover {
+  fill: rgba(0, 0, 0, 0.06);
+}
