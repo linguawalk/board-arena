@@ -10,11 +10,24 @@ import { STONE, tryPlaceStone, getHandicapPoints } from './go-rules.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export class GoBoard extends BoardCore {
-  constructor({ container, size = 19, onMove = () => {} }) {
+  constructor({ container, size = 19, onMove = () => {}, interactive = true }) {
     super({ kind: BOARD_KIND.INTERSECTION, width: size, height: size, container });
     this.turn = STONE.BLACK;
     this.koState = null;
     this.onMove = onMove;
+    this.interactive = interactive; // false면 클릭 비활성 (학습 페이지 예시 다이어그램용)
+    this.render();
+  }
+
+  /**
+   * 학습 페이지 등에서 임의의 국면을 정적으로 보여줄 때 사용.
+   * @param {Array<{x:number,y:number,color:string}>} stones
+   */
+  loadPosition(stones) {
+    this.state = this._createEmptyState();
+    for (const { x, y, color } of stones) {
+      if (this.inBounds(x, y)) this.state[y][x] = color;
+    }
     this.render();
   }
 
@@ -90,16 +103,18 @@ export class GoBoard extends BoardCore {
       }
     }
 
-    // 클릭 히트영역 (교차점마다 투명 원)
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const hit = document.createElementNS(SVG_NS, 'circle');
-        hit.setAttribute('cx', margin + x * cellPx);
-        hit.setAttribute('cy', margin + y * cellPx);
-        hit.setAttribute('r', cellPx * 0.48);
-        hit.setAttribute('class', 'go-hit-area');
-        hit.addEventListener('click', () => this.handleInput(x, y));
-        svg.appendChild(hit);
+    // 클릭 히트영역 (교차점마다 투명 원) - interactive 모드에서만 생성
+    if (this.interactive) {
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const hit = document.createElementNS(SVG_NS, 'circle');
+          hit.setAttribute('cx', margin + x * cellPx);
+          hit.setAttribute('cy', margin + y * cellPx);
+          hit.setAttribute('r', cellPx * 0.48);
+          hit.setAttribute('class', 'go-hit-area');
+          hit.addEventListener('click', () => this.handleInput(x, y));
+          svg.appendChild(hit);
+        }
       }
     }
 
