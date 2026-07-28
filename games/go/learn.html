@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 학습 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  .learn-layout { display: flex; gap: 24px; align-items: flex-start; }
+  .curriculum-nav { width: 260px; flex-shrink: 0; border-right: 1px solid #eee; padding-right: 16px; max-height: 90vh; overflow-y: auto; }
+  .tier-block { margin-bottom: 18px; }
+  .tier-header { font-weight: 700; font-size: 14px; color: #333; }
+  .tier-subtitle { font-size: 12px; color: #999; margin-bottom: 6px; }
+  .tier-planned .tier-header::after { content: " (준비중)"; font-weight: 400; color: #bbb; font-size: 11px; }
+  .unit-link { display: block; padding: 4px 6px; font-size: 13px; color: #444; text-decoration: none; border-radius: 4px; cursor: pointer; }
+  .unit-link:hover { background: #f2f2f2; }
+  .unit-link.active { background: var(--accent); color: white; }
+  .unit-link.disabled { color: #ccc; cursor: default; }
+  .unit-link.disabled:hover { background: none; }
+
+  .lesson-content { flex: 1; max-width: 640px; }
+  .lesson-theory { font-size: 15px; line-height: 1.7; color: #333; margin-bottom: 20px; }
+  .lesson-diagram { width: 260px; margin: 0 auto 24px; }
+  .practice-item { border: 1px solid #eee; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+  .practice-question { font-weight: 600; margin-bottom: 10px; }
+  .practice-option { display: block; width: 100%; text-align: left; padding: 8px 10px; margin-bottom: 6px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; font-size: 14px; }
+  .practice-option.correct { background: #e6f4ea; border-color: #34a853; }
+  .practice-option.wrong { background: #fce8e6; border-color: #ea4335; }
+  .practice-explanation { font-size: 13px; color: #555; margin-top: 8px; display: none; }
+  .placeholder-note { color: #999; font-size: 14px; padding: 40px 0; text-align: center; }
+</style>
+</head>
+<body>
+  <main class="learn-layout">
+    <nav id="curriculum-nav" class="curriculum-nav"></nav>
+    <section id="lesson-content" class="lesson-content">
+      <p class="placeholder-note">왼쪽에서 유닛을 선택하세요.</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+
+    let curriculum;
+    const navEl = document.getElementById('curriculum-nav');
+    const contentEl = document.getElementById('lesson-content');
+
+    async function loadCurriculum() {
+      const res = await fetch('../../data/go/curriculum.json');
+      curriculum = await res.json();
+      renderNav();
+      // 첫 번째 유닛 자동 표시
+      const firstUnit = curriculum.tiers[0].units[0];
+      showUnit(curriculum.tiers[0], firstUnit);
+    }
+
+    function renderNav() {
+      navEl.innerHTML = '';
+      for (const tier of curriculum.tiers) {
+        const block = document.createElement('div');
+        block.className = 'tier-block' + (tier.status !== 'complete' ? ' tier-planned' : '');
+
+        const header = document.createElement('div');
+        header.className = 'tier-header';
+        header.textContent = tier.title;
+        block.appendChild(header);
+
+        const subtitle = document.createElement('div');
+        subtitle.className = 'tier-subtitle';
+        subtitle.textContent = tier.subtitle;
+        block.appendChild(subtitle);
+
+        for (const unit of tier.units) {
+          const link = document.createElement('a');
+          const hasContent = !!unit.theory;
+          link.className = 'unit-link' + (hasContent ? '' : ' disabled');
+          link.textContent = unit.title;
+          link.dataset.tierId = tier.id;
+          link.dataset.unitId = unit.id;
+          if (hasContent) {
+            link.addEventListener('click', () => showUnit(tier, unit, link));
+          }
+          block.appendChild(link);
+        }
+        navEl.appendChild(block);
+      }
+    }
+
+    function showUnit(tier, unit, linkEl) {
+      document.querySelectorAll('.unit-link').forEach((el) => el.classList.remove('active'));
+      if (linkEl) linkEl.classList.add('active');
+
+      if (!unit.theory) {
+        contentEl.innerHTML = `<p class="placeholder-note">"${unit.title}" 콘텐츠는 아직 준비 중입니다.</p>`;
+        return;
+      }
+
+      contentEl.innerHTML = `
+        <h1>${unit.title}</h1>
+        <p class="lesson-theory">${unit.theory}</p>
+        <div id="lesson-diagram" class="lesson-diagram"></div>
+        <div id="lesson-practice"></div>
+      `;
+
+      if (unit.diagram && unit.diagram.stones && unit.diagram.stones.length > 0) {
+        const diagramContainer = document.getElementById('lesson-diagram');
+        const demoBoard = new GoBoard({ container: diagramContainer, size: unit.diagram.size, interactive: false });
+        demoBoard.loadPosition(unit.diagram.stones);
+      } else {
+        document.getElementById('lesson-diagram').remove();
+      }
+
+      const practiceEl = document.getElementById('lesson-practice');
+      (unit.practice || []).forEach((item, idx) => {
+        const box = document.createElement('div');
+        box.className = 'practice-item';
+
+        const q = document.createElement('div');
+        q.className = 'practice-question';
+        q.textContent = `Q${idx + 1}. ${item.question}`;
+        box.appendChild(q);
+
+        const explanation = document.createElement('div');
+        explanation.className = 'practice-explanation';
+        explanation.textContent = item.explanation;
+
+        item.options.forEach((optText, optIdx) => {
+          const btn = document.createElement('button');
+          btn.className = 'practice-option';
+          btn.textContent = optText;
+          btn.addEventListener('click', () => {
+            const buttons = box.querySelectorAll('.practice-option');
+            buttons.forEach((b) => (b.disabled = true));
+            if (optIdx === item.answerIndex) {
+              btn.classList.add('correct');
+            } else {
+              btn.classList.add('wrong');
+              buttons[item.answerIndex].classList.add('correct');
+            }
+            explanation.style.display = 'block';
+          });
+          box.appendChild(btn);
+        });
+
+        box.appendChild(explanation);
+        practiceEl.appendChild(box);
+      });
+    }
+
+    loadCurriculum();
+  </script>
+</body>
+</html>
