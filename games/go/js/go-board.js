@@ -119,6 +119,40 @@ export class GoBoard extends BoardCore {
     }
 
     this.container.appendChild(svg);
+    this._svgEl = svg;
+    this._margin = margin;
+    this._cellPx = cellPx;
+  }
+
+  /**
+   * 퀴즈 페이지용: 후보수 지점에 A/B/C/D 같은 라벨을 표시.
+   * @param {Array<{x:number,y:number,label:string}>} points
+   */
+  markCandidates(points) {
+    if (!this._svgEl) return;
+    // 기존 마커 제거
+    this._svgEl.querySelectorAll('.go-candidate-marker').forEach((el) => el.remove());
+
+    for (const { x, y, label } of points) {
+      const cx = this._margin + x * this._cellPx;
+      const cy = this._margin + y * this._cellPx;
+
+      const circle = document.createElementNS(SVG_NS, 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', this._cellPx * 0.42);
+      circle.setAttribute('class', 'go-candidate-marker go-candidate-circle');
+      this._svgEl.appendChild(circle);
+
+      const text = document.createElementNS(SVG_NS, 'text');
+      text.setAttribute('x', cx);
+      text.setAttribute('y', cy);
+      text.setAttribute('class', 'go-candidate-marker go-candidate-text');
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dominant-baseline', 'central');
+      text.textContent = label;
+      this._svgEl.appendChild(text);
+    }
   }
 
   handleInput(x, y) {
