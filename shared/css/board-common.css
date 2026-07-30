@@ -61,3 +61,14 @@
 .go-hit-area:hover {
   fill: rgba(0, 0, 0, 0.06);
 }
+.go-candidate-circle {
+  fill: rgba(47, 111, 79, 0.85);
+  stroke: white;
+  stroke-width: 1.5;
+}
+.go-candidate-text {
+  fill: white;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+}
