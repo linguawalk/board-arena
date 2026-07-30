@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 퀴즈 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  .quiz-layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .quiz-board { width: 380px; flex-shrink: 0; }
+  .quiz-panel { flex: 1; min-width: 280px; max-width: 480px; }
+  .quiz-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .diff-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .diff-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .score-line { font-size: 13px; color: #666; margin-left: auto; }
+  .quiz-question { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
+  .quiz-option { display: block; width: 100%; text-align: left; padding: 10px 14px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer; font-size: 15px; }
+  .quiz-option.correct { background: #e6f4ea; border-color: #34a853; }
+  .quiz-option.wrong { background: #fce8e6; border-color: #ea4335; }
+  .quiz-explanation { font-size: 13px; color: #555; margin: 12px 0; padding: 10px; background: #f7f7f7; border-radius: 6px; display: none; }
+  .next-btn { padding: 8px 18px; border-radius: 6px; border: none; background: var(--accent); color: white; cursor: pointer; font-size: 14px; display: none; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>바둑 퀴즈 - 다음 최선의 수</h1>
+    <div class="quiz-toolbar">
+      <span style="font-size:13px;color:#888;">난이도:</span>
+      <button class="diff-btn active" data-diff="all">전체</button>
+      <button class="diff-btn" data-diff="easy">쉬움</button>
+      <button class="diff-btn" data-diff="medium">보통</button>
+      <button class="diff-btn" data-diff="hard">어려움</button>
+      <span id="score-line" class="score-line">0 / 0 정답</span>
+    </div>
+
+    <div class="quiz-layout">
+      <div id="quiz-board" class="quiz-board"></div>
+      <div class="quiz-panel">
+        <div id="quiz-question" class="quiz-question"></div>
+        <div id="quiz-options"></div>
+        <div id="quiz-explanation" class="quiz-explanation"></div>
+        <button id="next-btn" class="next-btn">다음 문제 →</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+
+    let allProblems = [];
+    let pool = [];
+    let current = null;
+    let correctCount = 0;
+    let attemptCount = 0;
+    let board = null;
+
+    const boardContainer = document.getElementById('quiz-board');
+    const questionEl = document.getElementById('quiz-question');
+    const optionsEl = document.getElementById('quiz-options');
+    const explanationEl = document.getElementById('quiz-explanation');
+    const nextBtn = document.getElementById('next-btn');
+    const scoreLine = document.getElementById('score-line');
+
+    async function loadProblems() {
+      const res = await fetch('../../data/go/quiz.json');
+      const data = await res.json();
+      allProblems = data.problems;
+      applyFilter('all');
+    }
+
+    function applyFilter(diff) {
+      pool = diff === 'all' ? allProblems.slice() : allProblems.filter((p) => p.difficulty === diff);
+      shuffle(pool);
+      loadNextProblem();
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function loadNextProblem() {
+      if (pool.length === 0) {
+        questionEl.textContent = '이 난이도의 문제를 모두 풀었습니다! 다시 섞어서 진행합니다.';
+        applyFilter(document.querySelector('.diff-btn.active').dataset.diff);
+        return;
+      }
+      current = pool.pop();
+      renderProblem(current);
+    }
+
+    function renderProblem(problem) {
+      explanationEl.style.display = 'none';
+      nextBtn.style.display = 'none';
+
+      if (board) boardContainer.innerHTML = '';
+      board = new GoBoard({ container: boardContainer, size: problem.size, interactive: false });
+      board.loadPosition(problem.stones);
+      board.markCandidates(problem.options);
+
+      const moverText = problem.toMove === 'B' ? '흑' : '백';
+      questionEl.textContent = `[${diffLabel(problem.difficulty)}] ${moverText} 차례입니다. 다음 최선의 수는?`;
+
+      optionsEl.innerHTML = '';
+      for (const opt of problem.options) {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.textContent = `${opt.label}`;
+        btn.addEventListener('click', () => selectAnswer(opt.label, problem));
+        optionsEl.appendChild(btn);
+      }
+    }
+
+    function diffLabel(d) {
+      return { easy: '쉬움', medium: '보통', hard: '어려움' }[d] || d;
+    }
+
+    function selectAnswer(label, problem) {
+      attemptCount++;
+      const buttons = optionsEl.querySelectorAll('.quiz-option');
+      buttons.forEach((b) => (b.disabled = true));
+      buttons.forEach((b) => {
+        if (b.textContent === problem.correctLabel) b.classList.add('correct');
+      });
+      if (label === problem.correctLabel) {
+        correctCount++;
+      } else {
+        [...buttons].find((b) => b.textContent === label).classList.add('wrong');
+      }
+      explanationEl.textContent = problem.explanation;
+      explanationEl.style.display = 'block';
+      nextBtn.style.display = 'inline-block';
+      scoreLine.textContent = `${correctCount} / ${attemptCount} 정답`;
+    }
+
+    nextBtn.addEventListener('click', loadNextProblem);
+
+    document.querySelectorAll('.diff-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.diff-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter(btn.dataset.diff);
+      });
+    });
+
+    loadProblems();
+  </script>
+</body>
+</html>
