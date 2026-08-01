@@ -17,6 +17,8 @@ export class GoBoard extends BoardCore {
     this.onMove = onMove;
     this.interactive = interactive; // false면 클릭 비활성 (학습 페이지 예시 다이어그램용)
     this.lastMove = null; // { x, y } - 가장 최근에 착수된 위치 (시각 표시용)
+    this.capturedBlack = 0; // 흑돌이 잡힌 총 개수 (= 흑의 사석 수)
+    this.capturedWhite = 0; // 백돌이 잡힌 총 개수 (= 백의 사석 수)
     this.render();
   }
 
@@ -30,6 +32,8 @@ export class GoBoard extends BoardCore {
       if (this.inBounds(x, y)) this.state[y][x] = color;
     }
     this.lastMove = null;
+    this.capturedBlack = 0;
+    this.capturedWhite = 0;
     this.render();
   }
 
@@ -42,6 +46,8 @@ export class GoBoard extends BoardCore {
     this.history = [];
     this.koState = null;
     this.lastMove = null;
+    this.capturedBlack = 0;
+    this.capturedWhite = 0;
     if (count > 0) {
       const points = getHandicapPoints(this.width, this.height, count);
       for (const [x, y] of points) {
@@ -59,6 +65,8 @@ export class GoBoard extends BoardCore {
     this.turn = STONE.BLACK;
     this.koState = null;
     this.lastMove = null;
+    this.capturedBlack = 0;
+    this.capturedWhite = 0;
     this.resize(newSize, newSize);
   }
 
@@ -200,14 +208,31 @@ export class GoBoard extends BoardCore {
       return;
     }
 
+    const mover = this.turn;
     this.koState = this.state; // 착수 전 상태를 다음 패 검사용으로 보관
     this.state = result.nextState;
-    this.history.push({ x, y, color: this.turn, captured: result.captured });
+    this.history.push({ x, y, color: mover, captured: result.captured });
     this.lastMove = { x, y };
-    this.turn = this.turn === STONE.BLACK ? STONE.WHITE : STONE.BLACK;
+
+    // 사석 집계: 잡힌 돌은 항상 상대 색
+    if (mover === STONE.BLACK) {
+      this.capturedWhite += result.captured.length;
+    } else {
+      this.capturedBlack += result.captured.length;
+    }
+
+    this.turn = mover === STONE.BLACK ? STONE.WHITE : STONE.BLACK;
 
     this.render();
-    this.onMove({ valid: true, x, y, captured: result.captured, nextTurn: this.turn });
+    this.onMove({
+      valid: true,
+      x,
+      y,
+      captured: result.captured,
+      nextTurn: this.turn,
+      capturedBlack: this.capturedBlack,
+      capturedWhite: this.capturedWhite,
+    });
   }
 
   pass() {
@@ -215,6 +240,12 @@ export class GoBoard extends BoardCore {
     this.koState = null;
     this.turn = this.turn === STONE.BLACK ? STONE.WHITE : STONE.BLACK;
     this.render();
-    this.onMove({ valid: true, pass: true, nextTurn: this.turn });
+    this.onMove({
+      valid: true,
+      pass: true,
+      nextTurn: this.turn,
+      capturedBlack: this.capturedBlack,
+      capturedWhite: this.capturedWhite,
+    });
   }
 }
