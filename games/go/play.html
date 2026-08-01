@@ -16,24 +16,20 @@
 
       <label for="board-size">보드 크기</label>
       <select id="board-size" class="board-size-select">
-        <option value="9">9 x 9 (입문)</option>
-        <option value="13">13 x 13 (중급)</option>
+        <option value="9">9 x 9</option>
+        <option value="11">11 x 11</option>
+        <option value="13">13 x 13</option>
         <option value="15">15 x 15</option>
+        <option value="17">17 x 17</option>
         <option value="19" selected>19 x 19 (정식)</option>
-      </select>
-
-      <label for="game-mode">대국 상대</label>
-      <select id="game-mode" class="board-size-select">
-        <option value="human">사람 vs 사람</option>
-        <option value="ai" selected>사람 vs AI</option>
+        <option value="21">21 x 21</option>
+        <option value="23">23 x 23</option>
+        <option value="25">25 x 25</option>
       </select>
 
       <label for="ai-level">AI 난이도</label>
-      <select id="ai-level" class="board-size-select">
-        <option value="beginner">입문 (무작위)</option>
-        <option value="casual" selected>초급 (따내기 우선)</option>
-      </select>
-      <p style="font-size:12px;color:#888;margin:0;">※ 지금은 임시 휴리스틱 AI입니다. 추후 KataGo 엔진으로 교체 예정.</p>
+      <select id="ai-level" class="board-size-select"></select>
+      <p style="font-size:12px;color:#888;margin:0;">※ 지금은 임시 휴리스틱 AI로 급수를 실수 확률로 흉내낸 것입니다. 추후 KataGo 엔진으로 교체 예정.</p>
 
       <div id="turn-indicator">현재 차례: 흑</div>
       <div id="ai-thinking" style="font-size:13px;color:var(--accent);display:none;">AI가 생각 중...</div>
@@ -46,17 +42,25 @@
 
   <script type="module">
     import { GoBoard } from './js/go-board.js';
-    import { GoEngineAdapter } from './js/go-engine-adapter.js';
+    import { GoEngineAdapter, AI_LEVELS } from './js/go-engine-adapter.js';
 
     const container = document.getElementById('go-board-container');
     const sizeSelect = document.getElementById('board-size');
-    const modeSelect = document.getElementById('game-mode');
     const levelSelect = document.getElementById('ai-level');
     const turnIndicator = document.getElementById('turn-indicator');
     const aiThinking = document.getElementById('ai-thinking');
     const moveLog = document.getElementById('move-log');
 
-    const AI_COLOR = 'W'; // AI는 항상 백을 둠 (사람이 흑 선)
+    const AI_COLOR = 'W'; // AI는 항상 백, 사람은 흑(선)
+
+    // 급수 옵션 채우기
+    for (const lvl of AI_LEVELS) {
+      const opt = document.createElement('option');
+      opt.value = lvl.id;
+      opt.textContent = lvl.label;
+      if (lvl.id === 'd9') opt.selected = true;
+      levelSelect.appendChild(opt);
+    }
 
     function logLine(text) {
       const p = document.createElement('div');
@@ -67,12 +71,13 @@
     let engine = new GoEngineAdapter({ level: levelSelect.value });
     let board;
 
-    function createBoard(size) {
-      board = new GoBoard({
-        container,
-        size,
-        onMove: handleMoveResult,
-      });
+    function createBoard() {
+      const size = parseInt(sizeSelect.value, 10);
+      container.innerHTML = '';
+      board = new GoBoard({ container, size, onMove: handleMoveResult });
+      turnIndicator.textContent = '현재 차례: 흑';
+      moveLog.innerHTML = '';
+      logLine(`${size}x${size} 보드로 시작 (흑 선)`);
     }
 
     function handleMoveResult(result) {
@@ -88,8 +93,7 @@
       }
       turnIndicator.textContent = `현재 차례: ${result.nextTurn === 'B' ? '흑' : '백'}`;
 
-      // AI 모드이고, 다음 차례가 AI 색이면 AI에게 수를 요청
-      if (modeSelect.value === 'ai' && result.nextTurn === AI_COLOR) {
+      if (result.nextTurn === AI_COLOR) {
         requestAiMove();
       }
     }
@@ -116,19 +120,9 @@
       }
     }
 
-    createBoard(parseInt(sizeSelect.value, 10));
+    createBoard();
 
-    sizeSelect.addEventListener('change', () => {
-      const newSize = parseInt(sizeSelect.value, 10);
-      board.changeSize(newSize);
-      turnIndicator.textContent = '현재 차례: 흑';
-      moveLog.innerHTML = '';
-      logLine(`보드 크기를 ${newSize} x ${newSize}로 변경`);
-    });
-
-    modeSelect.addEventListener('change', () => {
-      logLine(modeSelect.value === 'ai' ? 'AI 대국 모드로 전환' : '2인 대국 모드로 전환');
-    });
+    sizeSelect.addEventListener('change', createBoard);
 
     levelSelect.addEventListener('change', () => {
       engine = new GoEngineAdapter({ level: levelSelect.value });
