@@ -13,6 +13,8 @@
   .quiz-toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
   .diff-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
   .diff-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .cat-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .cat-btn.active { background: #444; color: white; border-color: #444; }
   .score-line { font-size: 13px; color: #666; margin-left: auto; }
   .quiz-question { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
   .quiz-option { display: block; width: 100%; text-align: left; padding: 10px 14px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer; font-size: 15px; }
@@ -26,6 +28,13 @@
   <main>
     <h1>바둑 퀴즈 - 다음 최선의 수</h1>
     <div class="quiz-toolbar">
+      <span style="font-size:13px;color:#888;">분야:</span>
+      <button class="cat-btn active" data-cat="all">전체</button>
+      <button class="cat-btn" data-cat="fuseki">포석</button>
+      <button class="cat-btn" data-cat="middlegame">중반 전투</button>
+      <button class="cat-btn" data-cat="endgame">끝내기</button>
+    </div>
+    <div class="quiz-toolbar">
       <span style="font-size:13px;color:#888;">난이도:</span>
       <button class="diff-btn active" data-diff="all">전체</button>
       <button class="diff-btn" data-diff="easy">쉬움</button>
@@ -38,7 +47,7 @@
       <div id="quiz-board" class="quiz-board"></div>
       <div class="quiz-panel">
         <div id="quiz-question" class="quiz-question"></div>
-        <div id="quiz-options"></div>
+        <div id="quiz-hint" style="font-size:13px;color:#888;margin-bottom:10px;">바둑판 위에서 최선이라고 생각하는 자리를 클릭하세요.</div>
         <div id="quiz-explanation" class="quiz-explanation"></div>
         <button id="next-btn" class="next-btn">다음 문제 →</button>
       </div>
@@ -54,10 +63,11 @@
     let correctCount = 0;
     let attemptCount = 0;
     let board = null;
+    let answered = false;
 
     const boardContainer = document.getElementById('quiz-board');
     const questionEl = document.getElementById('quiz-question');
-    const optionsEl = document.getElementById('quiz-options');
+    const hintEl = document.getElementById('quiz-hint');
     const explanationEl = document.getElementById('quiz-explanation');
     const nextBtn = document.getElementById('next-btn');
     const scoreLine = document.getElementById('score-line');
@@ -66,11 +76,15 @@
       const res = await fetch('../../data/go/quiz.json');
       const data = await res.json();
       allProblems = data.problems;
-      applyFilter('all');
+      applyFilter();
     }
 
-    function applyFilter(diff) {
-      pool = diff === 'all' ? allProblems.slice() : allProblems.filter((p) => p.difficulty === diff);
+    function applyFilter() {
+      const diff = document.querySelector('.diff-btn.active').dataset.diff;
+      const cat = document.querySelector('.cat-btn.active').dataset.cat;
+      pool = allProblems.filter(
+        (p) => (diff === 'all' || p.difficulty === diff) && (cat === 'all' || p.category === cat)
+      );
       shuffle(pool);
       loadNextProblem();
     }
@@ -84,8 +98,9 @@
 
     function loadNextProblem() {
       if (pool.length === 0) {
-        questionEl.textContent = '이 난이도의 문제를 모두 풀었습니다! 다시 섞어서 진행합니다.';
-        applyFilter(document.querySelector('.diff-btn.active').dataset.diff);
+        if (allProblems.length === 0) return;
+        questionEl.textContent = '이 조건의 문제를 모두 풀었습니다! 다시 섞어서 진행합니다.';
+        applyFilter();
         return;
       }
       current = pool.pop();
@@ -93,44 +108,48 @@
     }
 
     function renderProblem(problem) {
+      answered = false;
       explanationEl.style.display = 'none';
       nextBtn.style.display = 'none';
+      hintEl.style.display = 'block';
 
-      if (board) boardContainer.innerHTML = '';
-      board = new GoBoard({ container: boardContainer, size: problem.size, interactive: false });
+      boardContainer.innerHTML = '';
+      board = new GoBoard({
+        container: boardContainer,
+        size: problem.size,
+        interactive: true,
+        onPointClick: (x, y) => handlePointClick(x, y, problem),
+      });
       board.loadPosition(problem.stones);
-      board.markCandidates(problem.options);
 
       const moverText = problem.toMove === 'B' ? '흑' : '백';
-      questionEl.textContent = `[${diffLabel(problem.difficulty)}] ${moverText} 차례입니다. 다음 최선의 수는?`;
-
-      optionsEl.innerHTML = '';
-      for (const opt of problem.options) {
-        const btn = document.createElement('button');
-        btn.className = 'quiz-option';
-        btn.textContent = `${opt.label}`;
-        btn.addEventListener('click', () => selectAnswer(opt.label, problem));
-        optionsEl.appendChild(btn);
-      }
+      questionEl.textContent = `[${diffLabel(problem.difficulty)} · ${catLabel(problem.category)}] ${moverText} 차례입니다. 다음 최선의 수는?`;
     }
 
     function diffLabel(d) {
       return { easy: '쉬움', medium: '보통', hard: '어려움' }[d] || d;
     }
+    function catLabel(c) {
+      return { fuseki: '포석', middlegame: '중반 전투', endgame: '끝내기' }[c] || c;
+    }
 
-    function selectAnswer(label, problem) {
+    function handlePointClick(x, y, problem) {
+      if (answered) return;
+      // 이미 돌이 있는 자리는 무효 클릭으로 처리
+      const occupied = problem.stones.some((s) => s.x === x && s.y === y);
+      if (occupied) return;
+
+      answered = true;
       attemptCount++;
-      const buttons = optionsEl.querySelectorAll('.quiz-option');
-      buttons.forEach((b) => (b.disabled = true));
-      buttons.forEach((b) => {
-        if (b.textContent === problem.correctLabel) b.classList.add('correct');
-      });
-      if (label === problem.correctLabel) {
-        correctCount++;
-      } else {
-        [...buttons].find((b) => b.textContent === label).classList.add('wrong');
-      }
-      explanationEl.textContent = problem.explanation;
+
+      const correctOpt = problem.options.find((o) => o.label === problem.correctLabel);
+      const isCorrect = correctOpt.x === x && correctOpt.y === y;
+      if (isCorrect) correctCount++;
+
+      board.markAnswerFeedback(correctOpt, { x, y });
+
+      hintEl.style.display = 'none';
+      explanationEl.textContent = (isCorrect ? '✅ 정답입니다! ' : '❌ 아쉽습니다. ') + problem.explanation;
       explanationEl.style.display = 'block';
       nextBtn.style.display = 'inline-block';
       scoreLine.textContent = `${correctCount} / ${attemptCount} 정답`;
@@ -142,7 +161,15 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('.diff-btn').forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
-        applyFilter(btn.dataset.diff);
+        applyFilter();
+      });
+    });
+
+    document.querySelectorAll('.cat-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter();
       });
     });
 
