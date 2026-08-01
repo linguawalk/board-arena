@@ -10,12 +10,13 @@ import { STONE, tryPlaceStone, getHandicapPoints } from './go-rules.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export class GoBoard extends BoardCore {
-  constructor({ container, size = 19, onMove = () => {}, interactive = true }) {
+  constructor({ container, size = 19, onMove = () => {}, interactive = true, onPointClick = null }) {
     super({ kind: BOARD_KIND.INTERSECTION, width: size, height: size, container });
     this.turn = STONE.BLACK;
     this.koState = null;
     this.onMove = onMove;
     this.interactive = interactive; // false면 클릭 비활성 (학습 페이지 예시 다이어그램용)
+    this.onPointClick = onPointClick; // 지정되면 클릭 시 실제 착수 대신 이 콜백 호출 (퀴즈 답변용)
     this.lastMove = null; // { x, y } - 가장 최근에 착수된 위치 (시각 표시용)
     this.capturedBlack = 0; // 흑돌이 잡힌 총 개수 (= 흑의 사석 수)
     this.capturedWhite = 0; // 백돌이 잡힌 총 개수 (= 백의 사석 수)
@@ -158,7 +159,13 @@ export class GoBoard extends BoardCore {
           hit.setAttribute('cy', margin + y * cellPx);
           hit.setAttribute('r', cellPx * 0.48);
           hit.setAttribute('class', 'go-hit-area');
-          hit.addEventListener('click', () => this.handleInput(x, y));
+          hit.addEventListener('click', () => {
+            if (this.onPointClick) {
+              this.onPointClick(x, y);
+            } else {
+              this.handleInput(x, y);
+            }
+          });
           svg.appendChild(hit);
         }
       }
@@ -199,6 +206,33 @@ export class GoBoard extends BoardCore {
       text.textContent = label;
       this._svgEl.appendChild(text);
     }
+  }
+
+  /**
+   * 퀴즈 채점 후 정답 지점(초록)과 사용자가 클릭한 오답 지점(빨강)을 표시.
+   * @param {{x:number,y:number}} correct
+   * @param {{x:number,y:number}|null} picked - 정답이면 null이거나 correct와 동일해도 됨
+   */
+  markAnswerFeedback(correct, picked) {
+    if (!this._svgEl) return;
+    this._svgEl.querySelectorAll('.go-answer-marker').forEach((el) => el.remove());
+
+    const draw = (x, y, cls) => {
+      const cx = this._margin + x * this._cellPx;
+      const cy = this._margin + y * this._cellPx;
+      const circle = document.createElementNS(SVG_NS, 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', this._cellPx * 0.4);
+      circle.setAttribute('class', `go-answer-marker ${cls}`);
+      this._svgEl.appendChild(circle);
+    };
+
+    const isWrong = picked && (picked.x !== correct.x || picked.y !== correct.y);
+    if (isWrong) {
+      draw(picked.x, picked.y, 'go-answer-wrong');
+    }
+    draw(correct.x, correct.y, 'go-answer-correct');
   }
 
   handleInput(x, y) {
