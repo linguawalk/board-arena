@@ -80,3 +80,15 @@
   fill: #d9302f;
   pointer-events: none;
 }
+.go-answer-correct {
+  fill: none;
+  stroke: #34a853;
+  stroke-width: 3;
+  pointer-events: none;
+}
+.go-answer-wrong {
+  fill: none;
+  stroke: #ea4335;
+  stroke-width: 3;
+  pointer-events: none;
+}
