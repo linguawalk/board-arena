@@ -16,6 +16,7 @@ export class GoBoard extends BoardCore {
     this.koState = null;
     this.onMove = onMove;
     this.interactive = interactive; // false면 클릭 비활성 (학습 페이지 예시 다이어그램용)
+    this.lastMove = null; // { x, y } - 가장 최근에 착수된 위치 (시각 표시용)
     this.render();
   }
 
@@ -28,6 +29,7 @@ export class GoBoard extends BoardCore {
     for (const { x, y, color } of stones) {
       if (this.inBounds(x, y)) this.state[y][x] = color;
     }
+    this.lastMove = null;
     this.render();
   }
 
@@ -39,6 +41,7 @@ export class GoBoard extends BoardCore {
     this.state = this._createEmptyState();
     this.history = [];
     this.koState = null;
+    this.lastMove = null;
     if (count > 0) {
       const points = getHandicapPoints(this.width, this.height, count);
       for (const [x, y] of points) {
@@ -55,6 +58,7 @@ export class GoBoard extends BoardCore {
   changeSize(newSize) {
     this.turn = STONE.BLACK;
     this.koState = null;
+    this.lastMove = null;
     this.resize(newSize, newSize);
   }
 
@@ -123,6 +127,20 @@ export class GoBoard extends BoardCore {
       }
     }
 
+    // 마지막 착수 표시 (소리 없이도 AI가 어디 뒀는지 바로 알 수 있게)
+    if (this.lastMove) {
+      const { x, y } = this.lastMove;
+      const stoneColor = this.state[y] ? this.state[y][x] : null;
+      if (stoneColor) {
+        const marker = document.createElementNS(SVG_NS, 'circle');
+        marker.setAttribute('cx', margin + x * cellPx);
+        marker.setAttribute('cy', margin + y * cellPx);
+        marker.setAttribute('r', cellPx * 0.18);
+        marker.setAttribute('class', stoneColor === STONE.BLACK ? 'go-last-move-marker-on-black' : 'go-last-move-marker-on-white');
+        svg.appendChild(marker);
+      }
+    }
+
     // 클릭 히트영역 (교차점마다 투명 원) - interactive 모드에서만 생성
     if (this.interactive) {
       for (let y = 0; y < size; y++) {
@@ -185,6 +203,7 @@ export class GoBoard extends BoardCore {
     this.koState = this.state; // 착수 전 상태를 다음 패 검사용으로 보관
     this.state = result.nextState;
     this.history.push({ x, y, color: this.turn, captured: result.captured });
+    this.lastMove = { x, y };
     this.turn = this.turn === STONE.BLACK ? STONE.WHITE : STONE.BLACK;
 
     this.render();
@@ -195,6 +214,7 @@ export class GoBoard extends BoardCore {
     this.history.push({ pass: true, color: this.turn });
     this.koState = null;
     this.turn = this.turn === STONE.BLACK ? STONE.WHITE : STONE.BLACK;
+    this.render();
     this.onMove({ valid: true, pass: true, nextTurn: this.turn });
   }
 }
