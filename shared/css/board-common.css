@@ -72,3 +72,11 @@
   font-weight: 700;
   pointer-events: none;
 }
+.go-last-move-marker-on-black {
+  fill: #ffffff;
+  pointer-events: none;
+}
+.go-last-move-marker-on-white {
+  fill: #d9302f;
+  pointer-events: none;
+}
