@@ -12,14 +12,36 @@
 
 import { tryPlaceStone } from './go-rules.js';
 
-export const AI_LEVEL = {
-  BEGINNER: 'beginner', // 완전 무작위
-  CASUAL: 'casual',     // 따낼 수 있으면 따냄 + 활로 고려
-};
+// 급수 구간별 난이도. 실제 기력 차등이 아니라 "실수 확률"로 흉내낸 임시 체계입니다.
+// (진짜 KataGo 엔진으로 교체되면 이 표는 각 급수/단에 맞는 플레이아웃/깊이 설정으로 대체될 예정)
+export const AI_LEVELS = buildLevels();
+
+function buildLevels() {
+  const kyuLevels = [];
+  for (let k = 18; k >= 1; k--) {
+    kyuLevels.push({ id: `k${k}`, label: `${k}급` });
+  }
+  const danLevels = [];
+  for (let d = 1; d <= 9; d++) {
+    danLevels.push({ id: `d${d}`, label: `${d}단` });
+  }
+  const all = [...kyuLevels, ...danLevels]; // 총 27단계, 약한 순 -> 강한 순
+  const start = 0.95; // 18급의 실수 확률
+  const end = 0.0;     // 9단의 실수 확률
+  const n = all.length;
+  return all.map((lvl, i) => ({
+    ...lvl,
+    mistakeRate: start + (end - start) * (i / (n - 1)),
+  }));
+}
+
+function levelById(id) {
+  return AI_LEVELS.find((l) => l.id === id) || AI_LEVELS[AI_LEVELS.length - 1];
+}
 
 export class GoEngineAdapter {
-  constructor({ level = AI_LEVEL.CASUAL } = {}) {
-    this.level = level;
+  constructor({ level = 'd9' } = {}) {
+    this.level = levelById(level);
     this.mode = 'heuristic'; // 추후 'worker'로 교체 예정 (KataGo WASM 준비되면)
   }
 
@@ -31,7 +53,6 @@ export class GoEngineAdapter {
    * @returns {Promise<{x:number,y:number}|{pass:true}>}
    */
   async requestMove(state, color, width, height, koState) {
-    // 실제 엔진 호출처럼 비동기 인터페이스를 유지 (나중에 Worker로 교체해도 호출부가 안 바뀌게)
     await new Promise((r) => setTimeout(r, 150)); // 약간의 "생각하는 시간" 연출
 
     const candidates = [];
@@ -48,11 +69,12 @@ export class GoEngineAdapter {
       return { pass: true };
     }
 
-    if (this.level === AI_LEVEL.BEGINNER) {
+    // 급수가 낮을수록(mistakeRate가 높을수록) 최선수 대신 무작위수를 선택할 확률이 높음
+    if (Math.random() < this.level.mistakeRate) {
       return pickRandom(candidates);
     }
 
-    // CASUAL: 따내는 수 우선, 없으면 무작위
+    // 따내는 수 우선, 없으면 무작위
     const capturingMoves = candidates.filter((c) => c.captured > 0);
     if (capturingMoves.length > 0) {
       capturingMoves.sort((a, b) => b.captured - a.captured);

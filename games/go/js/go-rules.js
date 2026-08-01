@@ -153,23 +153,41 @@ export function estimateScore(state, width, height) {
   return { black, white };
 }
 
-/** 핸디캡(치석) 위치 - 보드 크기별로 다르게 계산 */
+/** 핸디캡(치석) 위치 - 보드 크기와 치석 수(1~13)에 따른 배치. 9점까지는 전통 표준, 10~13점은 확장 지점 */
 export function getHandicapPoints(width, height, count) {
-  // 9x9, 13x13, 15x15, 19x19 기준 표준 성/화점 근사치
-  if (width !== height || width < 7) return [];
+  if (width !== height || width < 7 || count < 1) return [];
 
-  const edge = width >= 13 ? 3 : 2; // 큰 판은 가장자리에서 3칸, 작은 판은 2칸
+  const edge = width >= 13 ? 3 : 2;
   const mid = Math.floor(width / 2);
   const low = edge;
   const high = width - 1 - edge;
 
-  const points = {
+  const corners = [[low, low], [high, low], [low, high], [high, high]];
+  const edgeMids = [[mid, low], [mid, high], [low, mid], [high, mid]];
+  const center = [mid, mid];
+
+  // 전통 9점 배치를 순서대로 정의 (1~9점 요청 시 앞에서부터 사용)
+  const traditionalOrder = {
+    1: [center],
     2: [[low, high], [high, low]],
     3: [[low, high], [high, low], [high, high]],
-    4: [[low, low], [low, high], [high, low], [high, high]],
+    4: corners,
+    5: [...corners, center],
+    6: [...corners, [low, mid], [high, mid]],
+    7: [...corners, [low, mid], [high, mid], center],
+    8: [...corners, ...edgeMids],
+    9: [...corners, ...edgeMids, center],
   };
 
-  let base = points[Math.min(count, 4)] || [];
-  if (count >= 5 && width % 2 === 1) base = [...base, [mid, mid]];
-  return base;
+  if (count <= 9) return traditionalOrder[count];
+
+  // 10~13점: 전통 배치를 벗어나므로, 귀와 변 사이 1/4 지점에 추가 배치 (비표준 확장)
+  const q1 = low + Math.round((mid - low) / 2);
+  const q3 = mid + Math.round((high - mid) / 2);
+  const extraPoints = [
+    [q1, low], [q3, low], [low, q1], [low, q3],
+    [q1, high], [q3, high], [high, q1], [high, q3],
+  ];
+  const extraNeeded = count - 9;
+  return [...traditionalOrder[9], ...extraPoints.slice(0, extraNeeded)];
 }

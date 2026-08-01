@@ -31,6 +31,26 @@ export class GoBoard extends BoardCore {
     this.render();
   }
 
+  /**
+   * 접바둑: 흑에게 치석을 배치하고 백부터 두게 함.
+   * @param {number} count - 치석 수 (0~9). 0이면 일반 대국(흑이 먼저 둠).
+   */
+  placeHandicap(count) {
+    this.state = this._createEmptyState();
+    this.history = [];
+    this.koState = null;
+    if (count > 0) {
+      const points = getHandicapPoints(this.width, this.height, count);
+      for (const [x, y] of points) {
+        this.setCell(x, y, STONE.BLACK);
+      }
+      this.turn = STONE.WHITE;
+    } else {
+      this.turn = STONE.BLACK;
+    }
+    this.render();
+  }
+
   /** 외부(UI 드롭다운)에서 크기 변경 시 호출 */
   changeSize(newSize) {
     this.turn = STONE.BLACK;
