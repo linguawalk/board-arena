@@ -175,9 +175,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J5(추정 가치 10.2)로, 차선(F5, 5.0)보다 약 5.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 2,
@@ -293,9 +294,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E8(추정 가치 29.4)로, 차선(F7, 29.2)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 3,
@@ -376,9 +378,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 E12(추정 가치 35.0)로, 차선(D11, 28.5)보다 약 6.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 4,
@@ -474,9 +477,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 35.0)로, 차선(H2, 20.7)보다 약 14.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 5,
@@ -552,9 +556,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 42.1)로, 차선(B7, 25.5)보다 약 16.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 6,
@@ -675,9 +680,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 H10(추정 가치 35.0)로, 차선(E5, 16.0)보다 약 19.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 7,
@@ -738,9 +744,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 35.0)로, 차선(K8, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 8,
@@ -821,9 +828,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 22.4)로, 차선(C11, 22.0)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 9,
@@ -999,9 +1007,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 A5(추정 가치 10.8)로, 차선(H3, 7.7)보다 약 3.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 10,
@@ -1122,9 +1131,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 B11(추정 가치 38.3)로, 차선(D2, 23.2)보다 약 15.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 11,
@@ -1245,9 +1255,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 L2(추정 가치 21.8)로, 차선(G5, 17.5)보다 약 4.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 12,
@@ -1323,9 +1334,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 35.0)로, 차선(F11, 26.7)보다 약 8.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 14
     },
     {
       "id": 13,
@@ -1501,9 +1513,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 10.0)로, 차선(E6, 9.3)보다 약 0.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 5
     },
     {
       "id": 14,
@@ -1584,9 +1597,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 J8(추정 가치 20.6)로, 차선(C6, 18.6)보다 약 2.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 15,
@@ -1667,9 +1681,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 47.7)로, 차선(C7, 26.8)보다 약 20.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 16,
@@ -1835,9 +1850,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 N8(추정 가치 13.4)로, 차선(L11, 12.7)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 17,
@@ -1968,9 +1984,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 8.3)로, 차선(C6, 8.1)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 18,
@@ -2116,9 +2133,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J13(추정 가치 16.9)로, 차선(J11, 11.9)보다 약 5.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 19,
@@ -2289,9 +2307,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 16.4)로, 차선(G7, 15.8)보다 약 0.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 20,
@@ -2427,9 +2446,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 K4(추정 가치 10.3)로, 차선(G4, 10.0)보다 약 0.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 21,
@@ -2590,9 +2610,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 1.6)로, 차선(F7, 0.2)보다 약 1.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 22,
@@ -2653,9 +2674,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 35.0)로, 차선(J7, 21.9)보다 약 13.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 23,
@@ -2736,9 +2758,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 19.6)로, 차선(J9, 18.7)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     },
     {
       "id": 24,
@@ -2814,9 +2837,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 D6(추정 가치 13.0)로, 차선(H6, 9.3)보다 약 3.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 25,
@@ -2892,9 +2916,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 35.8)로, 차선(H3, 31.4)보다 약 4.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 26,
@@ -3060,9 +3085,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 16.2)로, 차선(E7, 14.1)보다 약 2.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 8
     },
     {
       "id": 27,
@@ -3203,9 +3229,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 12.3)로, 차선(E9, 7.1)보다 약 5.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 28,
@@ -3286,9 +3313,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 16.4)로, 차선(D2, 6.9)보다 약 9.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 29,
@@ -3409,9 +3437,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 H7(추정 가치 9.4)로, 차선(B5, 7.1)보다 약 2.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 30,
@@ -3472,9 +3501,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 31.6)로, 차선(D7, 21.7)보다 약 9.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 31,
@@ -3635,9 +3665,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 3.6)로, 차선(H9, 2.6)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 32,
@@ -3703,9 +3734,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 20.4)로, 차선(H8, 20.2)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 기존 돌들과 거리가 있어 새로운 영역을 넓히는 성격의 수입니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 33,
@@ -3776,9 +3808,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 20.4)로, 차선(F11, 20.3)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 기존 돌들과 거리가 있어 새로운 영역을 넓히는 성격의 수입니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 34,
@@ -3879,9 +3912,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 D2(추정 가치 15.8)로, 차선(D8, 6.6)보다 약 9.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 35,
@@ -3962,9 +3996,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 28.2)로, 차선(C4, 27.7)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 36,
@@ -4050,9 +4085,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 A3(추정 가치 15.1)로, 차선(H4, 11.8)보다 약 3.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 37,
@@ -4143,9 +4179,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 M9(추정 가치 20.5)로, 차선(L9, 20.0)보다 약 0.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 38,
@@ -4221,9 +4258,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 8.4)로, 차선(D4, 8.1)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 39,
@@ -4344,9 +4382,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 K5(추정 가치 18.7)로, 차선(G6, 17.6)보다 약 1.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 40,
@@ -4402,9 +4441,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 40.4)로, 차선(E6, 25.8)보다 약 14.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 41,
@@ -4455,9 +4495,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 75.0)로, 차선(G5, 37.8)보다 약 37.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 42,
@@ -4593,9 +4634,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 10.4)로, 차선(C5, 7.6)보다 약 2.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 43,
@@ -4746,9 +4788,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 32.2)로, 차선(D8, 26.4)보다 약 5.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 44,
@@ -4829,9 +4872,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 L6(추정 가치 40.2)로, 차선(L3, 38.0)보다 약 2.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 45,
@@ -4942,9 +4986,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 6.6)로, 차선(A5, 6.3)보다 약 0.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 46,
@@ -5025,9 +5070,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 22.8)로, 차선(H3, 19.2)보다 약 3.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 47,
@@ -5153,9 +5199,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 5.7)로, 차선(H2, 5.6)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 48,
@@ -5291,9 +5338,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 33.7)로, 차선(H2, 8.7)보다 약 25.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 49,
@@ -5374,9 +5422,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 10.2)로, 차선(D6, 7.6)보다 약 2.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 50,
@@ -5437,9 +5486,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 F2(추정 가치 24.3)로, 차선(D2, 24.3)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 51,
@@ -5490,9 +5540,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 75.0)로, 차선(E6, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 52,
@@ -5593,9 +5644,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 G9(추정 가치 7.2)로, 차선(C6, 5.0)보다 약 2.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 53,
@@ -5716,9 +5768,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 23.7)로, 차선(D8, 23.1)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 54,
@@ -5769,9 +5822,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 75.0)로, 차선(G6, 35.0)보다 약 40.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 55,
@@ -5887,9 +5941,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 9.1)로, 차선(B2, 8.9)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 56,
@@ -6065,9 +6120,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 H6(추정 가치 13.8)로, 차선(L2, 8.0)보다 약 5.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 57,
@@ -6198,9 +6254,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 15.2)로, 차선(J2, 13.1)보다 약 2.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 58,
@@ -6251,9 +6308,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 75.0)로, 차선(E3, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 59,
@@ -6394,9 +6452,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 17.9)로, 차선(H11, 17.5)보다 약 0.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 60,
@@ -6542,9 +6601,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 8.4)로, 차선(F4, 5.0)보다 약 3.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 61,
@@ -6625,9 +6685,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 19.3)로, 차선(G4, 12.3)보다 약 7.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 62,
@@ -6758,9 +6819,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 8.4)로, 차선(G8, 6.2)보다 약 2.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 63,
@@ -6836,9 +6898,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 10.9)로, 차선(D4, 10.8)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 64,
@@ -6974,9 +7037,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 38.8)로, 차선(H5, 37.3)보다 약 1.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 65,
@@ -7057,9 +7121,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 F6(추정 가치 23.9)로, 차선(F7, 22.7)보다 약 1.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 66,
@@ -7140,9 +7205,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 9.5)로, 차선(H6, 6.3)보다 약 3.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 67,
@@ -7298,9 +7364,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 H11(추정 가치 19.9)로, 차선(J8, 15.6)보다 약 4.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 11
     },
     {
       "id": 68,
@@ -7381,9 +7448,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 H6(추정 가치 47.3)로, 차선(H5, 27.7)보다 약 19.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 69,
@@ -7479,9 +7547,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 12.8)로, 차선(C9, 6.8)보다 약 6.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 70,
@@ -7637,9 +7706,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 K9(추정 가치 11.9)로, 차선(E12, 10.4)보다 약 1.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 71,
@@ -7725,9 +7795,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 11.6)로, 차선(A7, 10.2)보다 약 1.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 72,
@@ -7803,9 +7874,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 33.3)로, 차선(C10, 28.0)보다 약 5.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 12
     },
     {
       "id": 73,
@@ -7911,9 +7983,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 35.0)로, 차선(D8, 17.8)보다 약 17.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 74,
@@ -8034,9 +8107,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 8.9)로, 차선(D9, 4.0)보다 약 4.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 75,
@@ -8177,9 +8251,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 37.0)로, 차선(F5, 15.8)보다 약 21.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 17
     },
     {
       "id": 76,
@@ -8320,9 +8395,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 D9(추정 가치 20.0)로, 차선(H10, 16.7)보다 약 3.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 77,
@@ -8488,9 +8564,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 N8(추정 가치 13.4)로, 차선(L11, 12.7)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 78,
@@ -8621,9 +8698,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 H7(추정 가치 11.8)로, 차선(B7, 10.2)보다 약 1.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 79,
@@ -8684,9 +8762,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 23.5)로, 차선(G5, 23.1)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 80,
@@ -8757,9 +8836,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 35.0)로, 차선(H12, 23.4)보다 약 11.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 81,
@@ -8920,9 +9000,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 3.6)로, 차선(H9, 2.6)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 82,
@@ -8993,9 +9074,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 D12(추정 가치 103.5)로, 차선(F11, 34.3)보다 약 69.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 83,
@@ -9051,9 +9133,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 G10(추정 가치 28.4)로, 차선(H3, 24.1)보다 약 4.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 84,
@@ -9184,9 +9267,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 15.2)로, 차선(J2, 13.1)보다 약 2.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 85,
@@ -9267,9 +9351,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 K9(추정 가치 35.0)로, 차선(G11, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 86,
@@ -9350,9 +9435,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 H3(추정 가치 33.2)로, 차선(E3, 31.3)보다 약 1.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 87,
@@ -9478,9 +9564,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 24.4)로, 차선(D2, 20.5)보다 약 3.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 88,
@@ -9536,9 +9623,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 16.6)로, 차선(F3, 15.4)보다 약 1.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 89,
@@ -9679,9 +9767,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 F10(추정 가치 56.6)로, 차선(C11, 28.5)보다 약 28.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 90,
@@ -9802,9 +9891,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 M8(추정 가치 33.4)로, 차선(L7, 29.3)보다 약 4.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 91,
@@ -9925,9 +10015,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 50.8)로, 차선(D3, 29.7)보다 약 21.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 92,
@@ -10088,9 +10179,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 19.1)로, 차선(D7, 18.1)보다 약 0.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 5
     },
     {
       "id": 93,
@@ -10191,9 +10283,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 G10(추정 가치 35.0)로, 차선(E3, 25.5)보다 약 9.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 94,
@@ -10254,9 +10347,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 H11(추정 가치 20.6)로, 차선(C6, 20.5)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 95,
@@ -10367,9 +10461,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 E1(추정 가치 6.3)로, 차선(H8, 6.2)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 96,
@@ -10550,9 +10645,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 K12(추정 가치 11.3)로, 차선(F2, 9.3)보다 약 2.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 8
     },
     {
       "id": 97,
@@ -10673,9 +10769,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 K3(추정 가치 18.7)로, 차선(J3, 17.4)보다 약 1.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 98,
@@ -10726,9 +10823,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 75.0)로, 차선(C4, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 99,
@@ -10869,9 +10967,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 5.1)로, 차선(B5, 2.6)보다 약 2.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 100,
@@ -10977,9 +11076,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 B8(추정 가치 11.8)로, 차선(C8, 10.7)보다 약 1.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 101,
@@ -11130,9 +11230,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 C12(추정 가치 47.3)로, 차선(B5, 16.3)보다 약 31.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 102,
@@ -11308,9 +11409,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 29.9)로, 차선(C4, 25.8)보다 약 4.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 11
     },
     {
       "id": 103,
@@ -11451,9 +11553,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 5.8)로, 차선(E8, 5.8)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 1
     },
     {
       "id": 104,
@@ -11534,9 +11637,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 D6(추정 가치 35.0)로, 차선(L9, 31.4)보다 약 3.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 105,
@@ -11707,9 +11811,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 6.5)로, 차선(D5, 6.1)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 106,
@@ -11880,9 +11985,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 3.4)로, 차선(F5, 2.7)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 107,
@@ -12003,9 +12109,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 J6(추정 가치 30.2)로, 차선(G3, 8.2)보다 약 22.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 108,
@@ -12131,9 +12238,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 D12(추정 가치 9.2)로, 차선(M7, 9.0)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 109,
@@ -12239,9 +12347,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 E9(추정 가치 11.1)로, 차선(D3, 3.2)보다 약 7.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 110,
@@ -12312,9 +12421,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 9.6)로, 차선(G4, 9.2)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 111,
@@ -12375,9 +12485,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 28.9)로, 차선(G3, 20.7)보다 약 8.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 14
     },
     {
       "id": 112,
@@ -12448,9 +12559,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 16.2)로, 차선(G6, 14.3)보다 약 1.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 113,
@@ -12501,9 +12613,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 75.0)로, 차선(C10, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 114,
@@ -12604,9 +12717,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 10.8)로, 차선(J10, 10.1)보다 약 0.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 115,
@@ -12667,9 +12781,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 23.1)로, 차선(L11, 17.0)보다 약 6.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 116,
@@ -12815,9 +12930,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 5.0)로, 차선(A2, 4.7)보다 약 0.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 117,
@@ -12933,9 +13049,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 H12(추정 가치 22.3)로, 차선(L7, 17.2)보다 약 5.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 118,
@@ -13061,9 +13178,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 9.0)로, 차선(F5, 8.4)보다 약 0.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 119,
@@ -13114,9 +13232,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 D4(추정 가치 75.0)로, 차선(E4, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 120,
@@ -13252,9 +13371,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 F5(추정 가치 16.9)로, 차선(D9, 16.8)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 121,
@@ -13340,9 +13460,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 42.3)로, 차선(H8, 31.1)보다 약 11.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 122,
@@ -13393,9 +13514,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 H6(추정 가치 38.4)로, 차선(F3, 28.1)보다 약 10.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 123,
@@ -13466,9 +13588,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 19.7)로, 차선(D5, 18.5)보다 약 1.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 124,
@@ -13564,9 +13687,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 11.0)로, 차선(H4, 10.3)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 125,
@@ -13692,9 +13816,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 2.4)로, 차선(F4, 2.3)보다 약 0.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 126,
@@ -13835,9 +13960,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 H8(추정 가치 16.2)로, 차선(A7, 4.1)보다 약 12.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 15
     },
     {
       "id": 127,
@@ -13893,9 +14019,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 75.0)로, 차선(G4, 74.0)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 128,
@@ -13961,9 +14088,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 19.3)로, 차선(B4, 16.2)보다 약 3.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 129,
@@ -14059,9 +14187,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 35.6)로, 차선(D6, 29.5)보다 약 6.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 130,
@@ -14132,9 +14261,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 27.4)로, 차선(B8, 23.7)보다 약 3.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 131,
@@ -14195,9 +14325,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 16.3)로, 차선(C7, 15.8)보다 약 0.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 132,
@@ -14328,9 +14459,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 12.4)로, 차선(E7, 10.8)보다 약 1.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 133,
@@ -14426,9 +14558,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 30.6)로, 차선(G2, 28.7)보다 약 1.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 134,
@@ -14574,9 +14707,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 J6(추정 가치 33.2)로, 차선(L3, 29.8)보다 약 3.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 135,
@@ -14687,9 +14821,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 B2(추정 가치 8.6)로, 차선(H7, 7.3)보다 약 1.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 136,
@@ -14755,9 +14890,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 26.4)로, 차선(C4, 13.7)보다 약 12.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 137,
@@ -14928,9 +15064,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 C1(추정 가치 19.9)로, 차선(B2, 18.4)보다 약 1.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 138,
@@ -15026,9 +15163,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 L10(추정 가치 35.0)로, 차선(M4, 25.5)보다 약 9.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 139,
@@ -15169,9 +15307,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 12.6)로, 차선(B8, 12.6)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 1
     },
     {
       "id": 140,
@@ -15292,9 +15431,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 C3(추정 가치 24.8)로, 차선(D1, 17.1)보다 약 7.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 141,
@@ -15415,9 +15555,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 22.0)로, 차선(K8, 15.6)보다 약 6.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 142,
@@ -15533,9 +15674,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 45.7)로, 차선(C2, 11.9)보다 약 33.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 143,
@@ -15621,9 +15763,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 33.8)로, 차선(E3, 28.4)보다 약 5.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 144,
@@ -15694,9 +15837,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 30.2)로, 차선(G6, 24.1)보다 약 6.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 145,
@@ -15792,9 +15936,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 14.2)로, 차선(E3, 4.6)보다 약 9.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 146,
@@ -15865,9 +16010,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 19.8)로, 차선(C8, 15.2)보다 약 4.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 147,
@@ -16048,9 +16194,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 J12(추정 가치 16.4)로, 차선(J8, 9.4)보다 약 7.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 148,
@@ -16156,9 +16303,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 48.9)로, 차선(C8, 34.5)보다 약 14.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 149,
@@ -16214,9 +16362,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 28.3)로, 차선(D5, 27.9)보다 약 0.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 150,
@@ -16332,9 +16481,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 15.2)로, 차선(E8, 14.4)보다 약 0.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 151,
@@ -16470,9 +16620,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 5.2)로, 차선(G4, 2.3)보다 약 2.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 152,
@@ -16633,9 +16784,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 25.9)로, 차선(E9, 22.4)보다 약 3.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 153,
@@ -16701,9 +16853,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 G11(추정 가치 75.0)로, 차선(F10, 74.0)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 154,
@@ -16824,9 +16977,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 30.2)로, 차선(D6, 18.7)보다 약 11.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 155,
@@ -16952,9 +17106,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 35.0)로, 차선(L11, 19.6)보다 약 15.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 156,
@@ -17105,9 +17260,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 7.5)로, 차선(E6, 6.8)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 157,
@@ -17238,9 +17394,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 40.8)로, 차선(J8, 26.2)보다 약 14.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 158,
@@ -17371,9 +17528,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 23.8)로, 차선(D1, 22.6)보다 약 1.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 159,
@@ -17544,9 +17702,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 J6(추정 가치 16.2)로, 차선(D2, 4.5)보다 약 11.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 15
     },
     {
       "id": 160,
@@ -17677,9 +17836,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 15.5)로, 차선(B5, 15.2)보다 약 0.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 161,
@@ -17785,9 +17945,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 27.1)로, 차선(G8, 21.6)보다 약 5.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 162,
@@ -17838,9 +17999,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 75.0)로, 차선(G4, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 163,
@@ -17966,9 +18128,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 J4(추정 가치 34.4)로, 차선(D4, 21.6)보다 약 12.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 164,
@@ -18059,9 +18222,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 L5(추정 가치 19.5)로, 차선(K5, 17.1)보다 약 2.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 165,
@@ -18222,9 +18386,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 2.2)로, 차선(C1, 0.2)보다 약 1.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 8
     },
     {
       "id": 166,
@@ -18300,9 +18465,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 38.1)로, 차선(H3, 32.9)보다 약 5.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 12
     },
     {
       "id": 167,
@@ -18383,9 +18549,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 8.1)로, 차선(D9, 7.9)보다 약 0.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 168,
@@ -18456,9 +18623,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 35.0)로, 차선(C6, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 169,
@@ -18559,9 +18727,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 L12(추정 가치 35.0)로, 차선(E3, 17.0)보다 약 18.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 170,
@@ -18682,9 +18851,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 56.8)로, 차선(G8, 50.2)보다 약 6.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 171,
@@ -18735,9 +18905,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 75.0)로, 차선(G5, 39.8)보다 약 35.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 172,
@@ -18863,9 +19034,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 H7(추정 가치 8.7)로, 차선(C2, 6.6)보다 약 2.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 173,
@@ -18991,9 +19163,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 L2(추정 가치 42.5)로, 차선(M7, 35.7)보다 약 6.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 174,
@@ -19089,9 +19262,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 21.2)로, 차선(B5, 16.0)보다 약 5.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 175,
@@ -19182,9 +19356,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 E8(추정 가치 24.9)로, 차선(G4, 21.0)보다 약 4.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 176,
@@ -19290,9 +19465,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 22.5)로, 차선(F5, 18.0)보다 약 4.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 177,
@@ -19348,9 +19524,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 23.0)로, 차선(H3, 21.6)보다 약 1.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 기존 돌들과 거리가 있어 새로운 영역을 넓히는 성격의 수입니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 178,
@@ -19461,9 +19638,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 53.4)로, 차선(D11, 35.0)보다 약 18.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 179,
@@ -19624,9 +19802,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D4(추정 가치 68.9)로, 차선(F6, 54.9)보다 약 14.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 16
     },
     {
       "id": 180,
@@ -19727,9 +19906,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 17.7)로, 차선(J5, 8.6)보다 약 9.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 181,
@@ -19780,9 +19960,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 26.8)로, 차선(C4, 25.0)보다 약 1.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 182,
@@ -19863,9 +20044,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 17.8)로, 차선(G6, 13.4)보다 약 4.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 183,
@@ -20006,9 +20188,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 9.5)로, 차선(M4, 7.5)보다 약 2.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 8
     },
     {
       "id": 184,
@@ -20109,9 +20292,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 6.2)로, 차선(D5, 5.3)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     },
     {
       "id": 185,
@@ -20237,9 +20421,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 10.0)로, 차선(D6, 6.3)보다 약 3.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 186,
@@ -20300,9 +20485,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C7(추정 가치 17.9)로, 차선(E6, 17.1)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 187,
@@ -20423,9 +20609,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 C12(추정 가치 12.7)로, 차선(E9, 11.0)보다 약 1.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 188,
@@ -20596,9 +20783,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 D2(추정 가치 3.9)로, 차선(H7, 3.2)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 189,
@@ -20749,9 +20937,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 B2(추정 가치 5.3)로, 차선(C2, 2.4)보다 약 2.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 190,
@@ -20862,9 +21051,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 20.3)로, 차선(B5, 20.1)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 191,
@@ -21040,9 +21230,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 D12(추정 가치 13.5)로, 차선(K9, 9.8)보다 약 3.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 11
     },
     {
       "id": 192,
@@ -21123,9 +21314,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 A7(추정 가치 11.0)로, 차선(H5, 10.3)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 193,
@@ -21216,9 +21408,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 K8(추정 가치 35.0)로, 차선(J9, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 194,
@@ -21344,9 +21537,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 16.1)로, 차선(B4, 10.7)보다 약 5.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 195,
@@ -21427,9 +21621,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 A4(추정 가치 6.3)로, 차선(H7, 5.7)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 196,
@@ -21575,9 +21770,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 8.8)로, 차선(D8, 8.1)보다 약 0.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 197,
@@ -21658,9 +21854,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 22.7)로, 차선(B4, 22.5)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 198,
@@ -21776,9 +21973,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 13.6)로, 차선(E9, 12.8)보다 약 0.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 199,
@@ -21829,9 +22027,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 75.0)로, 차선(D10, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 200,
@@ -21957,9 +22156,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 L11(추정 가치 16.3)로, 차선(L3, 11.6)보다 약 4.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 201,
@@ -22025,9 +22225,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 F11(추정 가치 22.9)로, 차선(D6, 22.7)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 202,
@@ -22193,9 +22394,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 15.6)로, 차선(F3, 10.6)보다 약 5.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 203,
@@ -22256,9 +22458,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 33.7)로, 차선(C6, 27.4)보다 약 6.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 204,
@@ -22429,9 +22632,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 H3(추정 가치 10.6)로, 차선(J3, 10.4)보다 약 0.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 205,
@@ -22557,9 +22761,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J4(추정 가치 24.7)로, 차선(G6, 19.7)보다 약 5.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 206,
@@ -22660,9 +22865,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 H6(추정 가치 36.0)로, 차선(G2, 19.1)보다 약 16.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 207,
@@ -22833,9 +23039,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F6(추정 가치 2.8)로, 차선(C5, 2.3)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 208,
@@ -22916,9 +23123,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 27.1)로, 차선(C3, 21.9)보다 약 5.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 209,
@@ -23089,9 +23297,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 J12(추정 가치 12.6)로, 차선(A5, 10.1)보다 약 2.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 210,
@@ -23242,9 +23451,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 14.5)로, 차선(A5, 11.7)보다 약 2.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 211,
@@ -23295,9 +23505,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 L6(추정 가치 75.0)로, 차선(C3, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 212,
@@ -23393,9 +23604,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 29.1)로, 차선(L2, 21.1)보다 약 7.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 213,
@@ -23451,9 +23663,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 D2(추정 가치 36.6)로, 차선(C5, 35.0)보다 약 1.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 214,
@@ -23619,9 +23832,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J7(추정 가치 14.2)로, 차선(J12, 8.8)보다 약 5.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 215,
@@ -23722,9 +23936,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C3(추정 가치 35.0)로, 차선(C8, 34.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     },
     {
       "id": 216,
@@ -23790,9 +24005,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 G7(추정 가치 32.0)로, 차선(G3, 28.4)보다 약 3.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 217,
@@ -23863,9 +24079,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 20.6)로, 차선(E3, 19.0)보다 약 1.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 218,
@@ -24016,9 +24233,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 7.8)로, 차선(E7, 7.2)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 219,
@@ -24094,9 +24312,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 19.1)로, 차선(C2, 16.7)보다 약 2.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 220,
@@ -24147,9 +24366,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 18.2)로, 차선(C2, 14.8)보다 약 3.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 221,
@@ -24270,9 +24490,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 3.8)로, 차선(E4, 3.3)보다 약 0.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 222,
@@ -24398,9 +24619,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 K11(추정 가치 28.4)로, 차선(L3, 16.0)보다 약 12.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 223,
@@ -24491,9 +24713,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 J3(추정 가치 17.1)로, 차선(C4, 17.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 224,
@@ -24599,9 +24822,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 L6(추정 가치 17.0)로, 차선(L12, 16.4)보다 약 0.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 225,
@@ -24707,9 +24931,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F11(추정 가치 20.8)로, 차선(L4, 20.2)보다 약 0.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 226,
@@ -24830,9 +25055,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 D9(추정 가치 8.4)로, 차선(F2, 7.8)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 227,
@@ -25013,9 +25239,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 2.7)로, 차선(H9, 2.6)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 228,
@@ -25141,9 +25368,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 A3(추정 가치 5.0)로, 차선(J7, 4.3)보다 약 0.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 229,
@@ -25264,9 +25492,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 7.4)로, 차선(C8, 7.0)보다 약 0.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 230,
@@ -25362,9 +25591,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 8.0)로, 차선(D7, 7.3)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 231,
@@ -25535,9 +25765,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 24.3)로, 차선(F6, 23.3)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 5
     },
     {
       "id": 232,
@@ -25613,9 +25844,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 28.1)로, 차선(D7, 8.5)보다 약 19.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 233,
@@ -25766,9 +25998,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 7.5)로, 차선(F8, 5.7)보다 약 1.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 234,
@@ -25929,9 +26162,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 A6(추정 가치 11.2)로, 차선(F7, 5.2)보다 약 6.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 상대 돌을 따내는 수라서 즉각적인 이득이 있습니다, 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 235,
@@ -25987,9 +26221,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 37.5)로, 차선(E4, 35.4)보다 약 2.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 236,
@@ -26145,9 +26380,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 K4(추정 가치 23.6)로, 차선(N5, 11.3)보다 약 12.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 16
     },
     {
       "id": 237,
@@ -26268,9 +26504,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C7(추정 가치 29.9)로, 차선(E7, 29.0)보다 약 0.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     },
     {
       "id": 238,
@@ -26361,9 +26598,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 C7(추정 가치 20.6)로, 차선(H5, 10.3)보다 약 10.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 239,
@@ -26494,9 +26732,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 H12(추정 가치 26.2)로, 차선(G10, 25.4)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 240,
@@ -26567,9 +26806,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 11.9)로, 차선(E4, 9.5)보다 약 2.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 241,
@@ -26635,9 +26875,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 9.2)로, 차선(F8, 8.7)보다 약 0.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 242,
@@ -26758,9 +26999,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 G2(추정 가치 5.3)로, 차선(B3, 4.5)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 243,
@@ -26846,9 +27088,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 E11(추정 가치 39.6)로, 차선(E10, 37.5)보다 약 2.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 244,
@@ -26974,9 +27217,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 H6(추정 가치 40.1)로, 차선(H4, 12.1)보다 약 28.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 245,
@@ -27127,9 +27371,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 E10(추정 가치 39.0)로, 차선(F10, 13.4)보다 약 25.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 246,
@@ -27190,9 +27435,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 35.0)로, 차선(J7, 21.9)보다 약 13.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 247,
@@ -27313,9 +27559,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 16.2)로, 차선(H5, 13.0)보다 약 3.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 248,
@@ -27386,9 +27633,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 23.9)로, 차선(H5, 18.7)보다 약 5.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 12
     },
     {
       "id": 249,
@@ -27454,9 +27702,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 22.5)로, 차선(G5, 22.3)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 250,
@@ -27562,9 +27811,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 12.1)로, 차선(G8, 10.8)보다 약 1.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 251,
@@ -27635,9 +27885,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 52.8)로, 차선(D3, 32.7)보다 약 20.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 252,
@@ -27788,9 +28039,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 2.2)로, 차선(D4, 2.0)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 253,
@@ -27941,9 +28193,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 29.9)로, 차선(E6, 16.5)보다 약 13.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 16
     },
     {
       "id": 254,
@@ -28024,9 +28277,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 J6(추정 가치 20.6)로, 차선(H6, 19.4)보다 약 1.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 255,
@@ -28167,9 +28421,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 E9(추정 가치 14.8)로, 차선(B6, 4.3)보다 약 10.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 15
     },
     {
       "id": 256,
@@ -28230,9 +28485,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 18.2)로, 차선(G5, 17.4)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 4
     },
     {
       "id": 257,
@@ -28393,9 +28649,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 D2(추정 가치 4.0)로, 차선(D8, 2.5)보다 약 1.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 258,
@@ -28461,9 +28718,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 23.7)로, 차선(B5, 20.1)보다 약 3.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 259,
@@ -28519,9 +28777,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 21.6)로, 차선(D11, 19.1)보다 약 2.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 기존 돌들과 거리가 있어 새로운 영역을 넓히는 성격의 수입니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 260,
@@ -28637,9 +28896,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 34.1)로, 차선(B11, 11.6)보다 약 22.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 261,
@@ -28780,9 +29040,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 M12(추정 가치 14.6)로, 차선(C3, 11.8)보다 약 2.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 262,
@@ -28913,9 +29174,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 23.0)로, 차선(C2, 16.9)보다 약 6.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 263,
@@ -28971,9 +29233,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 32.5)로, 차선(B6, 26.0)보다 약 6.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 264,
@@ -29099,9 +29362,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 28.6)로, 차선(F8, 20.2)보다 약 8.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 265,
@@ -29167,9 +29431,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 25.0)로, 차선(E3, 23.6)보다 약 1.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 266,
@@ -29325,9 +29590,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 F5(추정 가치 33.9)로, 차선(J2, 24.6)보다 약 9.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 14
     },
     {
       "id": 267,
@@ -29438,9 +29704,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 25.8)로, 차선(C10, 17.0)보다 약 8.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 268,
@@ -29491,9 +29758,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C3(추정 가치 75.0)로, 차선(E3, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 269,
@@ -29609,9 +29877,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 F2(추정 가치 9.3)로, 차선(F4, 6.5)보다 약 2.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 270,
@@ -29682,9 +29951,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 K9(추정 가치 35.0)로, 차선(G11, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 271,
@@ -29755,9 +30025,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 42.3)로, 차선(E6, 21.3)보다 약 21.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 272,
@@ -29903,9 +30174,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 18.5)로, 차선(E3, 6.7)보다 약 11.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 15
     },
     {
       "id": 273,
@@ -30021,9 +30293,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J11(추정 가치 25.4)로, 차선(D6, 19.7)보다 약 5.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 274,
@@ -30099,9 +30372,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 12.5)로, 차선(H5, 10.4)보다 약 2.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 275,
@@ -30232,9 +30506,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 F11(추정 가치 28.8)로, 차선(C8, 20.3)보다 약 8.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 276,
@@ -30390,9 +30665,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 F5(추정 가치 27.0)로, 차선(A3, 8.9)보다 약 18.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 17
     },
     {
       "id": 277,
@@ -30533,9 +30809,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 10.2)로, 차선(H3, 5.3)보다 약 4.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 278,
@@ -30616,9 +30893,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 E8(추정 가치 34.7)로, 차선(G6, 31.8)보다 약 2.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 279,
@@ -30744,9 +31022,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 5.7)로, 차선(E7, 2.4)보다 약 3.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 280,
@@ -30897,9 +31176,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 J5(추정 가치 15.3)로, 차선(G8, 14.5)보다 약 0.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 281,
@@ -31010,9 +31290,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 J3(추정 가치 16.3)로, 차선(D5, 9.4)보다 약 6.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 282,
@@ -31068,9 +31349,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 D6(추정 가치 31.8)로, 차선(D8, 23.7)보다 약 8.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 14
     },
     {
       "id": 283,
@@ -31186,9 +31468,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 J11(추정 가치 31.0)로, 차선(M3, 27.1)보다 약 3.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 284,
@@ -31254,9 +31537,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 K7(추정 가치 35.0)로, 차선(L8, 21.4)보다 약 13.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 285,
@@ -31372,9 +31656,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 19.6)로, 차선(M4, 17.2)보다 약 2.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 286,
@@ -31455,9 +31740,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 C7(추정 가치 22.6)로, 차선(E7, 14.0)보다 약 8.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 287,
@@ -31578,9 +31864,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 B8(추정 가치 19.2)로, 차선(A8, 14.3)보다 약 4.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 288,
@@ -31741,9 +32028,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 61.2)로, 차선(H2, 29.4)보다 약 31.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 289,
@@ -31814,9 +32102,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 38.1)로, 차선(F4, 35.0)보다 약 3.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 290,
@@ -31972,9 +32261,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 2.2)로, 차선(D1, 1.0)보다 약 1.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 291,
@@ -32030,9 +32320,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C8(추정 가치 75.0)로, 차선(G4, 74.0)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 292,
@@ -32188,9 +32479,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 H3(추정 가치 8.0)로, 차선(F5, 6.8)보다 약 1.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 293,
@@ -32331,9 +32623,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 5.9)로, 차선(J5, 2.4)보다 약 3.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 294,
@@ -32384,9 +32677,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 75.0)로, 차선(C5, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 295,
@@ -32452,9 +32746,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 43.6)로, 차선(G3, 28.1)보다 약 15.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 296,
@@ -32530,9 +32825,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 22.7)로, 차선(G10, 21.8)보다 약 0.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 297,
@@ -32613,9 +32909,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 14.5)로, 차선(D2, 6.5)보다 약 8.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 298,
@@ -32721,9 +33018,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 23.4)로, 차선(G5, 19.3)보다 약 4.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 299,
@@ -32789,9 +33087,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 27.6)로, 차선(G3, 24.3)보다 약 3.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 300,
@@ -32917,9 +33216,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 12.8)로, 차선(E8, 7.2)보다 약 5.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 301,
@@ -32995,9 +33295,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 29.7)로, 차선(D7, 27.1)보다 약 2.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 302,
@@ -33148,9 +33449,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 6.2)로, 차선(F3, 1.1)보다 약 5.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 303,
@@ -33311,9 +33613,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 2.2)로, 차선(D9, 2.1)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 304,
@@ -33439,9 +33742,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 12.0)로, 차선(H5, 11.9)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 305,
@@ -33592,9 +33896,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 A2(추정 가치 10.0)로, 차선(G6, 0.5)보다 약 9.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 상대 돌을 따내는 수라서 즉각적인 이득이 있습니다, 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 14
     },
     {
       "id": 306,
@@ -33740,9 +34045,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 J4(추정 가치 9.1)로, 차선(F2, 7.7)보다 약 1.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 307,
@@ -33798,9 +34104,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 H11(추정 가치 26.2)로, 차선(L4, 25.3)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 308,
@@ -33866,9 +34173,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 E8(추정 가치 9.0)로, 차선(D2, 8.9)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 2
     },
     {
       "id": 309,
@@ -33949,9 +34257,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 19.6)로, 차선(J9, 18.7)보다 약 0.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     },
     {
       "id": 310,
@@ -34002,9 +34311,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 D4(추정 가치 34.2)로, 차선(C3, 24.5)보다 약 9.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 311,
@@ -34060,9 +34370,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 G10(추정 가치 35.0)로, 차선(E3, 28.9)보다 약 6.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 312,
@@ -34143,9 +34454,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 E1(추정 가치 5.2)로, 차선(D1, 5.1)보다 약 0.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 313,
@@ -34221,9 +34533,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 8.9)로, 차선(E4, 8.5)보다 약 0.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 314,
@@ -34329,9 +34642,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 30.1)로, 차선(C5, 19.8)보다 약 10.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 315,
@@ -34442,9 +34756,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 30.4)로, 차선(F3, 26.6)보다 약 3.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 316,
@@ -34510,9 +34825,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 L3(추정 가치 35.0)로, 차선(L8, 32.0)보다 약 3.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 317,
@@ -34603,9 +34919,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 41.8)로, 차선(E7, 33.9)보다 약 8.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 318,
@@ -34656,9 +34973,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 G7(추정 가치 21.1)로, 차선(D6, 19.3)보다 약 1.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 319,
@@ -34734,9 +35052,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 65.0)로, 차선(D3, 49.6)보다 약 15.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 320,
@@ -34867,9 +35186,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 19.2)로, 차선(G2, 10.9)보다 약 8.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 321,
@@ -35015,9 +35335,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 J9(추정 가치 11.3)로, 차선(H5, 9.8)보다 약 1.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 322,
@@ -35138,9 +35459,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 47.2)로, 차선(G5, 32.5)보다 약 14.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 323,
@@ -35301,9 +35623,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 J4(추정 가치 10.8)로, 차선(C1, 8.9)보다 약 1.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 324,
@@ -35459,9 +35782,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 5.3)로, 차선(C4, 3.6)보다 약 1.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 325,
@@ -35512,9 +35836,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 75.0)로, 차선(D5, 74.0)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 326,
@@ -35640,9 +35965,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 J6(추정 가치 13.7)로, 차선(K7, 10.1)보다 약 3.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 327,
@@ -35723,9 +36049,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 L5(추정 가치 23.1)로, 차선(K5, 21.2)보다 약 1.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 328,
@@ -35806,9 +36133,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 16.2)로, 차선(D2, 7.5)보다 약 8.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 329,
@@ -35874,9 +36202,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 31.9)로, 차선(K10, 21.4)보다 약 10.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 330,
@@ -35962,9 +36291,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 14.9)로, 차선(F2, 13.8)보다 약 1.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 331,
@@ -36045,9 +36375,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 10.2)로, 차선(C5, 10.2)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 332,
@@ -36118,9 +36449,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 K8(추정 가치 78.3)로, 차선(J4, 35.0)보다 약 43.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 333,
@@ -36186,9 +36518,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 32.5)로, 차선(E11, 30.6)보다 약 1.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 334,
@@ -36244,9 +36577,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 35.0)로, 차선(C7, 35.0)보다 약 0.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 335,
@@ -36412,9 +36746,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 C10(추정 가치 9.7)로, 차선(D12, 7.2)보다 약 2.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 336,
@@ -36465,9 +36800,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 35.0)로, 차선(H3, 31.6)보다 약 3.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 337,
@@ -36588,9 +36924,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 L6(추정 가치 55.2)로, 차선(M5, 53.9)보다 약 1.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 338,
@@ -36671,9 +37008,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 G2(추정 가치 44.1)로, 차선(G5, 25.0)보다 약 19.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 339,
@@ -36744,9 +37082,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 26.6)로, 차선(J8, 22.6)보다 약 4.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 340,
@@ -36832,9 +37171,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 20.5)로, 차선(F2, 14.5)보다 약 6.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 341,
@@ -36950,9 +37290,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 12.1)로, 차선(B3, 9.9)보다 약 2.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 342,
@@ -37028,9 +37369,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 M3(추정 가치 30.3)로, 차선(M5, 19.0)보다 약 11.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 343,
@@ -37081,9 +37423,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 75.0)로, 차선(E5, 12.9)보다 약 62.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 344,
@@ -37209,9 +37552,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 7.1)로, 차선(G9, 7.1)보다 약 0.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 345,
@@ -37277,9 +37621,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 35.8)로, 차선(F4, 24.3)보다 약 11.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 346,
@@ -37350,9 +37695,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 8.0)로, 차선(J4, 5.0)보다 약 3.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 347,
@@ -37428,9 +37774,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 41.2)로, 차선(K7, 28.6)보다 약 12.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 348,
@@ -37551,9 +37898,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 35.2)로, 차선(C6, 30.0)보다 약 5.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 349,
@@ -37604,9 +37952,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 21.9)로, 차선(F3, 19.3)보다 약 2.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 350,
@@ -37777,9 +38126,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 D2(추정 가치 10.4)로, 차선(E2, 10.0)보다 약 0.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 351,
@@ -37845,9 +38195,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 30.6)로, 차선(G3, 29.1)보다 약 1.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 352,
@@ -37918,9 +38269,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 D1(추정 가치 12.3)로, 차선(E4, 11.3)보다 약 1.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 353,
@@ -38046,9 +38398,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 J12(추정 가치 13.6)로, 차선(F8, 12.7)보다 약 0.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     },
     {
       "id": 354,
@@ -38099,9 +38452,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 C7(추정 가치 75.0)로, 차선(F4, 18.8)보다 약 56.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 355,
@@ -38257,9 +38611,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 D9(추정 가치 17.3)로, 차선(D3, 14.7)보다 약 2.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 356,
@@ -38340,9 +38695,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 66.6)로, 차선(E3, 64.3)보다 약 2.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 357,
@@ -38473,9 +38829,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 L3(추정 가치 37.6)로, 차선(D6, 25.1)보다 약 12.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 358,
@@ -38606,9 +38963,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 F9(추정 가치 19.2)로, 차선(G2, 14.3)보다 약 4.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 359,
@@ -38659,9 +39017,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 21.9)로, 차선(F3, 19.4)보다 약 2.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 360,
@@ -38787,9 +39146,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 A3(추정 가치 18.2)로, 차선(J6, 8.4)보다 약 9.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 361,
@@ -38855,9 +39215,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 E9(추정 가치 20.7)로, 차선(D8, 19.7)보다 약 0.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 362,
@@ -38973,9 +39334,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 34.8)로, 차선(B4, 8.6)보다 약 26.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 363,
@@ -39131,9 +39493,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J6(추정 가치 6.9)로, 차선(D3, 2.3)보다 약 4.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 364,
@@ -39259,9 +39622,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 G8(추정 가치 35.0)로, 차선(L3, 30.9)보다 약 4.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 365,
@@ -39342,9 +39706,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 J4(추정 가치 35.0)로, 차선(H10, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 366,
@@ -39440,9 +39805,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 21.9)로, 차선(E6, 21.7)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 367,
@@ -39558,9 +39924,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 H3(추정 가치 38.6)로, 차선(J6, 24.6)보다 약 14.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 368,
@@ -39666,9 +40033,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 E8(추정 가치 33.2)로, 차선(D3, 21.6)보다 약 11.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 369,
@@ -39774,9 +40142,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 H7(추정 가치 35.0)로, 차선(D3, 11.9)보다 약 23.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 370,
@@ -39902,9 +40271,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 36.4)로, 차선(F9, 20.4)보다 약 16.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 371,
@@ -40065,9 +40435,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 H8(추정 가치 16.2)로, 차선(H7, 16.1)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 1
     },
     {
       "id": 372,
@@ -40153,9 +40524,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 H10(추정 가치 20.8)로, 차선(L9, 20.6)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 373,
@@ -40221,9 +40593,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 L5(추정 가치 36.5)로, 차선(F11, 35.0)보다 약 1.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 374,
@@ -40354,9 +40727,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 C10(추정 가치 13.8)로, 차선(F11, 13.6)보다 약 0.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 375,
@@ -40422,9 +40796,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 30.6)로, 차선(G3, 29.1)보다 약 1.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 376,
@@ -40475,9 +40850,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 C3(추정 가치 75.0)로, 차선(C7, 24.1)보다 약 50.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 377,
@@ -40598,9 +40974,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 J10(추정 가치 16.9)로, 차선(L5, 15.5)보다 약 1.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 378,
@@ -40706,9 +41083,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 33.2)로, 차선(F6, 22.6)보다 약 10.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 379,
@@ -40829,9 +41207,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 47.7)로, 차선(G7, 43.3)보다 약 4.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 380,
@@ -40892,9 +41271,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 12.6)로, 차선(D3, 10.2)보다 약 2.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 381,
@@ -40965,9 +41345,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 6.8)로, 차선(D1, 5.1)보다 약 1.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 382,
@@ -41028,9 +41409,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 F10(추정 가치 35.0)로, 차선(D11, 27.7)보다 약 7.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 383,
@@ -41101,9 +41483,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 C3(추정 가치 20.8)로, 차선(E3, 19.5)보다 약 1.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 384,
@@ -41244,9 +41627,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 H5(추정 가치 15.0)로, 차선(H3, 7.7)보다 약 7.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 385,
@@ -41422,9 +41806,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 H2(추정 가치 7.2)로, 차선(B9, 6.5)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 386,
@@ -41490,9 +41875,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 G7(추정 가치 17.3)로, 차선(B8, 13.7)보다 약 3.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 387,
@@ -41578,9 +41964,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 C5(추정 가치 50.6)로, 차선(G7, 26.5)보다 약 24.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 388,
@@ -41691,9 +42078,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 E1(추정 가치 8.8)로, 차선(E4, 7.3)보다 약 1.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 389,
@@ -41834,9 +42222,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 17.0)로, 차선(C8, 16.2)보다 약 0.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 4
     },
     {
       "id": 390,
@@ -41967,9 +42356,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 L9(추정 가치 25.6)로, 차선(B5, 22.2)보다 약 3.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 상대 돌을 따내는 수라서 즉각적인 이득이 있습니다, 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 391,
@@ -42085,9 +42475,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 J3(추정 가치 16.4)로, 차선(M10, 16.4)보다 약 0.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 392,
@@ -42158,9 +42549,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 35.0)로, 차선(E3, 35.0)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 393,
@@ -42301,9 +42693,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 K6(추정 가치 24.9)로, 차선(L4, 21.6)보다 약 3.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 394,
@@ -42379,9 +42772,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 H2(추정 가치 66.4)로, 차선(F2, 42.0)보다 약 24.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 395,
@@ -42512,9 +42906,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 D1(추정 가치 15.2)로, 차선(G5, 5.8)보다 약 9.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 상대 돌을 따내는 수라서 즉각적인 이득이 있습니다, 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 396,
@@ -42585,9 +42980,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 22.6)로, 차선(E2, 22.6)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 397,
@@ -42743,9 +43139,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 14.3)로, 차선(E2, 11.3)보다 약 3.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 9
     },
     {
       "id": 398,
@@ -42881,9 +43278,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 2.1)로, 차선(D4, 1.6)보다 약 0.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 399,
@@ -42979,9 +43377,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 21.9)로, 차선(C5, 17.0)보다 약 4.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 400,
@@ -43147,9 +43546,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 18.2)로, 차선(G4, 17.0)보다 약 1.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 401,
@@ -43330,9 +43730,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 33.9)로, 차선(F2, 17.3)보다 약 16.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 17
     },
     {
       "id": 402,
@@ -43488,9 +43889,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 E3(추정 가치 6.1)로, 차선(G2, 2.6)보다 약 3.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 403,
@@ -43541,9 +43943,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 L12(추정 가치 52.2)로, 차선(L10, 51.1)보다 약 1.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 6
     },
     {
       "id": 404,
@@ -43649,9 +44052,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 48.0)로, 차선(F6, 26.0)보다 약 22.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 405,
@@ -43787,9 +44191,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 30.0)로, 차선(K7, 21.4)보다 약 8.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 14
     },
     {
       "id": 406,
@@ -43870,9 +44275,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 A5(추정 가치 8.6)로, 차선(H4, 8.0)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 4
     },
     {
       "id": 407,
@@ -43998,9 +44404,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 28.9)로, 차선(E3, 26.5)보다 약 2.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 408,
@@ -44076,9 +44483,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 H5(추정 가치 70.8)로, 차선(G4, 40.0)보다 약 30.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 409,
@@ -44204,9 +44612,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 41.7)로, 차선(B4, 22.3)보다 약 19.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 410,
@@ -44257,9 +44666,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 J12(추정 가치 35.0)로, 차선(M8, 24.6)보다 약 10.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 411,
@@ -44315,9 +44725,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 E7(추정 가치 127.3)로, 차선(C5, 39.3)보다 약 87.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 412,
@@ -44373,9 +44784,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 39.3)로, 차선(E3, 32.9)보다 약 6.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 413,
@@ -44476,9 +44888,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 17.1)로, 차선(C9, 16.6)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 414,
@@ -44549,9 +44962,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 B4(추정 가치 43.3)로, 차선(C3, 30.0)보다 약 13.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 415,
@@ -44702,9 +45116,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 C6(추정 가치 39.6)로, 차선(B7, 36.2)보다 약 3.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 10
     },
     {
       "id": 416,
@@ -44785,9 +45200,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 G3(추정 가치 20.7)로, 차선(B8, 17.9)보다 약 2.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 417,
@@ -44868,9 +45284,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 11.8)로, 차선(C7, 8.4)보다 약 3.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 10
     },
     {
       "id": 418,
@@ -45041,9 +45458,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 2.1)로, 차선(C7, 2.0)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 1
     },
     {
       "id": 419,
@@ -45169,9 +45587,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 B11(추정 가치 9.5)로, 차선(N5, 9.3)보다 약 0.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 420,
@@ -45242,9 +45661,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 31.9)로, 차선(D6, 27.9)보다 약 4.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 421,
@@ -45370,9 +45790,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 G2(추정 가치 16.7)로, 차선(J5, 15.3)보다 약 1.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 6
     },
     {
       "id": 422,
@@ -45428,9 +45849,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 75.0)로, 차선(D6, 22.9)보다 약 52.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 423,
@@ -45486,9 +45908,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 D5(추정 가치 75.0)로, 차선(G7, 74.0)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 5
     },
     {
       "id": 424,
@@ -45584,9 +46007,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 B11(추정 가치 19.6)로, 차선(F10, 12.3)보다 약 7.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 425,
@@ -45707,9 +46131,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 G7(추정 가치 16.6)로, 차선(G6, 7.6)보다 약 9.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 426,
@@ -45815,9 +46240,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 J5(추정 가치 8.4)로, 차선(C5, 3.6)보다 약 4.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 12
     },
     {
       "id": 427,
@@ -45873,9 +46299,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 L11(추정 가치 35.0)로, 차선(L5, 24.6)보다 약 10.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 428,
@@ -45936,9 +46363,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 D4(추정 가치 35.5)로, 차선(B4, 27.8)보다 약 7.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 14
     },
     {
       "id": 429,
@@ -46019,9 +46447,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 L4(추정 가치 35.0)로, 차선(F11, 21.5)보다 약 13.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 기존 돌들과 거리가 있어 새로운 영역을 넓히는 성격의 수입니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 430,
@@ -46082,9 +46511,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 35.0)로, 차선(C6, 32.9)보다 약 2.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 8
     },
     {
       "id": 431,
@@ -46235,9 +46665,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 23.7)로, 차선(F8, 23.3)보다 약 0.4 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 3
     },
     {
       "id": 432,
@@ -46383,9 +46814,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 35.1)로, 차선(H2, 8.7)보다 약 26.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 433,
@@ -46466,9 +46898,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 C9(추정 가치 29.2)로, 차선(D9, 27.1)보다 약 2.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 434,
@@ -46584,9 +47017,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 F7(추정 가치 35.0)로, 차선(B4, 9.6)보다 약 25.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 18
     },
     {
       "id": 435,
@@ -46747,9 +47181,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 G5(추정 가치 9.8)로, 차선(G2, 9.7)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 1
     },
     {
       "id": 436,
@@ -46855,9 +47290,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 35.0)로, 차선(K7, 22.3)보다 약 12.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 437,
@@ -46933,9 +47369,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 B12(추정 가치 35.0)로, 차선(E12, 35.0)보다 약 0.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 438,
@@ -47111,9 +47548,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 2.3)로, 차선(C4, 2.2)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 1
     },
     {
       "id": 439,
@@ -47209,9 +47647,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 D7(추정 가치 35.0)로, 차선(K3, 18.6)보다 약 16.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 440,
@@ -47287,9 +47726,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 H8(추정 가치 22.2)로, 차선(B8, 13.7)보다 약 8.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 14
     },
     {
       "id": 441,
@@ -47415,9 +47855,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 L11(추정 가치 35.0)로, 차선(C11, 16.3)보다 약 18.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 442,
@@ -47533,9 +47974,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 10.9)로, 차선(E8, 8.4)보다 약 2.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 9
     },
     {
       "id": 443,
@@ -47606,9 +48048,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 35.0)로, 차선(G3, 31.8)보다 약 3.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 444,
@@ -47699,9 +48142,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 E10(추정 가치 32.6)로, 차선(F8, 24.9)보다 약 7.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 445,
@@ -47752,9 +48196,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 K7(추정 가치 26.6)로, 차선(D9, 20.5)보다 약 6.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 446,
@@ -47805,9 +48250,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 35.0)로, 차선(G5, 15.3)보다 약 19.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 447,
@@ -47883,9 +48329,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 M4(추정 가치 23.9)로, 차선(E3, 21.1)보다 약 2.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 448,
@@ -48016,9 +48463,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 B6(추정 가치 11.2)로, 차선(M5, 4.7)보다 약 6.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 13
     },
     {
       "id": 449,
@@ -48084,9 +48532,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 D6(추정 가치 35.0)로, 차선(F4, 35.0)보다 약 0.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 450,
@@ -48237,9 +48686,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 K9(추정 가치 10.7)로, 차선(M9, 10.5)보다 약 0.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 451,
@@ -48375,9 +48825,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 F3(추정 가치 80.0)로, 차선(F4, 50.3)보다 약 29.7 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 18
     },
     {
       "id": 452,
@@ -48438,9 +48889,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 D8(추정 가치 75.0)로, 차선(D6, 37.2)보다 약 37.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 453,
@@ -48601,9 +49053,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 A2(추정 가치 7.0)로, 차선(F9, 6.0)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 5
     },
     {
       "id": 454,
@@ -48674,9 +49127,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 J4(추정 가치 35.0)로, 차선(C6, 28.4)보다 약 6.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 13
     },
     {
       "id": 455,
@@ -48772,9 +49226,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 F8(추정 가치 47.6)로, 차선(H8, 32.5)보다 약 15.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 16
     },
     {
       "id": 456,
@@ -48850,9 +49305,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 51.4)로, 차선(E4, 33.2)보다 약 18.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 457,
@@ -48953,9 +49409,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F2(추정 가치 22.6)로, 차선(E5, 22.0)보다 약 0.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 3
     },
     {
       "id": 458,
@@ -49016,9 +49473,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 13.1)로, 차선(F7, 10.0)보다 약 3.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 459,
@@ -49074,9 +49532,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 J3(추정 가치 26.0)로, 차선(C8, 24.2)보다 약 1.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 460,
@@ -49157,9 +49616,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 10.2)로, 차선(C5, 10.2)보다 약 0.0 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 461,
@@ -49250,9 +49710,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 64.9)로, 차선(G2, 55.7)보다 약 9.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 462,
@@ -49373,9 +49834,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 H7(추정 가치 9.4)로, 차선(B5, 7.1)보다 약 2.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 463,
@@ -49506,9 +49968,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 F2(추정 가치 8.6)로, 차선(B4, 6.7)보다 약 1.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 7
     },
     {
       "id": 464,
@@ -49669,9 +50132,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 12.2)로, 차선(H3, 10.9)보다 약 1.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 465,
@@ -49827,9 +50291,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 E9(추정 가치 13.7)로, 차선(G5, 7.3)보다 약 6.4 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 466,
@@ -49905,9 +50370,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 G9(추정 가치 25.2)로, 차선(C4, 22.1)보다 약 3.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 467,
@@ -50078,9 +50544,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k12",
       "explanation": "엔진 분석 기준 최선수는 A2(추정 가치 7.3)로, 차선(C6, 2.0)보다 약 5.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 귀 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 12
     },
     {
       "id": 468,
@@ -50151,9 +50618,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 19.5)로, 차선(G4, 15.7)보다 약 3.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 469,
@@ -50309,9 +50777,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 D4(추정 가치 3.2)로, 차선(G4, 2.1)보다 약 1.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 470,
@@ -50422,9 +50891,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 M10(추정 가치 17.9)로, 차선(K5, 17.7)보다 약 0.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 2
     },
     {
       "id": 471,
@@ -50510,9 +50980,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k8",
       "explanation": "엔진 분석 기준 최선수는 F2(추정 가치 20.8)로, 차선(D7, 18.7)보다 약 2.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 8
     },
     {
       "id": 472,
@@ -50653,9 +51124,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k6",
       "explanation": "엔진 분석 기준 최선수는 H4(추정 가치 6.4)로, 차선(B1, 5.3)보다 약 1.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 6
     },
     {
       "id": 473,
@@ -50706,9 +51178,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 25.4)로, 차선(C6, 23.0)보다 약 2.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 474,
@@ -50759,9 +51232,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k9",
       "explanation": "엔진 분석 기준 최선수는 E5(추정 가치 25.4)로, 차선(C6, 23.0)보다 약 2.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 9
     },
     {
       "id": 475,
@@ -50832,9 +51306,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 B3(추정 가치 36.0)로, 차선(H10, 20.6)보다 약 15.5 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 귀 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 476,
@@ -50945,9 +51420,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 H11(추정 가치 20.5)로, 차선(L2, 20.5)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 477,
@@ -51028,9 +51504,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 82.1)로, 차선(D4, 65.3)보다 약 16.8 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 478,
@@ -51156,9 +51633,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 C2(추정 가치 32.8)로, 차선(B7, 14.0)보다 약 18.8 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 479,
@@ -51214,9 +51692,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 D2(추정 가치 24.5)로, 차선(G7, 24.4)보다 약 0.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 1
     },
     {
       "id": 480,
@@ -51322,9 +51801,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 E8(추정 가치 7.7)로, 차선(C2, 3.4)보다 약 4.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 11
     },
     {
       "id": 481,
@@ -51445,9 +51925,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 28.0)로, 차선(C2, 10.5)보다 약 17.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 17
     },
     {
       "id": 482,
@@ -51523,9 +52004,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k4",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 23.8)로, 차선(G5, 23.1)보다 약 0.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 4
     },
     {
       "id": 483,
@@ -51601,9 +52083,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 J3(추정 가치 34.5)로, 차선(J4, 27.0)보다 약 7.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 14
     },
     {
       "id": 484,
@@ -51769,9 +52252,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 12.9)로, 차선(D3, 1.1)보다 약 11.9 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 15
     },
     {
       "id": 485,
@@ -51837,9 +52321,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 26.5)로, 차선(E3, 14.2)보다 약 12.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 486,
@@ -51895,9 +52380,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "medium",
+      "difficulty": "k11",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 32.5)로, 차선(C8, 27.8)보다 약 4.7 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 11
     },
     {
       "id": 487,
@@ -51973,9 +52459,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 H5(추정 가치 32.8)로, 차선(D8, 18.2)보다 약 14.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 488,
@@ -52051,9 +52538,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k17",
       "explanation": "엔진 분석 기준 최선수는 B5(추정 가치 36.8)로, 차선(D5, 20.3)보다 약 16.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 17
     },
     {
       "id": 489,
@@ -52129,9 +52617,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 E11(추정 가치 22.8)로, 차선(J5, 21.3)보다 약 1.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 7
     },
     {
       "id": 490,
@@ -52297,9 +52786,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "easy",
+      "difficulty": "k13",
       "explanation": "엔진 분석 기준 최선수는 G6(추정 가치 35.0)로, 차선(M4, 29.0)보다 약 6.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 13
     },
     {
       "id": 491,
@@ -52395,9 +52885,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 B7(추정 가치 25.9)로, 차선(B6, 14.7)보다 약 11.1 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 15
     },
     {
       "id": 492,
@@ -52448,9 +52939,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k16",
       "explanation": "엔진 분석 기준 최선수는 D3(추정 가치 35.0)로, 차선(G3, 19.1)보다 약 15.9 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 16
     },
     {
       "id": 493,
@@ -52581,9 +53073,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k1",
       "explanation": "엔진 분석 기준 최선수는 L6(추정 가치 18.6)로, 차선(K6, 18.6)보다 약 0.1 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 1
     },
     {
       "id": 494,
@@ -52669,9 +53162,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 G4(추정 가치 21.0)로, 차선(D2, 12.8)보다 약 8.2 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 495,
@@ -52847,9 +53341,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "medium",
+      "difficulty": "k7",
       "explanation": "엔진 분석 기준 최선수는 E2(추정 가치 10.0)로, 차선(L8, 8.4)보다 약 1.6 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 7
     },
     {
       "id": 496,
@@ -52910,9 +53405,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "easy",
+      "difficulty": "k18",
       "explanation": "엔진 분석 기준 최선수는 E6(추정 가치 42.2)로, 차선(G6, 12.6)보다 약 29.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 18
     },
     {
       "id": 497,
@@ -53073,9 +53569,10 @@
         }
       ],
       "correctLabel": "C",
-      "difficulty": "hard",
+      "difficulty": "k2",
       "explanation": "엔진 분석 기준 최선수는 H10(추정 가치 16.5)로, 차선(C8, 16.3)보다 약 0.2 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "endgame"
+      "category": "endgame",
+      "kyuLevel": 2
     },
     {
       "id": 498,
@@ -53141,9 +53638,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "easy",
+      "difficulty": "k15",
       "explanation": "엔진 분석 기준 최선수는 E4(추정 가치 39.6)로, 차선(D4, 29.3)보다 약 10.3 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 15
     },
     {
       "id": 499,
@@ -53274,9 +53772,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "easy",
+      "difficulty": "k14",
       "explanation": "엔진 분석 기준 최선수는 E1(추정 가치 15.2)로, 차선(F2, 6.8)보다 약 8.3 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 변 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 14
     },
     {
       "id": 500,
@@ -53337,9 +53836,10 @@
         }
       ],
       "correctLabel": "A",
-      "difficulty": "hard",
+      "difficulty": "k3",
       "explanation": "엔진 분석 기준 최선수는 F4(추정 가치 45.5)로, 차선(G4, 44.9)보다 약 0.6 만큼 우위입니다. (흑 차례) 이 수가 좋은 이유: 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 3
     },
     {
       "id": 501,
@@ -53415,9 +53915,10 @@
         }
       ],
       "correctLabel": "B",
-      "difficulty": "medium",
+      "difficulty": "k10",
       "explanation": "엔진 분석 기준 최선수는 L8(추정 가치 42.1)로, 차선(L5, 38.6)보다 약 3.5 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 변 쪽 자리입니다.",
-      "category": "fuseki"
+      "category": "fuseki",
+      "kyuLevel": 10
     },
     {
       "id": 502,
@@ -53533,9 +54034,10 @@
         }
       ],
       "correctLabel": "D",
-      "difficulty": "hard",
+      "difficulty": "k5",
       "explanation": "엔진 분석 기준 최선수는 C4(추정 가치 32.7)로, 차선(B3, 31.7)보다 약 1.0 만큼 우위입니다. (백 차례) 이 수가 좋은 이유: 상대 돌을 따내는 수라서 즉각적인 이득이 있습니다, 주변 돌과 바로 맞닿아 있어 국지전에 직접 영향을 줍니다, 중앙 쪽 자리입니다.",
-      "category": "middlegame"
+      "category": "middlegame",
+      "kyuLevel": 5
     }
   ]
 }
