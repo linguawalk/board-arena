@@ -193,6 +193,7 @@
         mainLineMoves: p.mainLine.map((m) => ({ x: m.x, y: m.y, color: m.color })),
         wrongBranches,
         viewRegion: computeRegion(p.stones, correctPoint, wrongBranches),
+        targetGroup: p.targetGroup,
       };
     }
 
@@ -256,6 +257,7 @@
         viewRegion: problem.viewRegion,
       });
       board.loadPosition(problem.stones);
+      if (problem.targetGroup) board.highlightGroup(problem.targetGroup);
       questionEl.textContent = problem.question;
     }
 
@@ -296,6 +298,7 @@
         captionEl: kifuCaption,
         captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
         viewRegion: problem.viewRegion,
+        highlightCells: problem.targetGroup || [],
       });
       kifu.next();
 
