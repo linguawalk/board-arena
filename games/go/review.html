@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 복기 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  .review-layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .review-board { width: 400px; flex-shrink: 0; }
+  .review-panel { flex: 1; min-width: 260px; }
+  .game-list { max-height: 200px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; margin-bottom: 16px; }
+  .game-item { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; }
+  .game-item:hover { background: #f7f7f7; }
+  .game-item.active { background: #eef6f0; }
+  .game-item button { font-size: 11px; color: #b3261e; background: none; border: none; cursor: pointer; }
+  .kifu-controls { display: flex; gap: 6px; margin: 12px 0; }
+  .kifu-controls button { padding: 6px 12px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .move-caption { font-size: 14px; color: #444; margin-bottom: 6px; }
+  .move-slider { width: 100%; }
+  .empty-msg { color: #999; font-size: 14px; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>바둑 복기</h1>
+    <p style="color:#777;font-size:14px;">대국 화면에서 "복기용으로 저장"을 누르면 여기서 다시 볼 수 있습니다.</p>
+
+    <div class="review-layout">
+      <div class="review-panel" style="max-width:280px;">
+        <h3>저장된 대국</h3>
+        <div id="game-list" class="game-list"></div>
+      </div>
+
+      <div id="review-main" style="display:none;">
+        <div class="review-layout">
+          <div id="review-board" class="review-board"></div>
+          <div class="review-panel">
+            <div id="move-caption" class="move-caption">초기 국면</div>
+            <input id="move-slider" class="move-slider" type="range" min="0" max="0" value="0" />
+            <div class="kifu-controls">
+              <button id="kifu-prev">◀ 이전</button>
+              <button id="kifu-play">▶ 자동재생</button>
+              <button id="kifu-next">다음 ▶</button>
+              <button id="kifu-reset">처음으로</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p id="empty-msg" class="empty-msg">저장된 대국이 없습니다. 먼저 대국을 하고 저장해보세요.</p>
+    </div>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+
+    const listEl = document.getElementById('game-list');
+    const reviewMain = document.getElementById('review-main');
+    const emptyMsg = document.getElementById('empty-msg');
+    const boardContainer = document.getElementById('review-board');
+    const captionEl = document.getElementById('move-caption');
+    const slider = document.getElementById('move-slider');
+
+    let games = [];
+    let currentGame = null;
+    let board = null;
+    let stepIndex = 0;
+    let playing = false;
+    let timer = null;
+
+    function loadGames() {
+      games = JSON.parse(localStorage.getItem('board-arena-go-games') || '[]');
+      renderList();
+    }
+
+    function renderList() {
+      listEl.innerHTML = '';
+      if (games.length === 0) {
+        emptyMsg.style.display = 'block';
+        reviewMain.style.display = 'none';
+        return;
+      }
+      emptyMsg.style.display = 'none';
+
+      games.forEach((g, idx) => {
+        const item = document.createElement('div');
+        item.className = 'game-item' + (currentGame === g ? ' active' : '');
+        const date = new Date(g.savedAt);
+        const label = `${g.size}x${g.size} · ${g.history.length}수 · ${date.toLocaleString('ko-KR')}`;
+        const span = document.createElement('span');
+        span.textContent = label;
+        span.addEventListener('click', () => selectGame(g));
+        item.appendChild(span);
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '삭제';
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          games.splice(idx, 1);
+          localStorage.setItem('board-arena-go-games', JSON.stringify(games));
+          if (currentGame === g) {
+            currentGame = null;
+            reviewMain.style.display = 'none';
+          }
+          renderList();
+        });
+        item.appendChild(delBtn);
+
+        listEl.appendChild(item);
+      });
+    }
+
+    function selectGame(g) {
+      currentGame = g;
+      renderList();
+      reviewMain.style.display = 'block';
+
+      boardContainer.innerHTML = '';
+      board = new GoBoard({ container: boardContainer, size: g.size, interactive: false });
+      stepIndex = 0;
+      slider.max = g.history.length;
+      slider.value = 0;
+      renderStep();
+    }
+
+    function renderStep() {
+      // 항상 처음부터 stepIndex까지 재생 (따내기까지 정확히 재현하기 위해)
+      board.placeHandicap(0);
+      for (let i = 0; i < stepIndex; i++) {
+        const mv = currentGame.history[i];
+        if (mv.pass) {
+          board.pass();
+        } else {
+          board.handleInput(mv.x, mv.y);
+        }
+      }
+      slider.value = stepIndex;
+      if (stepIndex === 0) {
+        captionEl.textContent = '초기 국면';
+      } else {
+        const mv = currentGame.history[stepIndex - 1];
+        const colorText = mv.color === 'B' ? '흑' : '백';
+        captionEl.textContent = mv.pass
+          ? `${stepIndex}수째: ${colorText} 패스`
+          : `${stepIndex}수째: ${colorText} (${mv.x}, ${mv.y})${mv.captured && mv.captured.length ? ` / ${mv.captured.length}점 따냄` : ''}`;
+      }
+    }
+
+    function next() {
+      if (stepIndex < currentGame.history.length) {
+        stepIndex++;
+        renderStep();
+      } else {
+        pause();
+      }
+    }
+    function prev() {
+      if (stepIndex > 0) {
+        stepIndex--;
+        renderStep();
+      }
+    }
+    function reset() {
+      pause();
+      stepIndex = 0;
+      renderStep();
+    }
+    function playAll() {
+      if (playing) return;
+      playing = true;
+      timer = setInterval(() => {
+        if (stepIndex >= currentGame.history.length) {
+          pause();
+          return;
+        }
+        next();
+      }, 700);
+    }
+    function pause() {
+      playing = false;
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    document.getElementById('kifu-prev').addEventListener('click', prev);
+    document.getElementById('kifu-next').addEventListener('click', next);
+    document.getElementById('kifu-reset').addEventListener('click', reset);
+    document.getElementById('kifu-play').addEventListener('click', playAll);
+    slider.addEventListener('input', () => {
+      pause();
+      stepIndex = parseInt(slider.value, 10);
+      renderStep();
+    });
+
+    loadGames();
+  </script>
+</body>
+</html>
