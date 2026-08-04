@@ -92,3 +92,24 @@
   stroke-width: 3;
   pointer-events: none;
 }
+.go-group-highlight {
+  fill: rgba(217, 48, 47, 0.18);
+  pointer-events: none;
+}
+.go-move-number-on-black {
+  fill: white;
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.go-move-number-on-white {
+  fill: #222;
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.go-captured-ghost {
+  stroke: #999;
+  stroke-width: 2;
+  pointer-events: none;
+}
