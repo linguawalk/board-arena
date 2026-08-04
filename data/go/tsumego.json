@@ -94,7 +94,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k18",
+      "kyuLevel": 18
     },
     {
       "id": 2,
@@ -257,7 +258,8 @@
         }
       ],
       "plyCount": 3,
-      "difficulty": "medium"
+      "difficulty": "k6",
+      "kyuLevel": 6
     },
     {
       "id": 3,
@@ -391,7 +393,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k18",
+      "kyuLevel": 18
     },
     {
       "id": 4,
@@ -604,7 +607,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "hard"
+      "difficulty": "k1",
+      "kyuLevel": 1
     },
     {
       "id": 5,
@@ -728,7 +732,8 @@
         }
       ],
       "plyCount": 3,
-      "difficulty": "easy"
+      "difficulty": "k18",
+      "kyuLevel": 18
     },
     {
       "id": 6,
@@ -860,7 +865,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k18",
+      "kyuLevel": 18
     },
     {
       "id": 7,
@@ -989,7 +995,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k18",
+      "kyuLevel": 18
     },
     {
       "id": 8,
@@ -1146,7 +1153,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k18",
+      "kyuLevel": 18
     },
     {
       "id": 9,
@@ -1270,7 +1278,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k17",
+      "kyuLevel": 17
     },
     {
       "id": 10,
@@ -1399,7 +1408,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k5",
+      "kyuLevel": 5
     },
     {
       "id": 11,
@@ -1533,7 +1543,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k5",
+      "kyuLevel": 5
     },
     {
       "id": 12,
@@ -1662,7 +1673,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k17",
+      "kyuLevel": 17
     },
     {
       "id": 13,
@@ -1814,7 +1826,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k17",
+      "kyuLevel": 17
     },
     {
       "id": 14,
@@ -1953,7 +1966,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k5",
+      "kyuLevel": 5
     },
     {
       "id": 15,
@@ -2103,7 +2117,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k17",
+      "kyuLevel": 17
     },
     {
       "id": 16,
@@ -2260,7 +2275,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k2",
+      "kyuLevel": 2
     },
     {
       "id": 17,
@@ -2436,7 +2452,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k5",
+      "kyuLevel": 5
     },
     {
       "id": 18,
@@ -2553,7 +2570,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k17",
+      "kyuLevel": 17
     },
     {
       "id": 19,
@@ -2695,7 +2713,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k17",
+      "kyuLevel": 17
     },
     {
       "id": 20,
@@ -2818,7 +2837,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k5",
+      "kyuLevel": 5
     },
     {
       "id": 21,
@@ -2935,7 +2955,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k16",
+      "kyuLevel": 16
     },
     {
       "id": 22,
@@ -3087,7 +3108,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k16",
+      "kyuLevel": 16
     },
     {
       "id": 23,
@@ -3249,7 +3271,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k16",
+      "kyuLevel": 16
     },
     {
       "id": 24,
@@ -3425,7 +3448,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k4",
+      "kyuLevel": 4
     },
     {
       "id": 25,
@@ -3585,7 +3609,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k16",
+      "kyuLevel": 16
     },
     {
       "id": 26,
@@ -3729,7 +3754,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k16",
+      "kyuLevel": 16
     },
     {
       "id": 27,
@@ -3887,7 +3913,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k4",
+      "kyuLevel": 4
     },
     {
       "id": 28,
@@ -4026,7 +4053,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k4",
+      "kyuLevel": 4
     },
     {
       "id": 29,
@@ -4152,7 +4180,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k4",
+      "kyuLevel": 4
     },
     {
       "id": 30,
@@ -4304,7 +4333,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k15",
+      "kyuLevel": 15
     },
     {
       "id": 31,
@@ -4466,7 +4496,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k15",
+      "kyuLevel": 15
     },
     {
       "id": 32,
@@ -4662,7 +4693,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k4",
+      "kyuLevel": 4
     },
     {
       "id": 33,
@@ -4781,7 +4813,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k4",
+      "kyuLevel": 4
     },
     {
       "id": 34,
@@ -4928,7 +4961,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k15",
+      "kyuLevel": 15
     },
     {
       "id": 35,
@@ -5088,7 +5122,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k15",
+      "kyuLevel": 15
     },
     {
       "id": 36,
@@ -5223,7 +5258,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k15",
+      "kyuLevel": 15
     },
     {
       "id": 37,
@@ -5392,7 +5428,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k15",
+      "kyuLevel": 15
     },
     {
       "id": 38,
@@ -5536,7 +5573,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k14",
+      "kyuLevel": 14
     },
     {
       "id": 39,
@@ -5683,7 +5721,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k14",
+      "kyuLevel": 14
     },
     {
       "id": 40,
@@ -5813,7 +5852,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k14",
+      "kyuLevel": 14
     },
     {
       "id": 41,
@@ -5898,7 +5938,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k14",
+      "kyuLevel": 14
     },
     {
       "id": 42,
@@ -6060,7 +6101,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k14",
+      "kyuLevel": 14
     },
     {
       "id": 43,
@@ -6182,7 +6224,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k13",
+      "kyuLevel": 13
     },
     {
       "id": 44,
@@ -6296,7 +6339,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k3",
+      "kyuLevel": 3
     },
     {
       "id": 45,
@@ -6456,7 +6500,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k2",
+      "kyuLevel": 2
     },
     {
       "id": 46,
@@ -6613,7 +6658,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k13",
+      "kyuLevel": 13
     },
     {
       "id": 47,
@@ -6783,7 +6829,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k13",
+      "kyuLevel": 13
     },
     {
       "id": 48,
@@ -6935,7 +6982,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k13",
+      "kyuLevel": 13
     },
     {
       "id": 49,
@@ -7067,7 +7115,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k13",
+      "kyuLevel": 13
     },
     {
       "id": 50,
@@ -7191,7 +7240,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k3",
+      "kyuLevel": 3
     },
     {
       "id": 51,
@@ -7336,7 +7386,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k13",
+      "kyuLevel": 13
     },
     {
       "id": 52,
@@ -7466,7 +7517,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k12",
+      "kyuLevel": 12
     },
     {
       "id": 53,
@@ -7614,7 +7666,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k3",
+      "kyuLevel": 3
     },
     {
       "id": 54,
@@ -7751,7 +7804,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k12",
+      "kyuLevel": 12
     },
     {
       "id": 55,
@@ -7858,7 +7912,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k12",
+      "kyuLevel": 12
     },
     {
       "id": 56,
@@ -8019,7 +8074,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k3",
+      "kyuLevel": 3
     },
     {
       "id": 57,
@@ -8156,7 +8212,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k12",
+      "kyuLevel": 12
     },
     {
       "id": 58,
@@ -8306,7 +8363,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k12",
+      "kyuLevel": 12
     },
     {
       "id": 59,
@@ -8416,7 +8474,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k11",
+      "kyuLevel": 11
     },
     {
       "id": 60,
@@ -8571,7 +8630,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k11",
+      "kyuLevel": 11
     },
     {
       "id": 61,
@@ -8722,7 +8782,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k3",
+      "kyuLevel": 3
     },
     {
       "id": 62,
@@ -8858,7 +8919,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k2",
+      "kyuLevel": 2
     },
     {
       "id": 63,
@@ -9024,7 +9086,8 @@
         }
       ],
       "plyCount": 5,
-      "difficulty": "easy"
+      "difficulty": "k11",
+      "kyuLevel": 11
     },
     {
       "id": 64,
@@ -9206,7 +9269,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k11",
+      "kyuLevel": 11
     },
     {
       "id": 65,
@@ -9363,7 +9427,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k11",
+      "kyuLevel": 11
     },
     {
       "id": 66,
@@ -9505,7 +9570,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k11",
+      "kyuLevel": 11
     },
     {
       "id": 67,
@@ -9640,7 +9706,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k10",
+      "kyuLevel": 10
     },
     {
       "id": 68,
@@ -9725,7 +9792,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k10",
+      "kyuLevel": 10
     },
     {
       "id": 69,
@@ -9844,7 +9912,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k2",
+      "kyuLevel": 2
     },
     {
       "id": 70,
@@ -9924,7 +9993,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k10",
+      "kyuLevel": 10
     },
     {
       "id": 71,
@@ -10066,7 +10136,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k10",
+      "kyuLevel": 10
     },
     {
       "id": 72,
@@ -10180,7 +10251,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k10",
+      "kyuLevel": 10
     },
     {
       "id": 73,
@@ -10286,7 +10358,8 @@
         }
       ],
       "plyCount": 3,
-      "difficulty": "easy"
+      "difficulty": "k9",
+      "kyuLevel": 9
     },
     {
       "id": 74,
@@ -10446,7 +10519,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k9",
+      "kyuLevel": 9
     },
     {
       "id": 75,
@@ -10571,7 +10645,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k9",
+      "kyuLevel": 9
     },
     {
       "id": 76,
@@ -10666,7 +10741,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k9",
+      "kyuLevel": 9
     },
     {
       "id": 77,
@@ -10813,7 +10889,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k9",
+      "kyuLevel": 9
     },
     {
       "id": 78,
@@ -10956,7 +11033,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k2",
+      "kyuLevel": 2
     },
     {
       "id": 79,
@@ -11116,7 +11194,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k9",
+      "kyuLevel": 9
     },
     {
       "id": 80,
@@ -11313,7 +11392,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "hard"
+      "difficulty": "k1",
+      "kyuLevel": 1
     },
     {
       "id": 81,
@@ -11398,7 +11478,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k8",
+      "kyuLevel": 8
     },
     {
       "id": 82,
@@ -11522,7 +11603,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k2",
+      "kyuLevel": 2
     },
     {
       "id": 83,
@@ -11704,7 +11786,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k8",
+      "kyuLevel": 8
     },
     {
       "id": 84,
@@ -11841,7 +11924,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k8",
+      "kyuLevel": 8
     },
     {
       "id": 85,
@@ -12050,7 +12134,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "hard"
+      "difficulty": "k1",
+      "kyuLevel": 1
     },
     {
       "id": 86,
@@ -12189,7 +12274,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k8",
+      "kyuLevel": 8
     },
     {
       "id": 87,
@@ -12299,7 +12385,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k8",
+      "kyuLevel": 8
     },
     {
       "id": 88,
@@ -12461,7 +12548,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k8",
+      "kyuLevel": 8
     },
     {
       "id": 89,
@@ -12551,7 +12639,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k7",
+      "kyuLevel": 7
     },
     {
       "id": 90,
@@ -12715,7 +12804,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k7",
+      "kyuLevel": 7
     },
     {
       "id": 91,
@@ -12881,7 +12971,8 @@
         }
       ],
       "plyCount": 5,
-      "difficulty": "easy"
+      "difficulty": "k7",
+      "kyuLevel": 7
     },
     {
       "id": 92,
@@ -13031,7 +13122,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "medium"
+      "difficulty": "k1",
+      "kyuLevel": 1
     },
     {
       "id": 93,
@@ -13171,7 +13263,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k7",
+      "kyuLevel": 7
     },
     {
       "id": 94,
@@ -13281,7 +13374,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k7",
+      "kyuLevel": 7
     },
     {
       "id": 95,
@@ -13463,7 +13557,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k6",
+      "kyuLevel": 6
     },
     {
       "id": 96,
@@ -13610,7 +13705,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k6",
+      "kyuLevel": 6
     },
     {
       "id": 97,
@@ -13749,7 +13845,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k6",
+      "kyuLevel": 6
     },
     {
       "id": 98,
@@ -13938,7 +14035,8 @@
         }
       ],
       "plyCount": 1,
-      "difficulty": "hard"
+      "difficulty": "k1",
+      "kyuLevel": 1
     },
     {
       "id": 99,
@@ -14038,7 +14136,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k6",
+      "kyuLevel": 6
     },
     {
       "id": 100,
@@ -14173,7 +14272,8 @@
       ],
       "wrongBranches": [],
       "plyCount": 1,
-      "difficulty": "easy"
+      "difficulty": "k6",
+      "kyuLevel": 6
     }
   ]
 }
