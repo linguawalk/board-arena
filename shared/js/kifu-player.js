@@ -1,12 +1,14 @@
 /**
  * kifu-player.js
  * 저장된 수순(moves)을 초기 국면 위에 한 수씩 재생하는 컴포넌트.
- * GoBoard를 감싸서 자동재생 / 수동 넘기기(이전-다음) 둘 다 제공.
- *
- * 캡처(따내기) 로직은 재현하지 않고 단순히 돌을 누적 배치하는 방식이라,
- * 아주 짧은 설명용 수순(2~4수 내외)에 적합합니다.
+ * 실제 바둑 규칙(tryPlaceStone)으로 시뮬레이션하기 때문에 따내기까지 정확히 재현되고,
+ * 그 자체로 "왜 이 수가 좋은가"를 텍스트 없이도 보여줍니다:
+ *   - 수순 번호를 돌 위에 표시
+ *   - 관심 그룹을 자동 하이라이트
+ *   - 따낸 돌은 실제로 사라지고, 방금 사라진 자리를 잠깐 X로 표시
  */
 import { GoBoard } from '../../games/go/js/go-board.js';
+import { STONE, tryPlaceStone } from '../../games/go/js/go-rules.js';
 
 export class KifuPlayer {
   /**
@@ -14,17 +16,23 @@ export class KifuPlayer {
    * @param {HTMLElement} config.container
    * @param {number} config.size
    * @param {Array<{x:number,y:number,color:string}>} config.initialStones
-   * @param {Array<{x:number,y:number,color:string}>} config.moves - 순서대로 추가될 수들
-   * @param {HTMLElement} [config.captionEl] - 현재 단계 설명을 표시할 요소
-   * @param {Array<string>} [config.captions] - 각 단계별 설명 문구 (moves와 같은 길이 또는 생략)
+   * @param {Array<{x:number,y:number,color:string}>} config.moves - 순서대로 재생될 수들
+   * @param {HTMLElement} [config.captionEl]
+   * @param {Array<string>} [config.captions]
+   * @param {Object} [config.viewRegion] - 특정 영역만 확대해서 보여줄 때
+   * @param {Array<{x:number,y:number}>} [config.highlightCells] - 자동 하이라이트할 관심 그룹
    */
-  constructor({ container, size, initialStones, moves, captionEl = null, captions = [], viewRegion = null }) {
+  constructor({
+    container, size, initialStones, moves,
+    captionEl = null, captions = [], viewRegion = null, highlightCells = [],
+  }) {
     this.size = size;
     this.initialStones = initialStones;
     this.moves = moves;
     this.captionEl = captionEl;
     this.captions = captions;
-    this.currentIndex = 0; // 0 = 초기 국면, N = moves[0..N-1]까지 반영
+    this.highlightCells = highlightCells;
+    this.currentIndex = 0;
     this.playing = false;
     this.timer = null;
 
@@ -32,27 +40,54 @@ export class KifuPlayer {
     this._renderStep();
   }
 
-  _cumulativeStones(uptoIndex) {
-    const stones = this.initialStones.map((s) => ({ ...s }));
-    for (let i = 0; i < uptoIndex; i++) {
-      const mv = this.moves[i];
-      stones.push({ x: mv.x, y: mv.y, color: mv.color });
+  _emptyGrid() {
+    return Array.from({ length: this.size }, () => Array.from({ length: this.size }, () => null));
+  }
+
+  /** 0부터 targetIndex 직전까지 실제 규칙으로 재생한 결과 { grid, lastMove, lastCaptured } */
+  _simulateUpTo(targetIndex) {
+    let grid = this._emptyGrid();
+    for (const s of this.initialStones) {
+      grid[s.y][s.x] = s.color;
     }
-    return stones;
+    let koState = null;
+    let lastMove = null;
+    let lastCaptured = [];
+
+    for (let i = 0; i < targetIndex; i++) {
+      const mv = this.moves[i];
+      const result = tryPlaceStone(grid, mv.x, mv.y, mv.color, this.size, this.size, koState);
+      if (result.valid) {
+        koState = grid;
+        grid = result.nextState;
+        lastMove = { x: mv.x, y: mv.y };
+        lastCaptured = result.captured.map(([cx, cy]) => ({ x: cx, y: cy }));
+      } else {
+        grid[mv.y][mv.x] = mv.color;
+        lastMove = { x: mv.x, y: mv.y };
+        lastCaptured = [];
+      }
+    }
+    return { grid, lastMove, lastCaptured };
   }
 
   _renderStep() {
-    this.board.loadPosition(this._cumulativeStones(this.currentIndex));
-    if (this.currentIndex > 0) {
-      const last = this.moves[this.currentIndex - 1];
-      this.board.lastMove = { x: last.x, y: last.y };
-      this.board.render();
+    const { grid, lastMove, lastCaptured } = this._simulateUpTo(this.currentIndex);
+    this.board.setState(grid, lastMove);
+
+    const numberMap = new Map();
+    for (let i = 0; i < this.currentIndex; i++) {
+      const mv = this.moves[i];
+      numberMap.set(`${mv.x},${mv.y}`, i + 1);
     }
+    this.board.setMoveNumbers(numberMap);
+    this.board.highlightGroup(this.highlightCells);
+    this.board.markCapturedGhosts(this.currentIndex > 0 ? lastCaptured : []);
+
     if (this.captionEl) {
-      const caption = this.currentIndex === 0
-        ? (this.captions[-1] || '초기 국면')
-        : (this.captions[this.currentIndex - 1] || `${this.currentIndex}수째`);
-      this.captionEl.textContent = `${caption} (${this.currentIndex}/${this.moves.length})`;
+      const caption = this.currentIndex === 0 ? '초기 국면' : (this.captions[this.currentIndex - 1] || `${this.currentIndex}수째`);
+      const captureNote = lastCaptured.length ? ` (${lastCaptured.length}점 따냄)` : '';
+      this.captionEl.textContent = `${caption}${captureNote} (${this.currentIndex}/${this.moves.length})`;
     }
   }
 
@@ -99,11 +134,12 @@ export class KifuPlayer {
   }
 
   /** 다른 수순으로 완전히 교체 (예: 정답 -> 오답 시도 전환) */
-  loadSequence({ initialStones, moves, captions = [] }) {
+  loadSequence({ initialStones, moves, captions = [], highlightCells = null }) {
     this.pause();
     this.initialStones = initialStones;
     this.moves = moves;
     this.captions = captions;
+    if (highlightCells) this.highlightCells = highlightCells;
     this.currentIndex = 0;
     this._renderStep();
   }
