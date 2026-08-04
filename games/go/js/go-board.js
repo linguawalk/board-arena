@@ -21,6 +21,9 @@ export class GoBoard extends BoardCore {
     this.lastMove = null; // { x, y } - 가장 최근에 착수된 위치 (시각 표시용)
     this.capturedBlack = 0; // 흑돌이 잡힌 총 개수 (= 흑의 사석 수)
     this.capturedWhite = 0; // 백돌이 잡힌 총 개수 (= 백의 사석 수)
+    this.moveNumbers = null; // Map<"x,y", number> - 기보 재생 시 수순 번호
+    this.highlightedCells = []; // 관심 그룹 하이라이트용 좌표 목록
+    this.capturedGhosts = []; // 방금 따내진 자리 표시용 좌표 목록
     this.render();
   }
 
@@ -34,6 +37,31 @@ export class GoBoard extends BoardCore {
    * 학습 페이지 등에서 임의의 국면을 정적으로 보여줄 때 사용.
    * @param {Array<{x:number,y:number,color:string}>} stones
    */
+  /** KifuPlayer 등에서 실제 규칙으로 시뮬레이션한 보드 상태를 직접 반영할 때 사용 */
+  setState(grid, lastMove = null) {
+    this.state = grid.map((row) => row.slice());
+    this.lastMove = lastMove;
+    this.render();
+  }
+
+  /** 기보 재생 시 각 돌 위에 수순 번호를 표시 (Map<"x,y", number>) */
+  setMoveNumbers(map) {
+    this.moveNumbers = map;
+    this.render();
+  }
+
+  /** 사활 문제 등에서 관심 그룹을 자동으로 하이라이트 */
+  highlightGroup(cells) {
+    this.highlightedCells = cells || [];
+    this.render();
+  }
+
+  /** 방금 따내진 돌 자리를 잠깐 표시 (실제 규칙 재생 시 시각적 설명용) */
+  markCapturedGhosts(points) {
+    this.capturedGhosts = points || [];
+    this.render();
+  }
+
   loadPosition(stones) {
     this.state = this._createEmptyState();
     for (const { x, y, color } of stones) {
@@ -168,6 +196,19 @@ export class GoBoard extends BoardCore {
       svg.appendChild(dot);
     }
 
+    // 관심 그룹 하이라이트 (돌 아래 배경으로, 사활 문제에서 위험한 그룹을 자동으로 보여줌)
+    for (const cell of this.highlightedCells) {
+      const { x, y } = cell;
+      if (x < minX || x > maxX || y < minY || y > maxY) continue;
+      const halo = document.createElementNS(SVG_NS, 'circle');
+      const { cx, cy } = { cx: px(x), cy: py(y) };
+      halo.setAttribute('cx', cx);
+      halo.setAttribute('cy', cy);
+      halo.setAttribute('r', cellPx * 0.58);
+      halo.setAttribute('class', 'go-group-highlight');
+      svg.appendChild(halo);
+    }
+
     // 돌 (보이는 영역만 순회)
     for (let y = minY; y <= maxY; y++) {
       for (let x = minX; x <= maxX; x++) {
@@ -180,6 +221,45 @@ export class GoBoard extends BoardCore {
         circle.setAttribute('class', stone === STONE.BLACK ? 'go-stone-black' : 'go-stone-white');
         svg.appendChild(circle);
       }
+    }
+
+    // 수순 번호 (기보 재생 시 각 돌 위에 몇 수째인지 표시)
+    if (this.moveNumbers) {
+      for (const [key, num] of this.moveNumbers.entries()) {
+        const [nx, ny] = key.split(',').map(Number);
+        if (nx < minX || nx > maxX || ny < minY || ny > maxY) continue;
+        const stoneColor = this.state[ny] ? this.state[ny][nx] : null;
+        if (!stoneColor) continue;
+        const text = document.createElementNS(SVG_NS, 'text');
+        text.setAttribute('x', px(nx));
+        text.setAttribute('y', py(ny));
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'central');
+        text.setAttribute('class', stoneColor === STONE.BLACK ? 'go-move-number-on-black' : 'go-move-number-on-white');
+        text.textContent = num;
+        svg.appendChild(text);
+      }
+    }
+
+    // 따낸 자리 표시 (실제 규칙으로 재생될 때 방금 사라진 돌 자리를 살짝 표시)
+    for (const g of this.capturedGhosts) {
+      if (g.x < minX || g.x > maxX || g.y < minY || g.y > maxY) continue;
+      const cx = px(g.x);
+      const cy = py(g.y);
+      const line1 = document.createElementNS(SVG_NS, 'line');
+      line1.setAttribute('x1', cx - cellPx * 0.22);
+      line1.setAttribute('y1', cy - cellPx * 0.22);
+      line1.setAttribute('x2', cx + cellPx * 0.22);
+      line1.setAttribute('y2', cy + cellPx * 0.22);
+      line1.setAttribute('class', 'go-captured-ghost');
+      svg.appendChild(line1);
+      const line2 = document.createElementNS(SVG_NS, 'line');
+      line2.setAttribute('x1', cx + cellPx * 0.22);
+      line2.setAttribute('y1', cy - cellPx * 0.22);
+      line2.setAttribute('x2', cx - cellPx * 0.22);
+      line2.setAttribute('y2', cy + cellPx * 0.22);
+      line2.setAttribute('class', 'go-captured-ghost');
+      svg.appendChild(line2);
     }
 
     // 마지막 착수 표시 (소리 없이도 AI가 어디 뒀는지 바로 알 수 있게)
