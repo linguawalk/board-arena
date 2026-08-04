@@ -18,7 +18,7 @@ export class KifuPlayer {
    * @param {HTMLElement} [config.captionEl] - 현재 단계 설명을 표시할 요소
    * @param {Array<string>} [config.captions] - 각 단계별 설명 문구 (moves와 같은 길이 또는 생략)
    */
-  constructor({ container, size, initialStones, moves, captionEl = null, captions = [] }) {
+  constructor({ container, size, initialStones, moves, captionEl = null, captions = [], viewRegion = null }) {
     this.size = size;
     this.initialStones = initialStones;
     this.moves = moves;
@@ -28,7 +28,7 @@ export class KifuPlayer {
     this.playing = false;
     this.timer = null;
 
-    this.board = new GoBoard({ container, size, interactive: false });
+    this.board = new GoBoard({ container, size, interactive: false, viewRegion });
     this._renderStep();
   }
 
