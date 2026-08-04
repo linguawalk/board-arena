@@ -10,16 +10,23 @@ import { STONE, tryPlaceStone, getHandicapPoints } from './go-rules.js';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export class GoBoard extends BoardCore {
-  constructor({ container, size = 19, onMove = () => {}, interactive = true, onPointClick = null }) {
+  constructor({ container, size = 19, onMove = () => {}, interactive = true, onPointClick = null, viewRegion = null }) {
     super({ kind: BOARD_KIND.INTERSECTION, width: size, height: size, container });
     this.turn = STONE.BLACK;
     this.koState = null;
     this.onMove = onMove;
     this.interactive = interactive; // false면 클릭 비활성 (학습 페이지 예시 다이어그램용)
     this.onPointClick = onPointClick; // 지정되면 클릭 시 실제 착수 대신 이 콜백 호출 (퀴즈 답변용)
+    this.viewRegion = viewRegion; // { minX, maxX, minY, maxY } - 지정 시 해당 영역만 확대해서 렌더링
     this.lastMove = null; // { x, y } - 가장 최근에 착수된 위치 (시각 표시용)
     this.capturedBlack = 0; // 흑돌이 잡힌 총 개수 (= 흑의 사석 수)
     this.capturedWhite = 0; // 백돌이 잡힌 총 개수 (= 백의 사석 수)
+    this.render();
+  }
+
+  /** 문제 풀이 등에서 특정 영역만 확대해서 보고 싶을 때 호출 */
+  setViewRegion(region) {
+    this.viewRegion = region;
     this.render();
   }
 
@@ -71,65 +78,104 @@ export class GoBoard extends BoardCore {
     this.resize(newSize, newSize);
   }
 
+  /** 지정된 영역에 여백을 주고, 정사각형으로 보정한 뒤 보드 경계 안으로 clamp */
+  _computeSquareRegion({ minX, maxX, minY, maxY, padding = 2 }) {
+    const size = this.width;
+    let nMinX = Math.max(0, minX - padding);
+    let nMaxX = Math.min(size - 1, maxX + padding);
+    let nMinY = Math.max(0, minY - padding);
+    let nMaxY = Math.min(size - 1, maxY + padding);
+
+    const spanX = nMaxX - nMinX + 1;
+    const spanY = nMaxY - nMinY + 1;
+    const span = Math.min(size, Math.max(spanX, spanY, 7)); // 최소 7줄은 보이게
+
+    // X축을 span 크기로 맞춤 (가능하면 중앙 정렬)
+    let extraX = span - (nMaxX - nMinX + 1);
+    nMinX -= Math.floor(extraX / 2);
+    nMaxX += Math.ceil(extraX / 2);
+    if (nMinX < 0) { nMaxX += -nMinX; nMinX = 0; }
+    if (nMaxX > size - 1) { nMinX -= (nMaxX - (size - 1)); nMaxX = size - 1; nMinX = Math.max(0, nMinX); }
+
+    let extraY = span - (nMaxY - nMinY + 1);
+    nMinY -= Math.floor(extraY / 2);
+    nMaxY += Math.ceil(extraY / 2);
+    if (nMinY < 0) { nMaxY += -nMinY; nMinY = 0; }
+    if (nMaxY > size - 1) { nMinY -= (nMaxY - (size - 1)); nMaxY = size - 1; nMinY = Math.max(0, nMinY); }
+
+    return { minX: nMinX, maxX: nMaxX, minY: nMinY, maxY: nMaxY };
+  }
+
   render() {
     const size = this.width;
     const margin = 30;
     const cellPx = 32;
-    const boardPx = margin * 2 + cellPx * (size - 1);
+
+    let minX = 0, maxX = size - 1, minY = 0, maxY = size - 1;
+    if (this.viewRegion) {
+      ({ minX, maxX, minY, maxY } = this._computeSquareRegion(this.viewRegion));
+    }
+    const spanX = maxX - minX + 1;
+    const spanY = maxY - minY + 1;
+    const boardPxW = margin * 2 + cellPx * (spanX - 1);
+    const boardPxH = margin * 2 + cellPx * (spanY - 1);
+    const px = (x) => margin + (x - minX) * cellPx;
+    const py = (y) => margin + (y - minY) * cellPx;
 
     this.container.innerHTML = '';
     const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${boardPx} ${boardPx}`);
+    svg.setAttribute('viewBox', `0 0 ${boardPxW} ${boardPxH}`);
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', '100%');
     svg.classList.add('go-board-svg');
 
     // 배경
     const bg = document.createElementNS(SVG_NS, 'rect');
-    bg.setAttribute('width', boardPx);
-    bg.setAttribute('height', boardPx);
+    bg.setAttribute('width', boardPxW);
+    bg.setAttribute('height', boardPxH);
     bg.setAttribute('class', 'go-board-bg');
     svg.appendChild(bg);
 
-    // 격자선
-    for (let i = 0; i < size; i++) {
-      const pos = margin + i * cellPx;
+    // 격자선 (보이는 영역 안에서만)
+    for (let y = minY; y <= maxY; y++) {
       const hLine = document.createElementNS(SVG_NS, 'line');
-      hLine.setAttribute('x1', margin);
-      hLine.setAttribute('y1', pos);
-      hLine.setAttribute('x2', margin + cellPx * (size - 1));
-      hLine.setAttribute('y2', pos);
+      hLine.setAttribute('x1', px(minX));
+      hLine.setAttribute('y1', py(y));
+      hLine.setAttribute('x2', px(maxX));
+      hLine.setAttribute('y2', py(y));
       hLine.setAttribute('class', 'go-grid-line');
       svg.appendChild(hLine);
-
+    }
+    for (let x = minX; x <= maxX; x++) {
       const vLine = document.createElementNS(SVG_NS, 'line');
-      vLine.setAttribute('x1', pos);
-      vLine.setAttribute('y1', margin);
-      vLine.setAttribute('x2', pos);
-      vLine.setAttribute('y2', margin + cellPx * (size - 1));
+      vLine.setAttribute('x1', px(x));
+      vLine.setAttribute('y1', py(minY));
+      vLine.setAttribute('x2', px(x));
+      vLine.setAttribute('y2', py(maxY));
       vLine.setAttribute('class', 'go-grid-line');
       svg.appendChild(vLine);
     }
 
-    // 화점(성점) - 크기별로 다르게 계산
+    // 화점(성점) - 보이는 영역 안에 있는 것만
     const starCount = size >= 13 ? 9 : size >= 9 ? 5 : 0;
     for (const [hx, hy] of getHandicapPoints(size, size, starCount)) {
+      if (hx < minX || hx > maxX || hy < minY || hy > maxY) continue;
       const dot = document.createElementNS(SVG_NS, 'circle');
-      dot.setAttribute('cx', margin + hx * cellPx);
-      dot.setAttribute('cy', margin + hy * cellPx);
+      dot.setAttribute('cx', px(hx));
+      dot.setAttribute('cy', py(hy));
       dot.setAttribute('r', 3.5);
       dot.setAttribute('class', 'go-star-point');
       svg.appendChild(dot);
     }
 
-    // 돌
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
+    // 돌 (보이는 영역만 순회)
+    for (let y = minY; y <= maxY; y++) {
+      for (let x = minX; x <= maxX; x++) {
         const stone = this.state[y][x];
         if (!stone) continue;
         const circle = document.createElementNS(SVG_NS, 'circle');
-        circle.setAttribute('cx', margin + x * cellPx);
-        circle.setAttribute('cy', margin + y * cellPx);
+        circle.setAttribute('cx', px(x));
+        circle.setAttribute('cy', py(y));
         circle.setAttribute('r', cellPx * 0.46);
         circle.setAttribute('class', stone === STONE.BLACK ? 'go-stone-black' : 'go-stone-white');
         svg.appendChild(circle);
@@ -139,24 +185,26 @@ export class GoBoard extends BoardCore {
     // 마지막 착수 표시 (소리 없이도 AI가 어디 뒀는지 바로 알 수 있게)
     if (this.lastMove) {
       const { x, y } = this.lastMove;
-      const stoneColor = this.state[y] ? this.state[y][x] : null;
-      if (stoneColor) {
-        const marker = document.createElementNS(SVG_NS, 'circle');
-        marker.setAttribute('cx', margin + x * cellPx);
-        marker.setAttribute('cy', margin + y * cellPx);
-        marker.setAttribute('r', cellPx * 0.18);
-        marker.setAttribute('class', stoneColor === STONE.BLACK ? 'go-last-move-marker-on-black' : 'go-last-move-marker-on-white');
-        svg.appendChild(marker);
+      if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+        const stoneColor = this.state[y] ? this.state[y][x] : null;
+        if (stoneColor) {
+          const marker = document.createElementNS(SVG_NS, 'circle');
+          marker.setAttribute('cx', px(x));
+          marker.setAttribute('cy', py(y));
+          marker.setAttribute('r', cellPx * 0.18);
+          marker.setAttribute('class', stoneColor === STONE.BLACK ? 'go-last-move-marker-on-black' : 'go-last-move-marker-on-white');
+          svg.appendChild(marker);
+        }
       }
     }
 
-    // 클릭 히트영역 (교차점마다 투명 원) - interactive 모드에서만 생성
+    // 클릭 히트영역 (보이는 영역만) - interactive 모드에서만 생성
     if (this.interactive) {
-      for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
           const hit = document.createElementNS(SVG_NS, 'circle');
-          hit.setAttribute('cx', margin + x * cellPx);
-          hit.setAttribute('cy', margin + y * cellPx);
+          hit.setAttribute('cx', px(x));
+          hit.setAttribute('cy', py(y));
           hit.setAttribute('r', cellPx * 0.48);
           hit.setAttribute('class', 'go-hit-area');
           hit.addEventListener('click', () => {
@@ -175,6 +223,16 @@ export class GoBoard extends BoardCore {
     this._svgEl = svg;
     this._margin = margin;
     this._cellPx = cellPx;
+    this._viewMinX = minX;
+    this._viewMinY = minY;
+  }
+
+  /** 실제 보드 좌표(x,y)를 현재 렌더링된 SVG 픽셀 좌표로 변환 */
+  _toPx(x, y) {
+    return {
+      cx: this._margin + (x - this._viewMinX) * this._cellPx,
+      cy: this._margin + (y - this._viewMinY) * this._cellPx,
+    };
   }
 
   /**
@@ -187,8 +245,7 @@ export class GoBoard extends BoardCore {
     this._svgEl.querySelectorAll('.go-candidate-marker').forEach((el) => el.remove());
 
     for (const { x, y, label } of points) {
-      const cx = this._margin + x * this._cellPx;
-      const cy = this._margin + y * this._cellPx;
+      const { cx, cy } = this._toPx(x, y);
 
       const circle = document.createElementNS(SVG_NS, 'circle');
       circle.setAttribute('cx', cx);
@@ -218,8 +275,7 @@ export class GoBoard extends BoardCore {
     this._svgEl.querySelectorAll('.go-answer-marker').forEach((el) => el.remove());
 
     const draw = (x, y, cls) => {
-      const cx = this._margin + x * this._cellPx;
-      const cy = this._margin + y * this._cellPx;
+      const { cx, cy } = this._toPx(x, y);
       const circle = document.createElementNS(SVG_NS, 'circle');
       circle.setAttribute('cx', cx);
       circle.setAttribute('cy', cy);
