@@ -53,10 +53,7 @@
     </div>
     <div class="toolbar">
       <span style="font-size:13px;color:#888;">난이도:</span>
-      <button class="diff-btn filter-btn active" data-diff="all">전체</button>
-      <button class="diff-btn filter-btn" data-diff="easy">쉬움</button>
-      <button class="diff-btn filter-btn" data-diff="medium">보통</button>
-      <button class="diff-btn filter-btn" data-diff="hard">어려움</button>
+      <select id="kyu-select" style="padding:5px 10px;border-radius:16px;border:1px solid #ccc;font-size:13px;"></select>
       <span id="score-line" class="score-line">0 / 0 정답</span>
     </div>
 
@@ -111,6 +108,20 @@
     const nextBtn = document.getElementById('next-btn');
     const scoreLine = document.getElementById('score-line');
     const objectiveToolbar = document.getElementById('objective-toolbar');
+    const kyuSelect = document.getElementById('kyu-select');
+
+    // 18급~1급 드롭다운 채우기
+    const allOpt = document.createElement('option');
+    allOpt.value = 'all';
+    allOpt.textContent = '전체';
+    kyuSelect.appendChild(allOpt);
+    for (let k = 18; k >= 1; k--) {
+      const opt = document.createElement('option');
+      opt.value = `k${k}`;
+      opt.textContent = `${k}급`;
+      kyuSelect.appendChild(opt);
+    }
+    kyuSelect.addEventListener('change', applyFilter);
 
     async function loadProblems() {
       const [tsumegoRes, quizRes] = await Promise.all([
@@ -130,7 +141,7 @@
 
     function applyFilter() {
       const cat = currentCategory();
-      const diff = document.querySelector('.diff-btn.active').dataset.diff;
+      const diff = kyuSelect.value; // 'all' 또는 'k18'..'k1'
       objectiveToolbar.style.display = cat === 'tsumego' ? 'flex' : 'none';
 
       if (cat === 'tsumego') {
@@ -147,27 +158,41 @@
       loadNextProblem();
     }
 
+    // 문제에 등장하는 주요 지점들을 감싸는 크롭 영역 계산 (판 전체가 아니라 핵심만 보이게)
+    function computeRegion(stones, correctPoint, wrongBranches) {
+      const pts = [...stones, correctPoint, ...wrongBranches.map((b) => ({ x: b.x, y: b.y }))];
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      for (const p of pts) {
+        minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+        minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+      }
+      return { minX, maxX, minY, maxY, padding: 2 };
+    }
+
     // tsumego.json 문제를 공통 형식으로 변환
     function normalizeTsumego(p) {
       const groupColorText = p.groupColor === 'B' ? '흑' : '백';
       const moverText = p.mover === 'B' ? '흑' : '백';
       const objectiveText = p.objective === 'capture' ? '잡는' : '살리는';
+      const correctPoint = { x: p.mainLine[0].x, y: p.mainLine[0].y };
+      const wrongBranches = p.wrongBranches.map((b) => ({
+        x: b.x, y: b.y,
+        followupMoves: b.punish.map((m) => ({ x: m.x, y: m.y, color: m.color })),
+        hasVerifiedPunish: true,
+      }));
       return {
         source: 'tsumego',
         size: p.size,
         stones: p.stones,
         mover: p.mover,
-        correctPoint: { x: p.mainLine[0].x, y: p.mainLine[0].y },
-        question: `[${diffLabel(p.difficulty)}] ${groupColorText} 그룹을 ${objectiveText} 첫 수는? (${moverText} 차례)`,
+        correctPoint,
+        question: `[${p.kyuLevel}급] ${groupColorText} 그룹을 ${objectiveText} 첫 수는? (${moverText} 차례)`,
         explanationText: p.objective === 'capture'
           ? '표시된 자리가 이 그룹의 급소로, 이후 어떻게 저항해도 그룹을 살릴 수 없습니다.'
           : '표시된 자리가 이 그룹의 급소로, 여기를 두면 두 눈을 확보해 완전히 살아납니다.',
         mainLineMoves: p.mainLine.map((m) => ({ x: m.x, y: m.y, color: m.color })),
-        wrongBranches: p.wrongBranches.map((b) => ({
-          x: b.x, y: b.y,
-          followupMoves: b.punish.map((m) => ({ x: m.x, y: m.y, color: m.color })),
-          hasVerifiedPunish: true,
-        })),
+        wrongBranches,
+        viewRegion: computeRegion(p.stones, correctPoint, wrongBranches),
       };
     }
 
@@ -175,18 +200,21 @@
     function normalizeQuiz(p) {
       const moverText = p.toMove === 'B' ? '흑' : '백';
       const correctOpt = p.options.find((o) => o.label === p.correctLabel);
+      const correctPoint = { x: correctOpt.x, y: correctOpt.y };
+      const wrongBranches = p.options
+        .filter((o) => o.label !== p.correctLabel)
+        .map((o) => ({ x: o.x, y: o.y, followupMoves: [], hasVerifiedPunish: false }));
       return {
         source: 'quiz',
         size: p.size,
         stones: p.stones,
         mover: p.toMove,
-        correctPoint: { x: correctOpt.x, y: correctOpt.y },
-        question: `[${diffLabel(p.difficulty)} · ${catLabel(p.category)}] ${moverText} 차례입니다. 다음 최선의 수는?`,
+        correctPoint,
+        question: `[${p.kyuLevel}급 · ${catLabel(p.category)}] ${moverText} 차례입니다. 다음 최선의 수는?`,
         explanationText: p.explanation,
         mainLineMoves: [{ x: correctOpt.x, y: correctOpt.y, color: p.toMove }],
-        wrongBranches: p.options
-          .filter((o) => o.label !== p.correctLabel)
-          .map((o) => ({ x: o.x, y: o.y, followupMoves: [], hasVerifiedPunish: false })),
+        wrongBranches,
+        viewRegion: computeRegion(p.stones, correctPoint, wrongBranches),
       };
     }
 
@@ -207,9 +235,6 @@
       renderProblem(current);
     }
 
-    function diffLabel(d) {
-      return { easy: '쉬움', medium: '보통', hard: '어려움' }[d] || d;
-    }
     function catLabel(c) {
       return { fuseki: '포석', middlegame: '중반 전투', endgame: '끝내기' }[c] || c;
     }
@@ -228,6 +253,7 @@
         size: problem.size,
         interactive: true,
         onPointClick: (x, y) => handlePointClick(x, y, problem),
+        viewRegion: problem.viewRegion,
       });
       board.loadPosition(problem.stones);
       questionEl.textContent = problem.question;
@@ -269,6 +295,7 @@
         moves: problem.mainLineMoves,
         captionEl: kifuCaption,
         captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
+        viewRegion: problem.viewRegion,
       });
       kifu.next();
 
@@ -331,13 +358,6 @@
 
     nextBtn.addEventListener('click', loadNextProblem);
 
-    document.querySelectorAll('.diff-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.diff-btn').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        applyFilter();
-      });
-    });
     document.querySelectorAll('.obj-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.obj-btn').forEach((b) => b.classList.remove('active'));
