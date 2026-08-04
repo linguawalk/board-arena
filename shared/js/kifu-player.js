@@ -24,7 +24,7 @@ export class KifuPlayer {
    */
   constructor({
     container, size, initialStones, moves,
-    captionEl = null, captions = [], viewRegion = null, highlightCells = [],
+    captionEl = null, captions = [], viewRegion = null, highlightCells = [], onComplete = null,
   }) {
     this.size = size;
     this.initialStones = initialStones;
@@ -32,6 +32,7 @@ export class KifuPlayer {
     this.captionEl = captionEl;
     this.captions = captions;
     this.highlightCells = highlightCells;
+    this.onComplete = onComplete;
     this.currentIndex = 0;
     this.playing = false;
     this.timer = null;
@@ -95,6 +96,9 @@ export class KifuPlayer {
     if (this.currentIndex < this.moves.length) {
       this.currentIndex++;
       this._renderStep();
+      if (this.currentIndex === this.moves.length && this.onComplete) {
+        this.onComplete();
+      }
     } else {
       this.pause();
     }
@@ -134,12 +138,13 @@ export class KifuPlayer {
   }
 
   /** 다른 수순으로 완전히 교체 (예: 정답 -> 오답 시도 전환) */
-  loadSequence({ initialStones, moves, captions = [], highlightCells = null }) {
+  loadSequence({ initialStones, moves, captions = [], highlightCells = null, onComplete = null }) {
     this.pause();
     this.initialStones = initialStones;
     this.moves = moves;
     this.captions = captions;
     if (highlightCells) this.highlightCells = highlightCells;
+    if (onComplete) this.onComplete = onComplete;
     this.currentIndex = 0;
     this._renderStep();
   }
