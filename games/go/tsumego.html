@@ -30,7 +30,16 @@
   .branch-item { display: block; width: 100%; text-align: left; padding: 7px 10px; margin-bottom: 6px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; font-size: 13px; }
   .branch-item.selected { border-color: var(--accent); background: #f0f7f3; }
   .next-btn { padding: 8px 18px; border-radius: 6px; border: none; background: var(--accent); color: white; cursor: pointer; font-size: 14px; display: none; margin-top: 10px; }
-  .kifu-board-inline { width: 220px; margin: 0 auto; }
+  .kifu-board-inline { width: 320px; margin: 0 auto; }
+  .outcome-banner { display: none; text-align: center; font-size: 20px; font-weight: 800; padding: 14px; border-radius: 10px; margin-bottom: 10px; animation: outcome-pop 0.4s ease-out; }
+  .outcome-win { background: #e6f4ea; color: #1e7a34; }
+  .outcome-lose { background: #fce8e6; color: #b3261e; }
+  .liberty-line { font-size: 13px; color: #555; margin-bottom: 8px; }
+  @keyframes outcome-pop {
+    0% { transform: scale(0.7); opacity: 0; }
+    70% { transform: scale(1.06); opacity: 1; }
+    100% { transform: scale(1); }
+  }
 </style>
 </head>
 <body>
@@ -66,8 +75,10 @@
         <div id="explanation-text" class="explanation-text"></div>
 
         <div id="kifu-panel" class="kifu-panel">
+          <div id="outcome-banner" class="outcome-banner"></div>
           <div id="kifu-board-inline" class="kifu-board-inline"></div>
           <div id="kifu-caption" class="kifu-caption"></div>
+          <div id="liberty-line" class="liberty-line"></div>
           <div class="kifu-controls">
             <button id="kifu-prev">◀ 이전</button>
             <button id="kifu-play">▶ 자동재생</button>
@@ -102,8 +113,10 @@
     const resultBanner = document.getElementById('result-banner');
     const explanationTextEl = document.getElementById('explanation-text');
     const kifuPanel = document.getElementById('kifu-panel');
+    const outcomeBanner = document.getElementById('outcome-banner');
     const kifuBoardInline = document.getElementById('kifu-board-inline');
     const kifuCaption = document.getElementById('kifu-caption');
+    const libertyLine = document.getElementById('liberty-line');
     const branchListEl = document.getElementById('branch-list');
     const nextBtn = document.getElementById('next-btn');
     const scoreLine = document.getElementById('score-line');
@@ -169,7 +182,32 @@
       return { minX, maxX, minY, maxY, padding: 2 };
     }
 
-    // tsumego.json 문제를 공통 형식으로 변환
+    // 그룹의 활로(빈 인접점) 개수를 계산 - 학습자가 "왜 위험한지" 숫자로 바로 보게 함
+    function countLiberties(stones, groupCells, size) {
+      const occupied = new Map();
+      for (const s of stones) occupied.set(`${s.x},${s.y}`, s.color);
+      const liberties = new Set();
+      for (const { x, y } of groupCells) {
+        for (const [nx, ny] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
+          if (nx < 0 || nx >= size || ny < 0 || ny >= size) continue;
+          if (!occupied.has(`${nx},${ny}`)) liberties.add(`${nx},${ny}`);
+        }
+      }
+      return liberties.size;
+    }
+
+    function outcomeInfo(problem, isMainLine) {
+      if (isMainLine) {
+        return {
+          cls: 'outcome-win',
+          text: problem.objective === 'capture' ? '🎉 성공! 그룹을 완전히 잡았습니다' : '🌱 성공! 그룹이 완전히 살아났습니다',
+        };
+      }
+      return {
+        cls: 'outcome-lose',
+        text: problem.objective === 'capture' ? '💀 실패... 그룹이 결국 살아남았습니다' : '💀 실패... 그룹이 결국 잡혔습니다',
+      };
+    }
     function normalizeTsumego(p) {
       const groupColorText = p.groupColor === 'B' ? '흑' : '백';
       const moverText = p.mover === 'B' ? '흑' : '백';
@@ -245,6 +283,7 @@
       resultBanner.style.display = 'none';
       explanationTextEl.textContent = '';
       kifuPanel.style.display = 'none';
+      outcomeBanner.style.display = 'none';
       nextBtn.style.display = 'none';
       hintEl.style.display = 'block';
 
@@ -257,8 +296,13 @@
         viewRegion: problem.viewRegion,
       });
       board.loadPosition(problem.stones);
-      if (problem.targetGroup) board.highlightGroup(problem.targetGroup);
-      questionEl.textContent = problem.question;
+      if (problem.targetGroup) {
+        board.highlightGroup(problem.targetGroup);
+        const libCount = countLiberties(problem.stones, problem.targetGroup, problem.size);
+        questionEl.textContent = problem.question + ` (현재 활로: ${libCount}개)`;
+      } else {
+        questionEl.textContent = problem.question;
+      }
     }
 
     function handlePointClick(x, y, problem) {
@@ -288,6 +332,29 @@
 
     function showKifuExplanation(problem, picked, isCorrect) {
       kifuPanel.style.display = 'block';
+      outcomeBanner.style.display = 'none';
+      libertyLine.textContent = '';
+
+      const showOutcome = (isMainLine) => {
+        if (problem.source !== 'tsumego') return;
+        const info = outcomeInfo(problem, isMainLine);
+        outcomeBanner.className = 'outcome-banner ' + info.cls;
+        outcomeBanner.textContent = info.text;
+        outcomeBanner.style.display = 'block';
+        // 애니메이션 재적용을 위해 강제로 리플로우
+        outcomeBanner.style.animation = 'none';
+        void outcomeBanner.offsetWidth;
+        outcomeBanner.style.animation = '';
+
+        if (problem.targetGroup) {
+          const finalLib = countLiberties(
+            kifuBoardStonesList(kifu.board, problem.size),
+            problem.targetGroup,
+            problem.size
+          );
+          libertyLine.textContent = `최종 활로: ${finalLib}개`;
+        }
+      };
 
       kifuBoardInline.innerHTML = '';
       kifu = new KifuPlayer({
@@ -299,6 +366,7 @@
         captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
         viewRegion: problem.viewRegion,
         highlightCells: problem.targetGroup || [],
+        onComplete: () => showOutcome(true),
       });
       kifu.next();
 
@@ -314,10 +382,12 @@
         correctBtn.textContent = '✅ 정답 수순 보기';
         correctBtn.addEventListener('click', () => {
           setSelectedBranch(correctBtn);
+          outcomeBanner.style.display = 'none';
           kifu.loadSequence({
             initialStones: problem.stones,
             moves: problem.mainLineMoves,
             captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
+            onComplete: () => showOutcome(true),
           });
           kifu.next();
         });
@@ -331,11 +401,13 @@
           btn.textContent = `❌ 시도 ${idx + 1}${isThisOnePicked ? ' (방금 두신 수)' : ''} - ${tag}`;
           btn.addEventListener('click', () => {
             setSelectedBranch(btn);
+            outcomeBanner.style.display = 'none';
             const branchMoves = [{ x: branch.x, y: branch.y, color: problem.mover }, ...branch.followupMoves];
             kifu.loadSequence({
               initialStones: problem.stones,
               moves: branchMoves,
               captions: branchMoves.map((m, i) => (i === 0 ? '이 수를 시도하면...' : '상대가 이렇게 응징합니다')),
+              onComplete: () => showOutcome(false),
             });
             if (branchMoves.length > 1) kifu.playAll();
             else kifu.next();
@@ -347,6 +419,17 @@
           }
         });
       }
+    }
+
+    // KifuPlayer 내부 보드의 현재 상태를 stones 리스트로 변환 (활로 재계산용)
+    function kifuBoardStonesList(board, size) {
+      const list = [];
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          if (board.state[y][x]) list.push({ x, y, color: board.state[y][x] });
+        }
+      }
+      return list;
     }
 
     function setSelectedBranch(activeBtn) {
