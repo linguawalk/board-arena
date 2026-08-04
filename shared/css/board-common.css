@@ -47,12 +47,27 @@
 .go-stone-black {
   fill: var(--stone-black);
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: stone-pop 0.28s ease-out;
 }
 .go-stone-white {
   fill: var(--stone-white);
   stroke: #999;
   stroke-width: 0.5;
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: stone-pop 0.28s ease-out;
+}
+@keyframes stone-pop {
+  0% { transform: scale(0.2); opacity: 0.3; }
+  70% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes ghost-fade {
+  0% { opacity: 1; }
+  100% { opacity: 0.35; }
 }
 .go-hit-area {
   fill: transparent;
@@ -112,4 +127,5 @@
   stroke: #999;
   stroke-width: 2;
   pointer-events: none;
+  animation: ghost-fade 0.6s ease-out;
 }
