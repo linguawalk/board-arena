@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 사활 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  .quiz-layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .quiz-board { width: 380px; flex-shrink: 0; }
+  .quiz-panel { flex: 1; min-width: 300px; max-width: 500px; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+  .filter-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .score-line { font-size: 13px; color: #666; margin-left: auto; }
+  .quiz-question { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .quiz-hint { font-size: 13px; color: #888; margin-bottom: 10px; }
+  .result-banner { font-weight: 700; font-size: 15px; margin: 10px 0; padding: 8px 12px; border-radius: 6px; display: none; }
+  .result-correct { background: #e6f4ea; color: #1e7a34; }
+  .result-wrong { background: #fce8e6; color: #b3261e; }
+  .kifu-panel { display: none; margin-top: 14px; padding: 12px; background: #f7f7f7; border-radius: 8px; }
+  .kifu-caption { font-size: 13px; color: #555; margin-bottom: 8px; min-height: 18px; }
+  .kifu-controls { display: flex; gap: 6px; margin-bottom: 10px; }
+  .kifu-controls button { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .branch-list { margin-top: 12px; }
+  .branch-title { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  .branch-item { display: block; width: 100%; text-align: left; padding: 7px 10px; margin-bottom: 6px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; font-size: 13px; }
+  .branch-item.selected { border-color: var(--accent); background: #f0f7f3; }
+  .next-btn { padding: 8px 18px; border-radius: 6px; border: none; background: var(--accent); color: white; cursor: pointer; font-size: 14px; display: none; margin-top: 10px; }
+  .kifu-board-inline { width: 220px; margin: 0 auto; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>바둑 사활 (Life &amp; Death)</h1>
+    <p style="color:#777;font-size:14px;">한 수를 클릭해서 답하면, 정답과 검증된 다른 시도들을 기보로 보여드립니다.</p>
+
+    <div class="toolbar">
+      <span style="font-size:13px;color:#888;">목표:</span>
+      <button class="obj-btn filter-btn active" data-obj="all">전체</button>
+      <button class="obj-btn filter-btn" data-obj="capture">잡기(공격)</button>
+      <button class="obj-btn filter-btn" data-obj="live">살기(수비)</button>
+    </div>
+    <div class="toolbar">
+      <span style="font-size:13px;color:#888;">난이도:</span>
+      <button class="diff-btn filter-btn active" data-diff="all">전체</button>
+      <button class="diff-btn filter-btn" data-diff="easy">쉬움</button>
+      <button class="diff-btn filter-btn" data-diff="medium">보통</button>
+      <button class="diff-btn filter-btn" data-diff="hard">어려움</button>
+      <span id="score-line" class="score-line">0 / 0 정답</span>
+    </div>
+
+    <div class="quiz-layout">
+      <div id="quiz-board" class="quiz-board"></div>
+      <div class="quiz-panel">
+        <div id="quiz-question" class="quiz-question"></div>
+        <div id="quiz-hint" class="quiz-hint">바둑판 위에서 최선이라고 생각하는 자리를 클릭하세요.</div>
+        <div id="result-banner" class="result-banner"></div>
+
+        <div id="kifu-panel" class="kifu-panel">
+          <div id="kifu-board-inline" class="kifu-board-inline"></div>
+          <div id="kifu-caption" class="kifu-caption"></div>
+          <div class="kifu-controls">
+            <button id="kifu-prev">◀ 이전</button>
+            <button id="kifu-play">▶ 자동재생</button>
+            <button id="kifu-next">다음 ▶</button>
+            <button id="kifu-reset">처음으로</button>
+          </div>
+          <div id="branch-list" class="branch-list"></div>
+        </div>
+
+        <button id="next-btn" class="next-btn">다음 문제 →</button>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+    import { KifuPlayer } from '../../shared/js/kifu-player.js';
+
+    let allProblems = [];
+    let pool = [];
+    let current = null;
+    let correctCount = 0;
+    let attemptCount = 0;
+    let board = null;
+    let kifu = null;
+    let answered = false;
+
+    const boardContainer = document.getElementById('quiz-board');
+    const questionEl = document.getElementById('quiz-question');
+    const hintEl = document.getElementById('quiz-hint');
+    const resultBanner = document.getElementById('result-banner');
+    const kifuPanel = document.getElementById('kifu-panel');
+    const kifuBoardInline = document.getElementById('kifu-board-inline');
+    const kifuCaption = document.getElementById('kifu-caption');
+    const branchListEl = document.getElementById('branch-list');
+    const nextBtn = document.getElementById('next-btn');
+    const scoreLine = document.getElementById('score-line');
+
+    async function loadProblems() {
+      const res = await fetch('../../data/go/tsumego.json');
+      const data = await res.json();
+      allProblems = data.problems;
+      applyFilter();
+    }
+
+    function applyFilter() {
+      const diff = document.querySelector('.diff-btn.active').dataset.diff;
+      const obj = document.querySelector('.obj-btn.active').dataset.obj;
+      pool = allProblems.filter(
+        (p) => (diff === 'all' || p.difficulty === diff) && (obj === 'all' || p.objective === obj)
+      );
+      shuffle(pool);
+      loadNextProblem();
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function loadNextProblem() {
+      if (pool.length === 0) {
+        if (allProblems.length === 0) return;
+        questionEl.textContent = '이 조건의 문제를 모두 풀었습니다! 다시 섞어서 진행합니다.';
+        applyFilter();
+        return;
+      }
+      current = pool.pop();
+      renderProblem(current);
+    }
+
+    function diffLabel(d) {
+      return { easy: '쉬움', medium: '보통', hard: '어려움' }[d] || d;
+    }
+
+    function renderProblem(problem) {
+      answered = false;
+      resultBanner.style.display = 'none';
+      kifuPanel.style.display = 'none';
+      nextBtn.style.display = 'none';
+      hintEl.style.display = 'block';
+
+      boardContainer.innerHTML = '';
+      board = new GoBoard({
+        container: boardContainer,
+        size: problem.size,
+        interactive: true,
+        onPointClick: (x, y) => handlePointClick(x, y, problem),
+      });
+      board.loadPosition(problem.stones);
+
+      const groupColorText = problem.groupColor === 'B' ? '흑' : '백';
+      const moverText = problem.mover === 'B' ? '흑' : '백';
+      const objectiveText = problem.objective === 'capture' ? '잡는' : '살리는';
+      questionEl.textContent = `[${diffLabel(problem.difficulty)}] ${groupColorText} 그룹을 ${objectiveText} 첫 수는? (${moverText} 차례)`;
+    }
+
+    function handlePointClick(x, y, problem) {
+      if (answered) return;
+      const occupied = problem.stones.some((s) => s.x === x && s.y === y);
+      if (occupied) return;
+
+      answered = true;
+      attemptCount++;
+
+      const correctMove = problem.mainLine[0];
+      const isCorrect = correctMove.x === x && correctMove.y === y;
+      if (isCorrect) correctCount++;
+
+      board.markAnswerFeedback(correctMove, { x, y });
+
+      hintEl.style.display = 'none';
+      resultBanner.style.display = 'block';
+      resultBanner.className = 'result-banner ' + (isCorrect ? 'result-correct' : 'result-wrong');
+      resultBanner.textContent = isCorrect ? '✅ 정답입니다!' : '❌ 아쉽습니다. 정답과 다른 시도들을 확인해보세요.';
+
+      showKifuExplanation(problem, { x, y }, isCorrect);
+
+      scoreLine.textContent = `${correctCount} / ${attemptCount} 정답`;
+      nextBtn.style.display = 'inline-block';
+    }
+
+    function showKifuExplanation(problem, picked, isCorrect) {
+      kifuPanel.style.display = 'block';
+
+      const correctSeqMoves = problem.mainLine.map((m) => ({ x: m.x, y: m.y, color: m.color }));
+      const correctCaptions = problem.mainLine.map((m, i) =>
+        i === 0 ? '정답: 여기가 급소입니다' : `이어지는 진행 (${i + 1}수째)`
+      );
+
+      kifuBoardInline.innerHTML = '';
+      kifu = new KifuPlayer({
+        container: kifuBoardInline,
+        size: problem.size,
+        initialStones: problem.stones,
+        moves: correctSeqMoves,
+        captionEl: kifuCaption,
+        captions: correctCaptions,
+      });
+      kifu.next(); // 정답 수까지 한 수 재생해서 보여줌
+
+      // 오답 시도 목록 렌더링
+      branchListEl.innerHTML = '';
+      if (problem.wrongBranches.length > 0) {
+        const title = document.createElement('div');
+        title.className = 'branch-title';
+        title.textContent = '검증된 다른 시도들 (눌러서 재생)';
+        branchListEl.appendChild(title);
+
+        const correctBtn = document.createElement('button');
+        correctBtn.className = 'branch-item selected';
+        correctBtn.textContent = '✅ 정답 수순 보기';
+        correctBtn.addEventListener('click', () => {
+          setSelectedBranch(correctBtn);
+          kifu.loadSequence({
+            initialStones: problem.stones,
+            moves: correctSeqMoves,
+            captions: correctCaptions,
+          });
+          kifu.next();
+        });
+        branchListEl.appendChild(correctBtn);
+
+        problem.wrongBranches.forEach((branch, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'branch-item';
+          const isThisOnePicked = !isCorrect && picked.x === branch.x && picked.y === branch.y;
+          btn.textContent = `❌ 시도 ${idx + 1}${isThisOnePicked ? ' (방금 두신 수)' : ''} - 실패`;
+          btn.addEventListener('click', () => {
+            setSelectedBranch(btn);
+            const branchMoves = [{ x: branch.x, y: branch.y, color: problem.mover }, ...branch.punish];
+            const branchCaptions = branchMoves.map((m, i) =>
+              i === 0 ? '이 수를 시도하면...' : '상대가 이렇게 응징합니다'
+            );
+            kifu.loadSequence({
+              initialStones: problem.stones,
+              moves: branchMoves,
+              captions: branchCaptions,
+            });
+            kifu.playAll();
+          });
+          branchListEl.appendChild(btn);
+
+          // 방금 사용자가 실제로 둔 오답과 일치하면 자동으로 그 갈래를 먼저 보여줌
+          if (isThisOnePicked) {
+            setTimeout(() => btn.click(), 50);
+          }
+        });
+      }
+    }
+
+    function setSelectedBranch(activeBtn) {
+      branchListEl.querySelectorAll('.branch-item').forEach((b) => b.classList.remove('selected'));
+      activeBtn.classList.add('selected');
+    }
+
+    document.getElementById('kifu-prev').addEventListener('click', () => kifu && kifu.prev());
+    document.getElementById('kifu-next').addEventListener('click', () => kifu && kifu.next());
+    document.getElementById('kifu-reset').addEventListener('click', () => kifu && kifu.reset());
+    document.getElementById('kifu-play').addEventListener('click', () => kifu && kifu.playAll());
+
+    nextBtn.addEventListener('click', loadNextProblem);
+
+    document.querySelectorAll('.diff-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.diff-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter();
+      });
+    });
+    document.querySelectorAll('.obj-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.obj-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter();
+      });
+    });
+
+    loadProblems();
+  </script>
+</body>
+</html>
