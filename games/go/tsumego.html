@@ -241,7 +241,8 @@
         explanationText: p.objective === 'capture'
           ? '표시된 자리가 이 그룹의 급소로, 이후 어떻게 저항해도 그룹을 살릴 수 없습니다.'
           : '표시된 자리가 이 그룹의 급소로, 여기를 두면 두 눈을 확보해 완전히 살아납니다.',
-        mainLineMoves: p.mainLine.map((m) => ({ x: m.x, y: m.y, color: m.color })),
+        mainLineMoves: (p.demoSequence && p.demoSequence.length ? p.demoSequence : p.mainLine)
+          .map((m) => ({ x: m.x, y: m.y, color: m.color })),
         wrongBranches,
         viewRegion: computeRegion(p.stones, correctPoint, wrongBranches, p.targetGroup),
         targetGroup: p.targetGroup,
@@ -377,7 +378,10 @@
 
       const correctSeq = {
         moves: problem.mainLineMoves,
-        captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
+        captions: problem.mainLineMoves.map((m, i) => {
+          if (i === 0) return '정답 수';
+          return m.color === problem.mover ? '계속 마무리합니다' : '상대가 저항해봅니다';
+        }),
         onComplete: () => showOutcome(true),
       };
 
