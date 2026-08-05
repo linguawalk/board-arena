@@ -32,6 +32,14 @@
   .branch-item.selected { border-color: var(--accent); background: #f0f7f3; }
   .next-btn { padding: 8px 18px; border-radius: 6px; border: none; background: var(--accent); color: white; cursor: pointer; font-size: 14px; display: none; margin-top: 10px; }
   .kifu-board-inline { width: 320px; margin: 0 auto; }
+  .kifu-board-inline.shake { animation: board-shake 0.4s; }
+  @keyframes board-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
   .outcome-banner { display: none; text-align: center; font-size: 20px; font-weight: 800; padding: 14px; border-radius: 10px; margin-bottom: 10px; animation: outcome-pop 0.4s ease-out; }
   .outcome-win { background: #e6f4ea; color: #1e7a34; }
   .outcome-lose { background: #fce8e6; color: #b3261e; }
@@ -347,7 +355,6 @@
         outcomeBanner.className = 'outcome-banner ' + info.cls;
         outcomeBanner.textContent = info.text;
         outcomeBanner.style.display = 'block';
-        // 애니메이션 재적용을 위해 강제로 리플로우
         outcomeBanner.style.animation = 'none';
         void outcomeBanner.offsetWidth;
         outcomeBanner.style.animation = '';
@@ -362,70 +369,90 @@
         }
       };
 
+      const triggerShake = () => {
+        kifuBoardInline.classList.remove('shake');
+        void kifuBoardInline.offsetWidth;
+        kifuBoardInline.classList.add('shake');
+      };
+
+      const correctSeq = {
+        moves: problem.mainLineMoves,
+        captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
+        onComplete: () => showOutcome(true),
+      };
+
+      // 사용자가 실제로 둔 오답이 검증된 시도와 일치하면, 그 "실패 이유"를 기본으로 먼저 보여준다
+      const matchedBranch = !isCorrect
+        ? problem.wrongBranches.find((b) => b.x === picked.x && b.y === picked.y)
+        : null;
+
       kifuBoardInline.innerHTML = '';
       kifu = new KifuPlayer({
         container: kifuBoardInline,
         size: problem.size,
         initialStones: problem.stones,
-        moves: problem.mainLineMoves,
+        moves: matchedBranch ? [{ x: matchedBranch.x, y: matchedBranch.y, color: problem.mover }, ...matchedBranch.followupMoves] : correctSeq.moves,
         captionEl: kifuCaption,
-        captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
+        captions: matchedBranch
+          ? [{ x: matchedBranch.x, y: matchedBranch.y }, ...matchedBranch.followupMoves].map((m, i) => (i === 0 ? '방금 두신 수' : '상대가 이렇게 응징합니다'))
+          : correctSeq.captions,
         viewRegion: problem.viewRegion,
         highlightCells: problem.targetGroup || [],
-        onComplete: () => showOutcome(true),
+        onComplete: () => showOutcome(!matchedBranch),
         onStepChange: updateKifuButtons,
+        onCapture: matchedBranch ? triggerShake : null,
       });
-      kifu.next();
+      if (matchedBranch && matchedBranch.followupMoves.length > 0) {
+        kifu.playAll();
+      } else {
+        kifu.next();
+      }
 
       branchListEl.innerHTML = '';
-      if (problem.wrongBranches.length > 0) {
-        const title = document.createElement('div');
-        title.className = 'branch-title';
-        title.textContent = '다른 시도들 (눌러서 재생)';
-        branchListEl.appendChild(title);
+      const title = document.createElement('div');
+      title.className = 'branch-title';
+      title.textContent = '다른 시도들 (눌러서 재생)';
+      branchListEl.appendChild(title);
 
-        const correctBtn = document.createElement('button');
-        correctBtn.className = 'branch-item selected';
-        correctBtn.textContent = '✅ 정답 수순 보기';
-        correctBtn.addEventListener('click', () => {
-          setSelectedBranch(correctBtn);
+      const correctBtn = document.createElement('button');
+      correctBtn.className = 'branch-item' + (matchedBranch ? '' : ' selected');
+      correctBtn.textContent = '✅ 정답 수순 보기';
+      correctBtn.addEventListener('click', () => {
+        setSelectedBranch(correctBtn);
+        outcomeBanner.style.display = 'none';
+        kifu.loadSequence({
+          initialStones: problem.stones,
+          moves: correctSeq.moves,
+          captions: correctSeq.captions,
+          onComplete: () => showOutcome(true),
+          onCapture: null,
+        });
+        kifu.next();
+      });
+      branchListEl.appendChild(correctBtn);
+
+      problem.wrongBranches.forEach((branch, idx) => {
+        const btn = document.createElement('button');
+        const isThisOnePicked = !isCorrect && picked.x === branch.x && picked.y === branch.y;
+        btn.className = 'branch-item' + (isThisOnePicked ? ' selected' : '');
+        const tag = branch.hasVerifiedPunish ? '실패 (응징 수순 검증됨)' : '최선이 아님';
+        btn.textContent = `❌ 시도 ${idx + 1}${isThisOnePicked ? ' (방금 두신 수)' : ''} - ${tag}`;
+        btn.addEventListener('click', () => {
+          setSelectedBranch(btn);
           outcomeBanner.style.display = 'none';
+          const branchMoves = [{ x: branch.x, y: branch.y, color: problem.mover }, ...branch.followupMoves];
           kifu.loadSequence({
             initialStones: problem.stones,
-            moves: problem.mainLineMoves,
-            captions: problem.mainLineMoves.map((m, i) => (i === 0 ? '정답 수' : `이어지는 진행 (${i + 1}수째)`)),
-            onComplete: () => showOutcome(true),
+            moves: branchMoves,
+            captions: branchMoves.map((m, i) => (i === 0 ? '이 수를 시도하면...' : '상대가 이렇게 응징합니다')),
+            onComplete: () => showOutcome(false),
+            onCapture: triggerShake,
           });
-          kifu.next();
+          if (branchMoves.length > 1) kifu.playAll();
+          else kifu.next();
         });
-        branchListEl.appendChild(correctBtn);
-
-        problem.wrongBranches.forEach((branch, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'branch-item';
-          const isThisOnePicked = !isCorrect && picked.x === branch.x && picked.y === branch.y;
-          const tag = branch.hasVerifiedPunish ? '실패 (응징 수순 검증됨)' : '최선이 아님';
-          btn.textContent = `❌ 시도 ${idx + 1}${isThisOnePicked ? ' (방금 두신 수)' : ''} - ${tag}`;
-          btn.addEventListener('click', () => {
-            setSelectedBranch(btn);
-            outcomeBanner.style.display = 'none';
-            const branchMoves = [{ x: branch.x, y: branch.y, color: problem.mover }, ...branch.followupMoves];
-            kifu.loadSequence({
-              initialStones: problem.stones,
-              moves: branchMoves,
-              captions: branchMoves.map((m, i) => (i === 0 ? '이 수를 시도하면...' : '상대가 이렇게 응징합니다')),
-              onComplete: () => showOutcome(false),
-            });
-            if (branchMoves.length > 1) kifu.playAll();
-            else kifu.next();
-          });
-          branchListEl.appendChild(btn);
-
-          if (isThisOnePicked) {
-            setTimeout(() => btn.click(), 50);
-          }
-        });
-      }
+        branchListEl.appendChild(btn);
+      });
     }
 
     // KifuPlayer 내부 보드의 현재 상태를 stones 리스트로 변환 (활로 재계산용)
