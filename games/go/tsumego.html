@@ -24,6 +24,7 @@
   .kifu-caption { font-size: 13px; color: #555; margin-bottom: 8px; min-height: 18px; }
   .kifu-controls { display: flex; gap: 6px; margin-bottom: 10px; }
   .kifu-controls button { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .kifu-controls button:disabled { opacity: 0.4; cursor: not-allowed; }
   .explanation-text { font-size: 13px; color: #444; margin-bottom: 10px; line-height: 1.6; }
   .branch-list { margin-top: 12px; }
   .branch-title { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
@@ -172,10 +173,14 @@
     }
 
     // 문제에 등장하는 주요 지점들을 감싸는 크롭 영역 계산 (판 전체가 아니라 핵심만 보이게)
-    function computeRegion(stones, correctPoint, wrongBranches) {
-      const pts = [...stones, correctPoint, ...wrongBranches.map((b) => ({ x: b.x, y: b.y }))];
+    function computeRegion(stones, correctPoint, wrongBranches, targetGroup) {
+      // 문제와 직접 관련된 지점만 기준으로 삼는다 (판 위의 다른 무관한 돌 무리는 무시)
+      const poi = (targetGroup && targetGroup.length > 0) ? targetGroup.slice() : [];
+      poi.push(correctPoint);
+      for (const b of wrongBranches) poi.push({ x: b.x, y: b.y });
+
       let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-      for (const p of pts) {
+      for (const p of poi) {
         minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
         minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
       }
@@ -230,7 +235,7 @@
           : '표시된 자리가 이 그룹의 급소로, 여기를 두면 두 눈을 확보해 완전히 살아납니다.',
         mainLineMoves: p.mainLine.map((m) => ({ x: m.x, y: m.y, color: m.color })),
         wrongBranches,
-        viewRegion: computeRegion(p.stones, correctPoint, wrongBranches),
+        viewRegion: computeRegion(p.stones, correctPoint, wrongBranches, p.targetGroup),
         targetGroup: p.targetGroup,
       };
     }
@@ -367,6 +372,7 @@
         viewRegion: problem.viewRegion,
         highlightCells: problem.targetGroup || [],
         onComplete: () => showOutcome(true),
+        onStepChange: updateKifuButtons,
       });
       kifu.next();
 
@@ -441,6 +447,17 @@
     document.getElementById('kifu-next').addEventListener('click', () => kifu && kifu.next());
     document.getElementById('kifu-reset').addEventListener('click', () => kifu && kifu.reset());
     document.getElementById('kifu-play').addEventListener('click', () => kifu && kifu.playAll());
+
+    const kifuPrevBtn = document.getElementById('kifu-prev');
+    const kifuNextBtn = document.getElementById('kifu-next');
+    const kifuPlayBtn = document.getElementById('kifu-play');
+
+    function updateKifuButtons(currentIndex, total) {
+      kifuPrevBtn.disabled = currentIndex === 0;
+      kifuNextBtn.disabled = currentIndex >= total;
+      kifuPlayBtn.disabled = total <= 1 || currentIndex >= total;
+      kifuPlayBtn.title = total <= 1 ? '이 문제는 단 한 수로 끝나 자동재생할 내용이 없습니다' : '';
+    }
 
     nextBtn.addEventListener('click', loadNextProblem);
 
