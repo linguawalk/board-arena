@@ -24,7 +24,7 @@ export class KifuPlayer {
    */
   constructor({
     container, size, initialStones, moves,
-    captionEl = null, captions = [], viewRegion = null, highlightCells = [], onComplete = null,
+    captionEl = null, captions = [], viewRegion = null, highlightCells = [], onComplete = null, onStepChange = null,
   }) {
     this.size = size;
     this.initialStones = initialStones;
@@ -33,6 +33,7 @@ export class KifuPlayer {
     this.captions = captions;
     this.highlightCells = highlightCells;
     this.onComplete = onComplete;
+    this.onStepChange = onStepChange;
     this.currentIndex = 0;
     this.playing = false;
     this.timer = null;
@@ -90,6 +91,8 @@ export class KifuPlayer {
       const captureNote = lastCaptured.length ? ` (${lastCaptured.length}점 따냄)` : '';
       this.captionEl.textContent = `${caption}${captureNote} (${this.currentIndex}/${this.moves.length})`;
     }
+
+    if (this.onStepChange) this.onStepChange(this.currentIndex, this.moves.length);
   }
 
   next() {
