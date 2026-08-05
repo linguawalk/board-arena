@@ -24,7 +24,8 @@ export class KifuPlayer {
    */
   constructor({
     container, size, initialStones, moves,
-    captionEl = null, captions = [], viewRegion = null, highlightCells = [], onComplete = null, onStepChange = null,
+    captionEl = null, captions = [], viewRegion = null, highlightCells = [],
+    onComplete = null, onStepChange = null, onCapture = null,
   }) {
     this.size = size;
     this.initialStones = initialStones;
@@ -34,6 +35,7 @@ export class KifuPlayer {
     this.highlightCells = highlightCells;
     this.onComplete = onComplete;
     this.onStepChange = onStepChange;
+    this.onCapture = onCapture;
     this.currentIndex = 0;
     this.playing = false;
     this.timer = null;
@@ -85,6 +87,9 @@ export class KifuPlayer {
     this.board.setMoveNumbers(numberMap);
     this.board.highlightGroup(this.highlightCells);
     this.board.markCapturedGhosts(this.currentIndex > 0 ? lastCaptured : []);
+    if (this.currentIndex > 0 && lastCaptured.length > 0 && this.onCapture) {
+      this.onCapture(lastCaptured);
+    }
 
     if (this.captionEl) {
       const caption = this.currentIndex === 0 ? '초기 국면' : (this.captions[this.currentIndex - 1] || `${this.currentIndex}수째`);
@@ -141,13 +146,14 @@ export class KifuPlayer {
   }
 
   /** 다른 수순으로 완전히 교체 (예: 정답 -> 오답 시도 전환) */
-  loadSequence({ initialStones, moves, captions = [], highlightCells = null, onComplete = null }) {
+  loadSequence({ initialStones, moves, captions = [], highlightCells = null, onComplete = null, onCapture = null }) {
     this.pause();
     this.initialStones = initialStones;
     this.moves = moves;
     this.captions = captions;
     if (highlightCells) this.highlightCells = highlightCells;
     if (onComplete) this.onComplete = onComplete;
+    if (onCapture) this.onCapture = onCapture;
     this.currentIndex = 0;
     this._renderStep();
   }
