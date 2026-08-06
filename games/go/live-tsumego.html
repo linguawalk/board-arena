@@ -181,6 +181,71 @@
       nextBtn.style.display = 'inline-block';
     }
 
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    /** 그룹의 남은 활로를 실제로 하나씩 메워가며 잡히는 순간까지 시각적으로 마무리 */
+    async function animateCapture(attackerColor) {
+      for (let i = 0; i < 14; i++) {
+        const groupOnBoard = current.targetGroup.filter((c) => board.state[c.y][c.x]);
+        if (groupOnBoard.length === 0) break; // 이미 실제로 잡힘
+
+        const occupied = new Set();
+        for (let y = 0; y < board.height; y++) {
+          for (let x = 0; x < board.width; x++) {
+            if (board.state[y][x]) occupied.add(`${x},${y}`);
+          }
+        }
+        const liberties = [];
+        for (const c of groupOnBoard) {
+          for (const [nx, ny] of [[c.x - 1, c.y], [c.x + 1, c.y], [c.x, c.y - 1], [c.x, c.y + 1]]) {
+            if (nx >= 0 && nx < board.width && ny >= 0 && ny < board.height && !occupied.has(`${nx},${ny}`)) {
+              liberties.push({ x: nx, y: ny });
+            }
+          }
+        }
+        if (liberties.length === 0) break;
+
+        board.turn = attackerColor; // 마무리 단계이므로 공격자 차례를 강제로 이어감
+        const pick = liberties[0];
+        board.handleInput(pick.x, pick.y);
+        log(`(마무리) ${attackerColor === 'B' ? '흑' : '백'} → (${pick.x}, ${pick.y})`);
+        statusLine.textContent = 'AI가 마무리하는 중...';
+        await sleep(550);
+      }
+    }
+
+    async function finishAndAnnounce(reason) {
+      thinkingEl.style.display = 'none';
+
+      if (reason === 'defend_failed') {
+        // 그룹이 죽음 확정 -> 실제로 잡히는 순간까지 보여줌
+        const attackerColor = current.objective === 'capture' ? humanColor : aiColor;
+        statusLine.textContent = '승부가 결정났습니다. 마무리를 보여드릴게요...';
+        await sleep(400);
+        await animateCapture(attackerColor);
+      } else {
+        statusLine.textContent = '승부가 결정났습니다.';
+        await sleep(400);
+      }
+
+      const humanWon =
+        (reason === 'attack_failed' && current.objective === 'live') ||
+        (reason === 'defend_failed' && current.objective === 'capture');
+
+      let verdict = humanWon
+        ? (current.objective === 'capture' ? '그룹을 완전히 잡아냈습니다!' : '그룹이 완전히 살아났습니다!')
+        : (current.objective === 'capture' ? '그룹이 결국 살아남았습니다.' : '그룹이 결국 잡혔습니다.');
+
+      if (!humanWon) {
+        const correct = current.mainLine[0];
+        verdict += ` AI의 결론: 정답 첫 수는 (${correct.x}, ${correct.y})였습니다. 그 수를 두었다면 승부가 뒤집혔을 것입니다.`;
+      }
+
+      showResult(humanWon, verdict);
+    }
+
     async function checkAndContinue() {
       let status;
       try {
@@ -191,15 +256,11 @@
       }
 
       if (status.attackCode === 0) {
-        // 그룹이 완전히 안전함(공격 불가)
-        const humanWon = current.objective === 'live';
-        showResult(humanWon, '그룹이 완전히 살았습니다.');
+        await finishAndAnnounce('attack_failed');
         return;
       }
       if (status.defendCode === 0) {
-        // 그룹이 더 이상 방어 불가(사실상 죽음)
-        const humanWon = current.objective === 'capture';
-        showResult(humanWon, '그룹이 죽었습니다.');
+        await finishAndAnnounce('defend_failed');
         return;
       }
 
@@ -230,11 +291,11 @@
         return;
       }
       if (status2.attackCode === 0) {
-        showResult(current.objective === 'live', '그룹이 완전히 살았습니다.');
+        await finishAndAnnounce('attack_failed');
         return;
       }
       if (status2.defendCode === 0) {
-        showResult(current.objective === 'capture', '그룹이 죽었습니다.');
+        await finishAndAnnounce('defend_failed');
         return;
       }
       resumeHumanTurn();
