@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 사활 - AI와 직접 두기 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 380px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 280px; }
+  .status-line { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; margin-bottom: 8px; }
+  .result-banner { display: none; text-align: center; font-size: 20px; font-weight: 800; padding: 14px; border-radius: 10px; margin-bottom: 14px; }
+  .result-win { background: #e6f4ea; color: #1e7a34; }
+  .result-lose { background: #fce8e6; color: #b3261e; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 14px; }
+  .filter-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; background: white; cursor: pointer; font-size: 13px; }
+  .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+  .next-btn { padding: 8px 18px; border-radius: 6px; border: none; background: var(--accent); color: white; cursor: pointer; font-size: 14px; display: none; margin-top: 10px; }
+  .move-log { font-size: 13px; color: #666; max-height: 160px; overflow-y: auto; margin-top: 10px; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>바둑 사활 - AI와 직접 두기</h1>
+    <p style="color:#777;font-size:14px;">정답을 바로 보여주는 대신, 실제로 AI와 번갈아 두면서 스스로 확인해보세요.</p>
+
+    <div class="toolbar">
+      <span style="font-size:13px;color:#888;">목표:</span>
+      <button class="obj-btn filter-btn active" data-obj="all">전체</button>
+      <button class="obj-btn filter-btn" data-obj="capture">잡기(공격)</button>
+      <button class="obj-btn filter-btn" data-obj="live">살기(수비)</button>
+    </div>
+
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <div id="status-line" class="status-line"></div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="result-banner" class="result-banner"></div>
+        <button id="next-btn" class="next-btn">다음 문제 →</button>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+
+    let allProblems = [];
+    let pool = [];
+    let current = null;
+    let board = null;
+    let humanColor = null;
+    let aiColor = null;
+    let gameOver = false;
+
+    const boardCol = document.getElementById('board-col');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const resultBanner = document.getElementById('result-banner');
+    const nextBtn = document.getElementById('next-btn');
+    const moveLog = document.getElementById('move-log');
+
+    function log(text) {
+      const p = document.createElement('div');
+      p.textContent = text;
+      moveLog.prepend(p);
+    }
+
+    async function loadProblems() {
+      const res = await fetch('../../data/go/tsumego.json');
+      const data = await res.json();
+      allProblems = data.problems;
+      applyFilter();
+    }
+
+    function applyFilter() {
+      const obj = document.querySelector('.obj-btn.active').dataset.obj;
+      pool = allProblems.filter((p) => obj === 'all' || p.objective === obj);
+      shuffle(pool);
+      loadNextProblem();
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function loadNextProblem() {
+      if (pool.length === 0) {
+        applyFilter();
+        return;
+      }
+      current = pool.pop();
+      setupProblem(current);
+    }
+
+    function computeRegion(stones, targetGroup) {
+      const pts = targetGroup && targetGroup.length ? targetGroup : stones;
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      for (const p of pts) {
+        minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+        minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+      }
+      return { minX, maxX, minY, maxY, padding: 3 };
+    }
+
+    function setupProblem(problem) {
+      gameOver = false;
+      resultBanner.style.display = 'none';
+      nextBtn.style.display = 'none';
+      moveLog.innerHTML = '';
+
+      humanColor = problem.mover;
+      aiColor = humanColor === 'B' ? 'W' : 'B';
+
+      boardCol.innerHTML = '';
+      board = new GoBoard({
+        container: boardCol,
+        size: problem.size,
+        interactive: true,
+        onPointClick: (x, y) => handleHumanClick(x, y),
+        viewRegion: computeRegion(problem.stones, problem.targetGroup),
+      });
+      board.loadPosition(problem.stones);
+      board.highlightGroup(problem.targetGroup);
+
+      const groupText = problem.groupColor === 'B' ? '흑' : '백';
+      const objText = problem.objective === 'capture' ? '잡아보세요' : '살려보세요';
+      const humanText = humanColor === 'B' ? '흑' : '백';
+      statusLine.textContent = `[${problem.kyuLevel}급] ${groupText} 그룹을 ${objText}. 당신은 ${humanText}입니다. 당신 차례.`;
+      log(`새 문제 시작 (${problem.size}x${problem.size}, ${problem.objective === 'capture' ? '공격' : '수비'})`);
+    }
+
+    function currentHistory() {
+      return board.history
+        .filter((h) => !h.pass)
+        .map((h) => ({ x: h.x, y: h.y, color: h.color }));
+    }
+
+    async function queryStatus() {
+      const target = current.targetGroup[0];
+      const res = await fetch('/api/go-engine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          size: current.size,
+          history: currentHistory(),
+          action: 'status',
+          targetX: target.x,
+          targetY: target.y,
+        }),
+      });
+      return res.json();
+    }
+
+    async function requestAiMove() {
+      const res = await fetch('/api/go-engine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          size: current.size,
+          history: currentHistory(),
+          action: 'genmove',
+          color: aiColor,
+        }),
+      });
+      return res.json();
+    }
+
+    function showResult(humanWon, reasonText) {
+      gameOver = true;
+      resultBanner.style.display = 'block';
+      resultBanner.className = 'result-banner ' + (humanWon ? 'result-win' : 'result-lose');
+      resultBanner.textContent = humanWon ? `🎉 성공! ${reasonText}` : `💀 실패... ${reasonText}`;
+      nextBtn.style.display = 'inline-block';
+    }
+
+    async function checkAndContinue() {
+      let status;
+      try {
+        status = await queryStatus();
+      } catch (e) {
+        log('상태 확인 오류: ' + e.message);
+        return;
+      }
+
+      if (status.attackCode === 0) {
+        // 그룹이 완전히 안전함(공격 불가)
+        const humanWon = current.objective === 'live';
+        showResult(humanWon, '그룹이 완전히 살았습니다.');
+        return;
+      }
+      if (status.defendCode === 0) {
+        // 그룹이 더 이상 방어 불가(사실상 죽음)
+        const humanWon = current.objective === 'capture';
+        showResult(humanWon, '그룹이 죽었습니다.');
+        return;
+      }
+
+      // 아직 팽팽함 -> AI 차례로 넘어감
+      thinkingEl.style.display = 'block';
+      statusLine.textContent = 'AI 차례...';
+      try {
+        const mv = await requestAiMove();
+        if (!mv.pass) {
+          board.handleInput(mv.x, mv.y);
+          log(`AI(${aiColor === 'B' ? '흑' : '백'}) → (${mv.x}, ${mv.y})`);
+        } else {
+          board.pass();
+          log('AI 패스');
+        }
+      } catch (e) {
+        log('AI 응수 오류: ' + e.message);
+      }
+      thinkingEl.style.display = 'none';
+
+      // AI가 둔 뒤 다시 상태 확인 (AI 수로 게임이 끝났을 수도 있음)
+      let status2;
+      try {
+        status2 = await queryStatus();
+      } catch (e) {
+        log('상태 확인 오류: ' + e.message);
+        resumeHumanTurn();
+        return;
+      }
+      if (status2.attackCode === 0) {
+        showResult(current.objective === 'live', '그룹이 완전히 살았습니다.');
+        return;
+      }
+      if (status2.defendCode === 0) {
+        showResult(current.objective === 'capture', '그룹이 죽었습니다.');
+        return;
+      }
+      resumeHumanTurn();
+    }
+
+    function resumeHumanTurn() {
+      const humanText = humanColor === 'B' ? '흑' : '백';
+      statusLine.textContent = `당신(${humanText}) 차례입니다.`;
+    }
+
+    async function handleHumanClick(x, y) {
+      if (gameOver) return;
+      const occupied = board.state[y][x] !== null;
+      if (occupied) return;
+
+      const before = board.history.length;
+      board.handleInput(x, y);
+      if (board.history.length === before) return; // 유효하지 않은 수(자충 등)였음
+
+      log(`당신(${humanColor === 'B' ? '흑' : '백'}) → (${x}, ${y})`);
+      await checkAndContinue();
+    }
+
+    nextBtn.addEventListener('click', loadNextProblem);
+    document.querySelectorAll('.obj-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.obj-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter();
+      });
+    });
+
+    loadProblems();
+  </script>
+</body>
+</html>
