@@ -255,9 +255,18 @@
       const moverText = p.toMove === 'B' ? '흑' : '백';
       const correctOpt = p.options.find((o) => o.label === p.correctLabel);
       const correctPoint = { x: correctOpt.x, y: correctOpt.y };
+      const correctOptFull = p.options.find((o) => o.label === p.correctLabel);
       const wrongBranches = p.options
         .filter((o) => o.label !== p.correctLabel)
-        .map((o) => ({ x: o.x, y: o.y, followupMoves: [], hasVerifiedPunish: false }));
+        .map((o) => ({
+          x: o.x, y: o.y,
+          followupMoves: (o.sequence || []).slice(1).map((m) => ({ x: m.x, y: m.y, color: m.color })),
+          hasVerifiedPunish: !!(o.sequence && o.sequence.length > 1),
+        }));
+      const mainLineMoves = (correctOptFull.sequence && correctOptFull.sequence.length
+        ? correctOptFull.sequence
+        : [correctOpt]
+      ).map((m) => ({ x: m.x, y: m.y, color: m.color || p.toMove }));
       return {
         source: 'quiz',
         size: p.size,
@@ -266,7 +275,7 @@
         correctPoint,
         question: `[${p.kyuLevel}급 · ${catLabel(p.category)}] ${moverText} 차례입니다. 다음 최선의 수는?`,
         explanationText: p.explanation,
-        mainLineMoves: [{ x: correctOpt.x, y: correctOpt.y, color: p.toMove }],
+        mainLineMoves,
         wrongBranches,
         viewRegion: computeRegion(p.stones, correctPoint, wrongBranches),
       };
