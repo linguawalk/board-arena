@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Board Arena - 고전 전략게임 모음</title>
+<link rel="stylesheet" href="shared/css/common.css" />
+<style>
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .game-card {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    background: white;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .game-card.ready {
+    cursor: pointer;
+  }
+  .game-card.ready:hover {
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .game-card.soon {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .game-emoji { font-size: 32px; margin-bottom: 8px; }
+  .game-name { font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 2px; }
+  .game-origin { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .game-status {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #eef6f0;
+    color: var(--accent);
+  }
+  .game-status.soon { background: #f0f0f0; color: #999; }
+  .tier-section { margin-top: 32px; }
+  .tier-desc { font-size: 13px; color: var(--text-muted); margin-top: -4px; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">Board Arena</div>
+    <nav>
+      <a href="#chaturanga">차투랑가 계열</a>
+      <a href="#simple">단순 전략게임</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>고전 전략게임을 한 곳에서</h1>
+    <p>바둑부터 체스, 장기, 샹치까지 — 완전정보 전략게임을 모아 AI와 대국하고 배워보세요.</p>
+
+    <section class="tier-section" id="core">
+      <h2>대표 게임</h2>
+      <div class="game-grid" id="grid-core"></div>
+    </section>
+
+    <section class="tier-section" id="chaturanga">
+      <h2>차투랑가 계열</h2>
+      <p class="tier-desc">체스의 사촌뻘 되는 각국의 전통 장기 게임들</p>
+      <div class="game-grid" id="grid-chaturanga"></div>
+    </section>
+
+    <section class="tier-section" id="simple">
+      <h2>단순 전략게임</h2>
+      <p class="tier-desc">규칙이 간단해서 빠르게 즐길 수 있는 게임들</p>
+      <div class="game-grid" id="grid-simple"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    // 게임 목록 정의. path가 있으면 "준비됨", 없으면 "준비중"으로 표시.
+    const games = {
+      core: [
+        { emoji: '⚫', name: '바둑', origin: '한·중·일', path: 'games/go/play.html' },
+        { emoji: '♟️', name: '체스', origin: '서양', path: null },
+      ],
+      chaturanga: [
+        { emoji: '🐘', name: '장기', origin: '대한민국', path: null },
+        { emoji: '🀄', name: '샹치', origin: '중국', path: null },
+        { emoji: '🎌', name: '쇼기', origin: '일본', path: null },
+        { emoji: '🇹🇭', name: '막룩', origin: '태국', path: null },
+        { emoji: '🕌', name: '샤트란지', origin: '페르시아', path: null },
+        { emoji: '🇲🇲', name: '시투인', origin: '미얀마', path: null },
+        { emoji: '🐎', name: '샤타르', origin: '몽골', path: null },
+      ],
+      simple: [
+        { emoji: '⭐', name: '오목', origin: '만국 공통', path: null },
+        { emoji: '🔴', name: '오델로', origin: '일본 기원', path: null },
+        { emoji: '⚪', name: '체커', origin: '서양', path: null },
+        { emoji: '🔺', name: '차이니즈 체커', origin: '독일 기원', path: null },
+        { emoji: '🫘', name: '만칼라', origin: '아프리카', path: null },
+        { emoji: '⚙️', name: '모리스', origin: '고대 로마', path: null },
+        { emoji: '🇰🇷', name: '고누', origin: '대한민국', path: null },
+        { emoji: '⬡', name: '헥스', origin: '수학 게임', path: null },
+      ],
+    };
+
+    function renderGrid(containerId, list) {
+      const grid = document.getElementById(containerId);
+      for (const g of list) {
+        const ready = !!g.path;
+        const card = document.createElement(ready ? 'a' : 'div');
+        card.className = 'game-card ' + (ready ? 'ready' : 'soon');
+        if (ready) card.href = g.path;
+        card.innerHTML = `
+          <div class="game-emoji">${g.emoji}</div>
+          <div class="game-name">${g.name}</div>
+          <div class="game-origin">${g.origin}</div>
+          <span class="game-status ${ready ? '' : 'soon'}">${ready ? '지금 하기' : '준비중'}</span>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    renderGrid('grid-core', games.core);
+    renderGrid('grid-chaturanga', games.chaturanga);
+    renderGrid('grid-simple', games.simple);
+  </script>
+</body>
+</html>
