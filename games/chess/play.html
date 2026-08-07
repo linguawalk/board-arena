@@ -52,6 +52,7 @@
           <option value="random960">랜덤 시작 배치</option>
           <option value="atomic">아토믹</option>
           <option value="racingkings">레이싱 킹스</option>
+          <option value="crazyhouse">크레이지하우스</option>
         </select>
         <div id="variant-desc" style="font-size:12px;color:#666;background:#f7f7f7;padding:8px 10px;border-radius:6px;margin:-4px 0 10px;"></div>
 
@@ -68,6 +69,12 @@
           <button data-p="r">♖</button>
           <button data-p="b">♗</button>
           <button data-p="n">♘</button>
+        </div>
+
+        <div id="reserve-panel" style="display:none;margin:10px 0;">
+          <div style="font-size:13px;color:#555;margin-bottom:4px;">내 보유 기물 (클릭 후 빈 칸에 드롭)</div>
+          <div id="reserve-buttons" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+          <div id="ai-reserve-line" style="font-size:12px;color:#888;margin-top:6px;"></div>
         </div>
 
         <div id="status-line" class="status-line">당신 차례 (백)</div>
@@ -111,6 +118,7 @@
       random960: '기물의 이동 규칙은 표준 체스와 완전히 동일하지만, 시작 배치가 매 게임마다 무작위로 섞입니다(비숍은 서로 다른 색 칸에 위치). 정석 암기가 통하지 않아 첫 수부터 스스로 판단해야 합니다. 이 배치에서는 캐슬링을 사용하지 않습니다.',
       atomic: '기물을 잡으면 그 자리를 중심으로 주변 8칸의 폰이 아닌 기물이 전부 "폭발"해서 사라집니다(잡은 기물 자신도 함께 사라집니다). 상대 왕이 폭발에 휘말려 사라지면 즉시 승리합니다. 그래서 함부로 잡았다가 내 왕까지 위험해질 수 있어 신중한 판단이 필요합니다.',
       racingkings: '체크메이트가 없습니다. 목표는 오직 하나, 내 왕을 가장 먼저 보드 맨 끝 줄(8랭크)에 도착시키는 것입니다. 상대에게 체크를 거는 수 자체가 반칙(금지)이라, 이 점을 이용해 상대의 진로를 막을 수도 있습니다.',
+      crazyhouse: '상대 기물을 잡으면 그 기물이 사라지지 않고 내 "보유 기물"이 됩니다. 이동하는 대신, 보유 기물 중 하나를 골라 빈 칸에 "드롭"해서 내 기물로 쓸 수 있습니다(폰은 1·8랭크에 드롭 불가). 판이 좁아질수록 갑자기 기물이 늘어나며 국면이 뒤집힐 수 있어 매우 공격적인 변형입니다.',
     };
 
     function updateVariantDesc() {
@@ -136,6 +144,14 @@
     let pendingPromotion = null; // { from, to } - 프로모션 선택 대기 중
     let humanColor = 'w';
     let gameOver = false;
+    let reserves = { w: {}, b: {} }; // 크레이지하우스 보유 기물
+    let selectedDropPiece = null; // 크레이지하우스: 지금 드롭하려는 기물 종류
+    let moveHistoryUci = []; // AI에게 보낼 수순 (드롭 포함, chess.js 내장 history는 드롭을 기록 못해서 직접 관리)
+
+    const reservePanel = document.getElementById('reserve-panel');
+    const reserveButtons = document.getElementById('reserve-buttons');
+    const aiReserveLine = document.getElementById('ai-reserve-line');
+    const PIECE_ORDER = ['p', 'n', 'b', 'r', 'q'];
 
     function squareToXY(sq) {
       const file = sq.charCodeAt(0) - 97; // a=0
@@ -253,6 +269,63 @@
       });
     }
 
+    function flipTurn() {
+      const parts = chess.fen().split(' ');
+      parts[1] = parts[1] === 'w' ? 'b' : 'w';
+      chess.load(parts.join(' '));
+    }
+
+    function addToReserve(color, pieceType) {
+      if (pieceType === 'k') return;
+      reserves[color][pieceType] = (reserves[color][pieceType] || 0) + 1;
+    }
+
+    function renderReservePanel() {
+      if (variantSelect.value !== 'crazyhouse') {
+        reservePanel.style.display = 'none';
+        return;
+      }
+      reservePanel.style.display = 'block';
+      reserveButtons.innerHTML = '';
+      const mine = reserves[humanColor] || {};
+      for (const p of PIECE_ORDER) {
+        const count = mine[p] || 0;
+        if (count <= 0) continue;
+        const btn = document.createElement('button');
+        btn.textContent = `${GLYPHS[humanColor + p]} ×${count}`;
+        btn.style.fontSize = '18px';
+        if (selectedDropPiece === p) btn.style.outline = '2px solid #4a90e2';
+        btn.addEventListener('click', () => {
+          selectedDropPiece = selectedDropPiece === p ? null : p;
+          renderReservePanel();
+        });
+        reserveButtons.appendChild(btn);
+      }
+      const aiColor2 = humanColor === 'w' ? 'b' : 'w';
+      const aiRes = reserves[aiColor2] || {};
+      const aiText = PIECE_ORDER.filter((p) => aiRes[p] > 0).map((p) => `${GLYPHS[aiColor2 + p]}×${aiRes[p]}`).join(' ');
+      aiReserveLine.textContent = aiText ? `AI 보유 기물: ${aiText}` : '';
+    }
+
+    function tryDrop(pieceType, x, y) {
+      if (chess.get(xyToSquare(x, y))) return false; // 이미 기물이 있는 칸
+      if (pieceType === 'p' && (y === 0 || y === 7)) return false; // 폰은 1·8랭크 드롭 불가
+      const square = xyToSquare(x, y);
+      const ok = chess.put({ type: pieceType, color: humanColor }, square);
+      if (!ok) return false;
+      flipTurn();
+      reserves[humanColor][pieceType]--;
+      selectedDropPiece = null;
+      moveHistoryUci.push(`${pieceType.toUpperCase()}@${square}`);
+      log(`${humanColor === 'w' ? '백' : '흑'}: ${pieceType.toUpperCase()}@${square} 드롭`);
+      syncBoardFromChess();
+      renderReservePanel();
+      if (checkVariantEnd(humanColor)) return true;
+      updateStatus();
+      if (!gameOver && chess.turn() !== humanColor) requestAiMove();
+      return true;
+    }
+
     function findKingSquare(color) {
       for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
@@ -328,6 +401,9 @@
       selectedSquare = null;
       pendingPromotion = null;
       checkCounts = { w: 0, b: 0 };
+      reserves = { w: {}, b: {} };
+      selectedDropPiece = null;
+      moveHistoryUci = [];
       promoPanel.style.display = 'none';
       moveLog.innerHTML = '';
       board = new SquareBoard({
@@ -340,6 +416,7 @@
       });
       syncBoardFromChess();
       updateStatus();
+      renderReservePanel();
       const variantLabel = variantSelect.options[variantSelect.selectedIndex].text;
       log(`새 게임 시작 (${variantLabel})`);
     }
@@ -347,6 +424,11 @@
     function handleSquareClick(x, y) {
       if (gameOver || pendingPromotion) return;
       if (chess.turn() !== humanColor) return; // AI 차례엔 클릭 무시
+
+      if (selectedDropPiece) {
+        tryDrop(selectedDropPiece, x, y);
+        return;
+      }
 
       const clickedSquare = xyToSquare(x, y);
 
@@ -394,6 +476,11 @@
       if (variantSelect.value === 'atomic' && result.captured) {
         applyAtomicExplosion(result.to);
       }
+      if (variantSelect.value === 'crazyhouse' && result.captured) {
+        addToReserve(result.color, result.captured);
+        renderReservePanel();
+      }
+      moveHistoryUci.push(from + to + (promotion || ''));
       syncBoardFromChess();
       log(`${result.color === 'w' ? '백' : '흑'}: ${result.san}`);
       if (checkVariantEnd(result.color)) return;
@@ -418,13 +505,12 @@
       thinkingEl.style.display = 'block';
       statusLine.textContent = 'AI 차례...';
       try {
-        const moves = chess.history({ verbose: true }).map((m) => m.from + m.to + (m.promotion || ''));
         const variant = variantSelect.value;
         const isFairyVariant = variant !== 'standard' && variant !== 'random960';
         const endpoint = isFairyVariant ? '/api/variant-engine' : '/api/chess-engine';
         const body = isFairyVariant
-          ? { variant, moves, depth: Math.min(currentDepth(), 12) } // 변형은 탐색이 더 무거워서 깊이 상한
-          : { moves, depth: currentDepth(), fen: initialFen };
+          ? { variant, moves: moveHistoryUci, depth: Math.min(currentDepth(), 12) } // 변형은 탐색이 더 무거워서 깊이 상한
+          : { moves: moveHistoryUci, depth: currentDepth(), fen: initialFen };
 
         const res = await fetch(endpoint, {
           method: 'POST',
@@ -432,25 +518,50 @@
           body: JSON.stringify(body),
         });
         const data = await res.json();
-        let uci = data.uci;
+        const uci = data.uci;
         if (data.gameOver || !uci) {
           thinkingEl.style.display = 'none';
           updateStatus();
           return;
         }
-        const from = uci.slice(0, 2);
-        const to = uci.slice(2, 4);
-        const promotion = uci.length > 4 ? uci[4] : undefined;
-        const result = chess.move({ from, to, promotion });
-        if (result) {
-          if (variant === 'atomic' && result.captured) {
-            applyAtomicExplosion(result.to);
-          }
+
+        const aiColor = humanColor === 'w' ? 'b' : 'w';
+
+        if (uci.includes('@')) {
+          // 드롭 수 (예: "N@f3")
+          const pieceType = uci[0].toLowerCase();
+          const square = uci.split('@')[1];
+          chess.put({ type: pieceType, color: aiColor }, square);
+          flipTurn();
+          if (reserves[aiColor][pieceType]) reserves[aiColor][pieceType]--;
+          moveHistoryUci.push(uci);
+          log(`${aiColor === 'w' ? '백' : '흑'} (AI): ${pieceType.toUpperCase()}@${square} 드롭`);
           syncBoardFromChess();
-          log(`${result.color === 'w' ? '백' : '흑'} (AI): ${result.san}`);
-          if (checkVariantEnd(result.color)) {
+          renderReservePanel();
+          if (checkVariantEnd(aiColor)) {
             thinkingEl.style.display = 'none';
             return;
+          }
+        } else {
+          const from = uci.slice(0, 2);
+          const to = uci.slice(2, 4);
+          const promotion = uci.length > 4 ? uci[4] : undefined;
+          const result = chess.move({ from, to, promotion });
+          if (result) {
+            if (variant === 'atomic' && result.captured) {
+              applyAtomicExplosion(result.to);
+            }
+            if (variant === 'crazyhouse' && result.captured) {
+              addToReserve(result.color, result.captured);
+              renderReservePanel();
+            }
+            moveHistoryUci.push(uci);
+            syncBoardFromChess();
+            log(`${result.color === 'w' ? '백' : '흑'} (AI): ${result.san}`);
+            if (checkVariantEnd(result.color)) {
+              thinkingEl.style.display = 'none';
+              return;
+            }
           }
         }
       } catch (e) {
