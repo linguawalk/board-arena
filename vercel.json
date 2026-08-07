@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/chess-engine.js": {
+      "includeFiles": "engines/chess/**"
+    },
+    "api/variant-engine.js": {
+      "includeFiles": "engines/variant/**"
+    }
+  }
+}
