@@ -1,1 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>체스 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/square-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 460px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select, .panel input { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+  .promo-panel { display: none; gap: 8px; margin: 10px 0; }
+  .promo-panel button { font-size: 26px; padding: 4px 10px; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>체스 대국</h1>
 
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label for="level-select">AI 난이도</label>
+        <select id="level-select"></select>
+
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <button id="save-review-btn">복기용으로 저장</button>
+
+        <div id="promo-panel" class="promo-panel">
+          <span style="font-size:13px;color:#555;align-self:center;">승진할 기물:</span>
+          <button data-p="q">♕</button>
+          <button data-p="r">♖</button>
+          <button data-p="b">♗</button>
+          <button data-p="n">♘</button>
+        </div>
+
+        <div id="status-line" class="status-line">당신 차례 (백)</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="save-msg" style="font-size:12px;color:var(--accent);display:none;">저장됐습니다.</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { Chess } from '../../shared/js/vendor/chess.js';
+    import { SquareBoard } from '../../shared/js/square-board.js';
+
+    const GLYPHS = {
+      wk: '♔', wq: '♕', wr: '♖', wb: '♗', wn: '♘', wp: '♙',
+      bk: '♚', bq: '♛', br: '♜', bb: '♝', bn: '♞', bp: '♟',
+    };
+
+    // AI 난이도: 18급~9단과 동일한 체계를 depth로 매핑
+    const AI_LEVELS = [];
+    for (let k = 18; k >= 1; k--) AI_LEVELS.push({ id: `k${k}`, label: `${k}급`, depth: 2 + Math.floor((18 - k) * 0.5) });
+    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: 12 + d });
+
+    const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+    const promoPanel = document.getElementById('promo-panel');
+    const saveMsg = document.getElementById('save-msg');
+
+    for (const lvl of AI_LEVELS) {
+      const opt = document.createElement('option');
+      opt.value = lvl.id;
+      opt.textContent = lvl.label;
+      if (lvl.id === 'd1') opt.selected = true;
+      levelSelect.appendChild(opt);
+    }
+    function currentDepth() {
+      return AI_LEVELS.find((l) => l.id === levelSelect.value).depth;
+    }
+
+    let chess = new Chess();
+    let board = null;
+    let selectedSquare = null;
+    let pendingPromotion = null; // { from, to } - 프로모션 선택 대기 중
+    let humanColor = 'w';
+    let gameOver = false;
+
+    function squareToXY(sq) {
+      const file = sq.charCodeAt(0) - 97; // a=0
+      const rank = parseInt(sq[1], 10);
+      return { x: file, y: 8 - rank };
+    }
+    function xyToSquare(x, y) {
+      return String.fromCharCode(97 + x) + (8 - y);
+    }
+
+    function syncBoardFromChess() {
+      const pieceList = [];
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+          const p = chess.get(xyToSquare(x, y));
+          if (p) pieceList.push({ x, y, piece: p.color + p.type });
+        }
+      }
+      // GLYPHS 키는 소문자(wk 등)라 그대로 사용
+      board.pieceGlyphs = GLYPHS;
+      board.loadPosition(pieceList.map((p) => ({ x: p.x, y: p.y, piece: p.piece })));
+
+      const history = chess.history({ verbose: true });
+      if (history.length > 0) {
+        const last = history[history.length - 1];
+        board.markLastMove(squareToXY(last.from), squareToXY(last.to));
+      }
+
+      if (chess.inCheck()) {
+        const kingSquare = findKingSquare(chess.turn());
+        board.markCheck(kingSquare);
+      } else {
+        board.markCheck(null);
+      }
+      board.render();
+    }
+
+    function findKingSquare(color) {
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+          const p = chess.get(xyToSquare(x, y));
+          if (p && p.type === 'k' && p.color === color) return { x, y };
+        }
+      }
+      return null;
+    }
+
+    function log(text) {
+      const p = document.createElement('div');
+      p.textContent = text;
+      moveLog.prepend(p);
+    }
+
+    function updateStatus() {
+      if (gameOver) return;
+      if (chess.isCheckmate()) {
+        const winner = chess.turn() === 'w' ? '흑' : '백';
+        statusLine.textContent = `체크메이트! ${winner} 승리`;
+        gameOver = true;
+        return;
+      }
+      if (chess.isStalemate()) {
+        statusLine.textContent = '스테일메이트 (무승부)';
+        gameOver = true;
+        return;
+      }
+      if (chess.isDraw()) {
+        statusLine.textContent = '무승부';
+        gameOver = true;
+        return;
+      }
+      const turnText = chess.turn() === humanColor ? '당신 차례' : 'AI 차례';
+      const colorText = chess.turn() === 'w' ? '백' : '흑';
+      const checkText = chess.inCheck() ? ' (체크!)' : '';
+      statusLine.textContent = `${turnText} (${colorText})${checkText}`;
+    }
+
+    function startNewGame() {
+      chess = new Chess();
+      gameOver = false;
+      selectedSquare = null;
+      pendingPromotion = null;
+      promoPanel.style.display = 'none';
+      moveLog.innerHTML = '';
+      board = new SquareBoard({
+        container: boardCol,
+        width: 8,
+        height: 8,
+        interactive: true,
+        onSquareClick: handleSquareClick,
+        pieceGlyphs: GLYPHS,
+      });
+      syncBoardFromChess();
+      updateStatus();
+      log('새 게임 시작');
+    }
+
+    function handleSquareClick(x, y) {
+      if (gameOver || pendingPromotion) return;
+      if (chess.turn() !== humanColor) return; // AI 차례엔 클릭 무시
+
+      const clickedSquare = xyToSquare(x, y);
+
+      if (selectedSquare) {
+        const legalMoves = chess.moves({ square: selectedSquare, verbose: true });
+        const target = legalMoves.find((m) => m.to === clickedSquare);
+        if (target) {
+          if (target.flags.includes('p')) {
+            // 프로모션 필요 -> 선택창 표시
+            pendingPromotion = { from: selectedSquare, to: clickedSquare };
+            promoPanel.style.display = 'flex';
+            selectedSquare = null;
+            board.setSelection(null, []);
+            return;
+          }
+          makeMove(selectedSquare, clickedSquare);
+          return;
+        }
+        // 다른 자기 기물 클릭 -> 선택 갱신, 아니면 선택 해제
+        const piece = chess.get(clickedSquare);
+        if (piece && piece.color === humanColor) {
+          selectSquare(clickedSquare);
+        } else {
+          selectedSquare = null;
+          board.setSelection(null, []);
+        }
+      } else {
+        const piece = chess.get(clickedSquare);
+        if (piece && piece.color === humanColor) {
+          selectSquare(clickedSquare);
+        }
+      }
+    }
+
+    function selectSquare(sq) {
+      selectedSquare = sq;
+      const legalMoves = chess.moves({ square: sq, verbose: true });
+      board.setSelection(squareToXY(sq), legalMoves.map((m) => squareToXY(m.to)));
+    }
+
+    function makeMove(from, to, promotion) {
+      const result = chess.move({ from, to, promotion });
+      if (!result) return;
+      selectedSquare = null;
+      syncBoardFromChess();
+      log(`${result.color === 'w' ? '백' : '흑'}: ${result.san}`);
+      updateStatus();
+
+      if (!gameOver && chess.turn() !== humanColor) {
+        requestAiMove();
+      }
+    }
+
+    promoPanel.querySelectorAll('button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!pendingPromotion) return;
+        const { from, to } = pendingPromotion;
+        pendingPromotion = null;
+        promoPanel.style.display = 'none';
+        makeMove(from, to, btn.dataset.p);
+      });
+    });
+
+    async function requestAiMove() {
+      thinkingEl.style.display = 'block';
+      statusLine.textContent = 'AI 차례...';
+      try {
+        const moves = chess.history({ verbose: true }).map((m) => m.from + m.to + (m.promotion || ''));
+        const res = await fetch('/api/chess-engine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ moves, depth: currentDepth() }),
+        });
+        const data = await res.json();
+        if (data.gameOver || !data.uci) {
+          thinkingEl.style.display = 'none';
+          updateStatus();
+          return;
+        }
+        const result = chess.move({ from: data.from, to: data.to, promotion: data.promotion || undefined });
+        if (result) {
+          syncBoardFromChess();
+          log(`${result.color === 'w' ? '백' : '흑'} (AI): ${result.san}`);
+        }
+      } catch (e) {
+        log('AI 오류: ' + e.message);
+      }
+      thinkingEl.style.display = 'none';
+      updateStatus();
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+    document.getElementById('save-review-btn').addEventListener('click', () => {
+      const games = JSON.parse(localStorage.getItem('board-arena-chess-games') || '[]');
+      games.unshift({
+        id: Date.now(),
+        savedAt: new Date().toISOString(),
+        pgn: chess.pgn(),
+      });
+      localStorage.setItem('board-arena-chess-games', JSON.stringify(games.slice(0, 30)));
+      saveMsg.style.display = 'block';
+      setTimeout(() => (saveMsg.style.display = 'none'), 2500);
+    });
+
+    startNewGame();
+  </script>
+</body>
+</html>
