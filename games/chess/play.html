@@ -54,6 +54,7 @@
           <option value="atomic">아토믹</option>
           <option value="racingkings">레이싱 킹스</option>
           <option value="crazyhouse">크레이지하우스</option>
+          <option value="horde">호드 (실험적)</option>
         </select>
         <div id="variant-desc" style="font-size:12px;color:#666;background:#f7f7f7;padding:8px 10px;border-radius:6px;margin:-4px 0 10px;"></div>
 
@@ -121,6 +122,7 @@
       atomic: '기물을 잡으면 그 자리를 중심으로 주변 8칸의 폰이 아닌 기물이 전부 "폭발"해서 사라집니다(잡은 기물 자신도 함께 사라집니다). 상대 왕이 폭발에 휘말려 사라지면 즉시 승리합니다. 그래서 함부로 잡았다가 내 왕까지 위험해질 수 있어 신중한 판단이 필요합니다.',
       racingkings: '체크메이트가 없습니다. 목표는 오직 하나, 내 왕을 가장 먼저 보드 맨 끝 줄(8랭크)에 도착시키는 것입니다. 상대에게 체크를 거는 수 자체가 반칙(금지)이라, 이 점을 이용해 상대의 진로를 막을 수도 있습니다.',
       crazyhouse: '상대 기물을 잡으면 그 기물이 사라지지 않고 내 "보유 기물"이 됩니다. 이동하는 대신, 보유 기물 중 하나를 골라 빈 칸에 "드롭"해서 내 기물로 쓸 수 있습니다(폰은 1·8랭크에 드롭 불가). 판이 좁아질수록 갑자기 기물이 늘어나며 국면이 뒤집힐 수 있어 매우 공격적인 변형입니다.',
+      horde: '당신(백)은 왕 없이 36개의 폰(과 구석에 상징적으로 숨겨둔 왕 1개)으로 시작합니다. 상대(흑)의 폰을 전부 없애면 흑이 승리하고, 당신이 흑을 체크메이트시키면 승리합니다. ※ 실험적 구현입니다 — chess.js 라이브러리가 "왕이 없는 진영"을 지원하지 않아 구석에 안전하게 가둔 가짜 왕으로 흉내낸 것이라, 아주 드물게 정식 규칙과 다르게 느껴지는 순간이 있을 수 있습니다.',
     };
 
     function updateVariantDesc() {
@@ -220,6 +222,21 @@
             gameOver = true;
             return true;
           }
+        }
+      }
+
+      if (variant === 'horde') {
+        let whitePawns = 0;
+        for (let y = 0; y < 8; y++) {
+          for (let x = 0; x < 8; x++) {
+            const p = chess.get(xyToSquare(x, y));
+            if (p && p.color === 'w' && p.type === 'p') whitePawns++;
+          }
+        }
+        if (whitePawns === 0) {
+          statusLine.textContent = '백의 폰이 전멸했습니다! 흑 승리 (호드)';
+          gameOver = true;
+          return true;
         }
       }
 
@@ -512,6 +529,12 @@
       } else if (variantSelect.value === 'racingkings') {
         const fen = '8/8/8/8/8/8/krbnNBRK/qrbnNBRQ w - - 0 1';
         chess.load(fen);
+        initialFen = fen;
+      } else if (variantSelect.value === 'horde') {
+        // 정식 호드는 백에 왕이 없지만, chess.js가 이를 지원하지 않아 구석(a1)에 폰 대신 가짜 왕을 배치
+        // (1랭크에 폰이 있는 것도, 왕이 표준 위치가 아닌 것도 기본 검증에서 막혀 skipValidation 필요)
+        const fen = 'rnbqkbnr/pppppppp/8/1PP2PP1/PPPPPPPP/PPPPPPPP/PPPPPPPP/KPPPPPPP w kq - 0 1';
+        chess.load(fen, { skipValidation: true });
         initialFen = fen;
       } else {
         initialFen = null;
