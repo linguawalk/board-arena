@@ -13,6 +13,8 @@ const SUPPORTED_VARIANTS = new Set([
   'shogi', 'minishogi', 'kyotoshogi', 'euroshogi',
   'makruk', 'ai-wok', 'asean', 'cambodian', 'karouk',
   'shatranj', 'sittuyin', 'shatar', 'chaturanga',
+  // 체스 변형
+  'kingofthehill', '3check', 'atomic', 'crazyhouse', 'horde', 'racingkings', 'fischerandom',
 ]);
 
 function runFairyStockfish(commands, timeoutMs = 10000) {
