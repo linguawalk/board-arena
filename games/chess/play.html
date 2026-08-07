@@ -51,6 +51,7 @@
           <option value="3check">쓰리 체크</option>
           <option value="random960">랜덤 시작 배치</option>
           <option value="atomic">아토믹</option>
+          <option value="racingkings">레이싱 킹스</option>
         </select>
         <div id="variant-desc" style="font-size:12px;color:#666;background:#f7f7f7;padding:8px 10px;border-radius:6px;margin:-4px 0 10px;"></div>
 
@@ -109,6 +110,7 @@
       '3check': '이동 규칙은 표준 체스와 동일합니다. 다만 상대에게 체크를 총 3번 걸면(누적) 체크메이트 없이도 즉시 승리합니다. 공격적으로 체크를 노리는 것이 유리합니다.',
       random960: '기물의 이동 규칙은 표준 체스와 완전히 동일하지만, 시작 배치가 매 게임마다 무작위로 섞입니다(비숍은 서로 다른 색 칸에 위치). 정석 암기가 통하지 않아 첫 수부터 스스로 판단해야 합니다. 이 배치에서는 캐슬링을 사용하지 않습니다.',
       atomic: '기물을 잡으면 그 자리를 중심으로 주변 8칸의 폰이 아닌 기물이 전부 "폭발"해서 사라집니다(잡은 기물 자신도 함께 사라집니다). 상대 왕이 폭발에 휘말려 사라지면 즉시 승리합니다. 그래서 함부로 잡았다가 내 왕까지 위험해질 수 있어 신중한 판단이 필요합니다.',
+      racingkings: '체크메이트가 없습니다. 목표는 오직 하나, 내 왕을 가장 먼저 보드 맨 끝 줄(8랭크)에 도착시키는 것입니다. 상대에게 체크를 거는 수 자체가 반칙(금지)이라, 이 점을 이용해 상대의 진로를 막을 수도 있습니다.',
     };
 
     function updateVariantDesc() {
@@ -189,6 +191,18 @@
     function checkVariantEnd(moverColor) {
       const variant = variantSelect.value;
 
+      if (variant === 'racingkings') {
+        for (const color of ['w', 'b']) {
+          const kingSq = findKingSquare(color);
+          if (kingSq && kingSq.y === 0) {
+            const winnerText = color === 'w' ? '백' : '흑';
+            statusLine.textContent = `${winnerText}의 왕이 맨 끝 줄에 도착! ${winnerText} 승리 (레이싱 킹스)`;
+            gameOver = true;
+            return true;
+          }
+        }
+      }
+
       if (variant === 'atomic') {
         const whiteKing = findKingSquare('w');
         const blackKing = findKingSquare('b');
@@ -225,6 +239,18 @@
       }
 
       return false;
+    }
+
+    function legalMovesFor(square) {
+      const raw = chess.moves({ square, verbose: true });
+      if (variantSelect.value !== 'racingkings') return raw;
+      // 레이싱 킹스: 상대에게 체크를 거는 수는 반칙이라 제외
+      return raw.filter((m) => {
+        chess.move({ from: m.from, to: m.to, promotion: m.promotion });
+        const givesCheck = chess.inCheck();
+        chess.undo();
+        return !givesCheck;
+      });
     }
 
     function findKingSquare(color) {
@@ -291,6 +317,10 @@
         const fen = `${backRank.toLowerCase()}/pppppppp/8/8/8/8/PPPPPPPP/${backRank} w - - 0 1`;
         chess.load(fen);
         initialFen = fen;
+      } else if (variantSelect.value === 'racingkings') {
+        const fen = '8/8/8/8/8/8/krbnNBRK/qrbnNBRQ w - - 0 1';
+        chess.load(fen);
+        initialFen = fen;
       } else {
         initialFen = null;
       }
@@ -321,7 +351,7 @@
       const clickedSquare = xyToSquare(x, y);
 
       if (selectedSquare) {
-        const legalMoves = chess.moves({ square: selectedSquare, verbose: true });
+        const legalMoves = legalMovesFor(selectedSquare);
         const target = legalMoves.find((m) => m.to === clickedSquare);
         if (target) {
           if (target.flags.includes('p')) {
@@ -353,7 +383,7 @@
 
     function selectSquare(sq) {
       selectedSquare = sq;
-      const legalMoves = chess.moves({ square: sq, verbose: true });
+      const legalMoves = legalMovesFor(sq);
       board.setSelection(squareToXY(sq), legalMoves.map((m) => squareToXY(m.to)));
     }
 
