@@ -50,6 +50,7 @@
           <option value="kingofthehill">킹 오브 더 힐</option>
           <option value="3check">쓰리 체크</option>
           <option value="random960">랜덤 시작 배치</option>
+          <option value="chess960">체스960 (정식, 캐슬링 포함)</option>
           <option value="atomic">아토믹</option>
           <option value="racingkings">레이싱 킹스</option>
           <option value="crazyhouse">크레이지하우스</option>
@@ -116,6 +117,7 @@
       kingofthehill: '이동 규칙은 표준 체스와 동일합니다. 다만 자신의 왕이 중앙 4칸(d4·e4·d5·e5) 중 한 곳에 도달하는 순간, 체크메이트와 상관없이 즉시 승리합니다. 왕을 안전하게 중앙까지 진출시키는 것이 핵심입니다.',
       '3check': '이동 규칙은 표준 체스와 동일합니다. 다만 상대에게 체크를 총 3번 걸면(누적) 체크메이트 없이도 즉시 승리합니다. 공격적으로 체크를 노리는 것이 유리합니다.',
       random960: '기물의 이동 규칙은 표준 체스와 완전히 동일하지만, 시작 배치가 매 게임마다 무작위로 섞입니다(비숍은 서로 다른 색 칸에 위치). 정석 암기가 통하지 않아 첫 수부터 스스로 판단해야 합니다. 이 배치에서는 캐슬링을 사용하지 않습니다.',
+      chess960: '랜덤 시작 배치와 같지만, 캐슬링까지 정식으로 지원합니다. 캐슬링을 하면 왕과 룩이 표준 체스와 동일한 최종 위치(왕은 g/c파일, 룩은 f/d파일)로 이동합니다. 왕이나 룩을 아직 한 번도 움직이지 않았고, 그 사이 칸이 모두 비어 있으며, 왕이 지나가는 자리가 공격받지 않을 때만 가능합니다.',
       atomic: '기물을 잡으면 그 자리를 중심으로 주변 8칸의 폰이 아닌 기물이 전부 "폭발"해서 사라집니다(잡은 기물 자신도 함께 사라집니다). 상대 왕이 폭발에 휘말려 사라지면 즉시 승리합니다. 그래서 함부로 잡았다가 내 왕까지 위험해질 수 있어 신중한 판단이 필요합니다.',
       racingkings: '체크메이트가 없습니다. 목표는 오직 하나, 내 왕을 가장 먼저 보드 맨 끝 줄(8랭크)에 도착시키는 것입니다. 상대에게 체크를 거는 수 자체가 반칙(금지)이라, 이 점을 이용해 상대의 진로를 막을 수도 있습니다.',
       crazyhouse: '상대 기물을 잡으면 그 기물이 사라지지 않고 내 "보유 기물"이 됩니다. 이동하는 대신, 보유 기물 중 하나를 골라 빈 칸에 "드롭"해서 내 기물로 쓸 수 있습니다(폰은 1·8랭크에 드롭 불가). 판이 좁아질수록 갑자기 기물이 늘어나며 국면이 뒤집힐 수 있어 매우 공격적인 변형입니다.',
@@ -147,6 +149,8 @@
     let reserves = { w: {}, b: {} }; // 크레이지하우스 보유 기물
     let selectedDropPiece = null; // 크레이지하우스: 지금 드롭하려는 기물 종류
     let moveHistoryUci = []; // AI에게 보낼 수순 (드롭 포함, chess.js 내장 history는 드롭을 기록 못해서 직접 관리)
+    let royal960 = null; // { kingFile, rookQFile, rookKFile } - 체스960 캐슬링 판정용 원래 배치
+    let castleRights = { w: { K: true, Q: true }, b: { K: true, Q: true } };
 
     const reservePanel = document.getElementById('reserve-panel');
     const reserveButtons = document.getElementById('reserve-buttons');
@@ -257,8 +261,110 @@
       return false;
     }
 
+    function squareAttacked(square, byColor) {
+      // 임시로 상대 턴으로 바꿔서 그 색이 이 칸을 공격 가능한지 확인 (undo 없이 fen 복사로 안전하게)
+      const savedFen = chess.fen();
+      const parts = savedFen.split(' ');
+      parts[1] = byColor;
+      try {
+        chess.load(parts.join(' '));
+      } catch (e) {
+        chess.load(savedFen);
+        return false;
+      }
+      const attacked = chess.moves({ verbose: true }).some((m) => m.to === square);
+      chess.load(savedFen);
+      return attacked;
+    }
+
+    function getCastleMoves(color) {
+      if (variantSelect.value !== 'chess960' || !royal960) return [];
+      const rank = color === 'w' ? 7 : 0; // y좌표 (백=7, 흑=0)
+      const kingSq = xyToSquare(royal960.kingFile, rank);
+      const opponent = color === 'w' ? 'b' : 'w';
+      const results = [];
+
+      for (const side of ['K', 'Q']) {
+        if (!castleRights[color][side]) continue;
+        const rookFile = side === 'K' ? royal960.rookKFile : royal960.rookQFile;
+        const rookSq = xyToSquare(rookFile, rank);
+        const rookPiece = chess.get(rookSq);
+        if (!rookPiece || rookPiece.type !== 'r' || rookPiece.color !== color) continue;
+
+        const kingTargetFile = side === 'K' ? 6 : 2;
+        const rookTargetFile = side === 'K' ? 5 : 3;
+
+        // 이동 경로(킹 시작~목표, 룩 시작~목표)에 있는 모든 칸이 킹/룩 자신 외엔 비어있어야 함
+        const involvedFiles = new Set([royal960.kingFile, rookFile, kingTargetFile, rookTargetFile]);
+        const lo = Math.min(...involvedFiles), hi = Math.max(...involvedFiles);
+        let clear = true;
+        for (let f = lo; f <= hi; f++) {
+          if (f === royal960.kingFile || f === rookFile) continue;
+          if (chess.get(xyToSquare(f, rank))) { clear = false; break; }
+        }
+        if (!clear) continue;
+
+        // 왕이 지나가는 칸(시작~목표 포함)이 공격받으면 안 됨
+        const kingLo = Math.min(royal960.kingFile, kingTargetFile);
+        const kingHi = Math.max(royal960.kingFile, kingTargetFile);
+        let safe = true;
+        for (let f = kingLo; f <= kingHi; f++) {
+          if (squareAttacked(xyToSquare(f, rank), opponent)) { safe = false; break; }
+        }
+        if (!safe) continue;
+
+        results.push({ from: kingSq, to: xyToSquare(kingTargetFile, rank), isCustomCastle: true, side, color });
+      }
+      return results;
+    }
+
+    function executeCastle(move) {
+      const { color, side } = move;
+      const rank = color === 'w' ? 7 : 0;
+      const rookFile = side === 'K' ? royal960.rookKFile : royal960.rookQFile;
+      const kingTargetFile = side === 'K' ? 6 : 2;
+      const rookTargetFile = side === 'K' ? 5 : 3;
+
+      const kingSq = xyToSquare(royal960.kingFile, rank);
+      const rookSq = xyToSquare(rookFile, rank);
+      chess.remove(kingSq);
+      chess.remove(rookSq);
+      chess.put({ type: 'k', color }, xyToSquare(kingTargetFile, rank));
+      chess.put({ type: 'r', color }, xyToSquare(rookTargetFile, rank));
+      flipTurn();
+      castleRights[color].K = false;
+      castleRights[color].Q = false;
+
+      moveHistoryUci.push(kingSq + xyToSquare(kingTargetFile, rank));
+      log(`${color === 'w' ? '백' : '흑'}: ${side === 'K' ? '킹사이드' : '퀸사이드'} 캐슬링`);
+      syncBoardFromChess();
+      if (checkVariantEnd(color)) return;
+      updateStatus();
+      if (!gameOver && chess.turn() !== humanColor) requestAiMove();
+    }
+
+    function updateCastleRightsAfterMove(color, fromSquare) {
+      if (!royal960) return;
+      const rank = color === 'w' ? 7 : 0;
+      if (fromSquare === xyToSquare(royal960.kingFile, rank)) {
+        castleRights[color].K = false;
+        castleRights[color].Q = false;
+      }
+      if (fromSquare === xyToSquare(royal960.rookKFile, rank)) castleRights[color].K = false;
+      if (fromSquare === xyToSquare(royal960.rookQFile, rank)) castleRights[color].Q = false;
+    }
+
     function legalMovesFor(square) {
       const raw = chess.moves({ square, verbose: true });
+
+      if (variantSelect.value === 'chess960') {
+        const piece = chess.get(square);
+        if (piece && piece.type === 'k') {
+          return [...raw, ...getCastleMoves(piece.color)];
+        }
+        return raw;
+      }
+
       if (variantSelect.value !== 'racingkings') return raw;
       // 레이싱 킹스: 상대에게 체크를 거는 수는 반칙이라 제외
       return raw.filter((m) => {
@@ -385,11 +491,24 @@
 
     function startNewGame() {
       chess = new Chess();
+      castleRights = { w: { K: true, Q: true }, b: { K: true, Q: true } };
+      royal960 = null;
       if (variantSelect.value === 'random960') {
         const backRank = generateRandom960BackRank();
         const fen = `${backRank.toLowerCase()}/pppppppp/8/8/8/8/PPPPPPPP/${backRank} w - - 0 1`;
         chess.load(fen);
         initialFen = fen;
+      } else if (variantSelect.value === 'chess960') {
+        const backRank = generateRandom960BackRank();
+        const fen = `${backRank.toLowerCase()}/pppppppp/8/8/8/8/PPPPPPPP/${backRank} w KQkq - 0 1`;
+        chess.load(fen);
+        initialFen = fen;
+        const rookFiles = [];
+        for (let i = 0; i < 8; i++) {
+          if (backRank[i] === 'K') royal960 = { ...(royal960 || {}), kingFile: i };
+          if (backRank[i] === 'R') rookFiles.push(i);
+        }
+        royal960 = { kingFile: royal960.kingFile, rookQFile: rookFiles[0], rookKFile: rookFiles[1] };
       } else if (variantSelect.value === 'racingkings') {
         const fen = '8/8/8/8/8/8/krbnNBRK/qrbnNBRQ w - - 0 1';
         chess.load(fen);
@@ -436,6 +555,12 @@
         const legalMoves = legalMovesFor(selectedSquare);
         const target = legalMoves.find((m) => m.to === clickedSquare);
         if (target) {
+          if (target.isCustomCastle) {
+            selectedSquare = null;
+            board.setSelection(null, []);
+            executeCastle(target);
+            return;
+          }
           if (target.flags.includes('p')) {
             // 프로모션 필요 -> 선택창 표시
             pendingPromotion = { from: selectedSquare, to: clickedSquare };
@@ -481,6 +606,7 @@
         renderReservePanel();
       }
       moveHistoryUci.push(from + to + (promotion || ''));
+      if (variantSelect.value === 'chess960') updateCastleRightsAfterMove(result.color, from);
       syncBoardFromChess();
       log(`${result.color === 'w' ? '백' : '흑'}: ${result.san}`);
       if (checkVariantEnd(result.color)) return;
@@ -506,7 +632,7 @@
       statusLine.textContent = 'AI 차례...';
       try {
         const variant = variantSelect.value;
-        const isFairyVariant = variant !== 'standard' && variant !== 'random960';
+        const isFairyVariant = variant !== 'standard' && variant !== 'random960' && variant !== 'chess960';
         const endpoint = isFairyVariant ? '/api/variant-engine' : '/api/chess-engine';
         const body = isFairyVariant
           ? { variant, moves: moveHistoryUci, depth: Math.min(currentDepth(), 12) } // 변형은 탐색이 더 무거워서 깊이 상한
@@ -556,6 +682,7 @@
               renderReservePanel();
             }
             moveHistoryUci.push(uci);
+            if (variant === 'chess960') updateCastleRightsAfterMove(result.color, from);
             syncBoardFromChess();
             log(`${result.color === 'w' ? '백' : '흑'} (AI): ${result.san}`);
             if (checkVariantEnd(result.color)) {
