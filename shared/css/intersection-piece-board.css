@@ -1,0 +1,18 @@
+.ipb-svg { display: block; }
+.ipb-bg { fill: #e8c384; }
+.ipb-line { stroke: #3a2a17; stroke-width: 1.5; }
+.ipb-last-move { fill: rgba(255, 215, 0, 0.35); pointer-events: none; }
+.ipb-selected { fill: rgba(80, 160, 255, 0.45); pointer-events: none; }
+.ipb-piece-disk-red { fill: #fdf6e3; stroke: #b3261e; stroke-width: 2.5; }
+.ipb-piece-disk-blue { fill: #fdf6e3; stroke: #1a3a8f; stroke-width: 2.5; }
+.ipb-piece-glyph {
+  font-size: 24px;
+  font-weight: 700;
+  pointer-events: none;
+  user-select: none;
+  animation: stone-pop 0.2s ease-out;
+}
+.ipb-hit-area { fill: transparent; cursor: pointer; }
+.ipb-hit-area:hover { fill: rgba(255, 255, 255, 0.12); }
+.ipb-legal-dot { fill: rgba(20, 20, 20, 0.35); pointer-events: none; }
+.ipb-legal-capture { fill: none; stroke: rgba(200, 30, 30, 0.6); stroke-width: 3; pointer-events: none; }
