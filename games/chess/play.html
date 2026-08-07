@@ -44,6 +44,13 @@
     <div class="layout">
       <div id="board-col" class="board-col"></div>
       <div class="panel">
+        <label for="variant-select">게임 방식</label>
+        <select id="variant-select">
+          <option value="standard">표준 체스</option>
+          <option value="kingofthehill">킹 오브 더 힐 (왕이 중앙 4칸에 도달하면 승리)</option>
+          <option value="3check">쓰리 체크 (상대를 3번 체크시키면 승리)</option>
+        </select>
+
         <label for="level-select">AI 난이도</label>
         <select id="level-select"></select>
 
@@ -83,11 +90,15 @@
 
     const boardCol = document.getElementById('board-col');
     const levelSelect = document.getElementById('level-select');
+    const variantSelect = document.getElementById('variant-select');
     const statusLine = document.getElementById('status-line');
     const thinkingEl = document.getElementById('thinking');
     const moveLog = document.getElementById('move-log');
     const promoPanel = document.getElementById('promo-panel');
     const saveMsg = document.getElementById('save-msg');
+
+    const CENTER_SQUARES = [{ x: 3, y: 4 }, { x: 4, y: 4 }, { x: 3, y: 3 }, { x: 4, y: 3 }]; // d4,e4,d5,e5
+    let checkCounts = { w: 0, b: 0 };
 
     for (const lvl of AI_LEVELS) {
       const opt = document.createElement('option');
@@ -143,6 +154,36 @@
       board.render();
     }
 
+    function checkVariantEnd(moverColor) {
+      const variant = variantSelect.value;
+
+      if (variant === 'kingofthehill') {
+        for (const color of ['w', 'b']) {
+          const kingSq = findKingSquare(color);
+          if (kingSq && CENTER_SQUARES.some((c) => c.x === kingSq.x && c.y === kingSq.y)) {
+            const winnerText = color === 'w' ? '백' : '흑';
+            statusLine.textContent = `${winnerText}의 왕이 중앙에 도달! ${winnerText} 승리 (킹 오브 더 힐)`;
+            gameOver = true;
+            return true;
+          }
+        }
+      }
+
+      if (variant === '3check') {
+        if (chess.inCheck()) {
+          checkCounts[moverColor] = (checkCounts[moverColor] || 0) + 1;
+          if (checkCounts[moverColor] >= 3) {
+            const winnerText = moverColor === 'w' ? '백' : '흑';
+            statusLine.textContent = `${winnerText}이(가) 3번째 체크! ${winnerText} 승리 (쓰리 체크)`;
+            gameOver = true;
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
     function findKingSquare(color) {
       for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
@@ -188,6 +229,7 @@
       gameOver = false;
       selectedSquare = null;
       pendingPromotion = null;
+      checkCounts = { w: 0, b: 0 };
       promoPanel.style.display = 'none';
       moveLog.innerHTML = '';
       board = new SquareBoard({
@@ -200,7 +242,8 @@
       });
       syncBoardFromChess();
       updateStatus();
-      log('새 게임 시작');
+      const variantLabel = variantSelect.options[variantSelect.selectedIndex].text;
+      log(`새 게임 시작 (${variantLabel})`);
     }
 
     function handleSquareClick(x, y) {
@@ -252,6 +295,7 @@
       selectedSquare = null;
       syncBoardFromChess();
       log(`${result.color === 'w' ? '백' : '흑'}: ${result.san}`);
+      if (checkVariantEnd(result.color)) return;
       updateStatus();
 
       if (!gameOver && chess.turn() !== humanColor) {
@@ -274,21 +318,35 @@
       statusLine.textContent = 'AI 차례...';
       try {
         const moves = chess.history({ verbose: true }).map((m) => m.from + m.to + (m.promotion || ''));
-        const res = await fetch('/api/chess-engine', {
+        const variant = variantSelect.value;
+        const endpoint = variant === 'standard' ? '/api/chess-engine' : '/api/variant-engine';
+        const body = variant === 'standard'
+          ? { moves, depth: currentDepth() }
+          : { variant, moves, depth: Math.min(currentDepth(), 12) }; // 변형은 탐색이 더 무거워서 깊이 상한
+
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ moves, depth: currentDepth() }),
+          body: JSON.stringify(body),
         });
         const data = await res.json();
-        if (data.gameOver || !data.uci) {
+        let uci = data.uci;
+        if (data.gameOver || !uci) {
           thinkingEl.style.display = 'none';
           updateStatus();
           return;
         }
-        const result = chess.move({ from: data.from, to: data.to, promotion: data.promotion || undefined });
+        const from = uci.slice(0, 2);
+        const to = uci.slice(2, 4);
+        const promotion = uci.length > 4 ? uci[4] : undefined;
+        const result = chess.move({ from, to, promotion });
         if (result) {
           syncBoardFromChess();
           log(`${result.color === 'w' ? '백' : '흑'} (AI): ${result.san}`);
+          if (checkVariantEnd(result.color)) {
+            thinkingEl.style.display = 'none';
+            return;
+          }
         }
       } catch (e) {
         log('AI 오류: ' + e.message);
@@ -298,6 +356,7 @@
     }
 
     document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    variantSelect.addEventListener('change', startNewGame);
     document.getElementById('resign-btn').addEventListener('click', () => {
       if (gameOver) return;
       gameOver = true;
