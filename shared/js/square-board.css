@@ -1,0 +1,38 @@
+.square-board-svg {
+  display: block;
+}
+.square-piece-glyph {
+  font-size: 38px;
+  pointer-events: none;
+  user-select: none;
+  animation: stone-pop 0.2s ease-out;
+}
+.square-hit-area {
+  fill: transparent;
+  cursor: pointer;
+}
+.square-hit-area:hover {
+  fill: rgba(255, 255, 255, 0.15);
+}
+.square-selected {
+  fill: rgba(80, 160, 255, 0.45);
+  pointer-events: none;
+}
+.square-last-move {
+  fill: rgba(255, 215, 0, 0.35);
+  pointer-events: none;
+}
+.square-check {
+  fill: rgba(220, 40, 40, 0.5);
+  pointer-events: none;
+}
+.square-legal-dot {
+  fill: rgba(20, 20, 20, 0.35);
+  pointer-events: none;
+}
+.square-legal-capture {
+  fill: none;
+  stroke: rgba(200, 30, 30, 0.6);
+  stroke-width: 4;
+  pointer-events: none;
+}
