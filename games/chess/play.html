@@ -47,9 +47,11 @@
         <label for="variant-select">게임 방식</label>
         <select id="variant-select">
           <option value="standard">표준 체스</option>
-          <option value="kingofthehill">킹 오브 더 힐 (왕이 중앙 4칸에 도달하면 승리)</option>
-          <option value="3check">쓰리 체크 (상대를 3번 체크시키면 승리)</option>
+          <option value="kingofthehill">킹 오브 더 힐</option>
+          <option value="3check">쓰리 체크</option>
+          <option value="random960">랜덤 시작 배치</option>
         </select>
+        <div id="variant-desc" style="font-size:12px;color:#666;background:#f7f7f7;padding:8px 10px;border-radius:6px;margin:-4px 0 10px;"></div>
 
         <label for="level-select">AI 난이도</label>
         <select id="level-select"></select>
@@ -100,6 +102,18 @@
     const CENTER_SQUARES = [{ x: 3, y: 4 }, { x: 4, y: 4 }, { x: 3, y: 3 }, { x: 4, y: 3 }]; // d4,e4,d5,e5
     let checkCounts = { w: 0, b: 0 };
 
+    const VARIANT_INFO = {
+      standard: '체스의 표준 규칙입니다. 상대의 왕을 체크메이트시키면 승리합니다.',
+      kingofthehill: '이동 규칙은 표준 체스와 동일합니다. 다만 자신의 왕이 중앙 4칸(d4·e4·d5·e5) 중 한 곳에 도달하는 순간, 체크메이트와 상관없이 즉시 승리합니다. 왕을 안전하게 중앙까지 진출시키는 것이 핵심입니다.',
+      '3check': '이동 규칙은 표준 체스와 동일합니다. 다만 상대에게 체크를 총 3번 걸면(누적) 체크메이트 없이도 즉시 승리합니다. 공격적으로 체크를 노리는 것이 유리합니다.',
+      random960: '기물의 이동 규칙은 표준 체스와 완전히 동일하지만, 시작 배치가 매 게임마다 무작위로 섞입니다(비숍은 서로 다른 색 칸에 위치). 정석 암기가 통하지 않아 첫 수부터 스스로 판단해야 합니다. 이 배치에서는 캐슬링을 사용하지 않습니다.',
+    };
+
+    function updateVariantDesc() {
+      document.getElementById('variant-desc').textContent = VARIANT_INFO[variantSelect.value] || '';
+    }
+    variantSelect.addEventListener('change', updateVariantDesc);
+
     for (const lvl of AI_LEVELS) {
       const opt = document.createElement('option');
       opt.value = lvl.id;
@@ -112,6 +126,7 @@
     }
 
     let chess = new Chess();
+    let initialFen = null; // random960 등 표준이 아닌 시작 배치일 때 사용
     let board = null;
     let selectedSquare = null;
     let pendingPromotion = null; // { from, to } - 프로모션 선택 대기 중
@@ -224,8 +239,33 @@
       statusLine.textContent = `${turnText} (${colorText})${checkText}`;
     }
 
+    function generateRandom960BackRank() {
+      // Chess960 규칙: 비숍은 서로 다른 색 칸에, 킹은 두 룩 사이에 위치
+      while (true) {
+        const pieces = ['N', 'N', 'B', 'B', 'R', 'Q', 'K', 'R'];
+        for (let i = pieces.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
+        }
+        const bishopIdx = pieces.reduce((acc, p, i) => (p === 'B' ? [...acc, i] : acc), []);
+        if (bishopIdx[0] % 2 === bishopIdx[1] % 2) continue; // 같은 색 칸이면 다시 섞기
+        const kingIdx = pieces.indexOf('K');
+        const rookIdxs = pieces.reduce((acc, p, i) => (p === 'R' ? [...acc, i] : acc), []);
+        if (!(rookIdxs[0] < kingIdx && kingIdx < rookIdxs[1])) continue; // 킹이 룩 사이가 아니면 다시 섞기
+        return pieces.join('');
+      }
+    }
+
     function startNewGame() {
       chess = new Chess();
+      if (variantSelect.value === 'random960') {
+        const backRank = generateRandom960BackRank();
+        const fen = `${backRank.toLowerCase()}/pppppppp/8/8/8/8/PPPPPPPP/${backRank} w - - 0 1`;
+        chess.load(fen);
+        initialFen = fen;
+      } else {
+        initialFen = null;
+      }
       gameOver = false;
       selectedSquare = null;
       pendingPromotion = null;
@@ -319,10 +359,11 @@
       try {
         const moves = chess.history({ verbose: true }).map((m) => m.from + m.to + (m.promotion || ''));
         const variant = variantSelect.value;
-        const endpoint = variant === 'standard' ? '/api/chess-engine' : '/api/variant-engine';
-        const body = variant === 'standard'
-          ? { moves, depth: currentDepth() }
-          : { variant, moves, depth: Math.min(currentDepth(), 12) }; // 변형은 탐색이 더 무거워서 깊이 상한
+        const isFairyVariant = variant !== 'standard' && variant !== 'random960';
+        const endpoint = isFairyVariant ? '/api/variant-engine' : '/api/chess-engine';
+        const body = isFairyVariant
+          ? { variant, moves, depth: Math.min(currentDepth(), 12) } // 변형은 탐색이 더 무거워서 깊이 상한
+          : { moves, depth: currentDepth(), fen: initialFen };
 
         const res = await fetch(endpoint, {
           method: 'POST',
@@ -375,6 +416,7 @@
       setTimeout(() => (saveMsg.style.display = 'none'), 2500);
     });
 
+    updateVariantDesc();
     startNewGame();
   </script>
 </body>
