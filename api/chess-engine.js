@@ -6,8 +6,8 @@
 delete global.fetch;
 
 const path = require('path');
-const initEngine = require(path.join(process.cwd(), 'api', 'engines', 'chess', 'sf-loader.js'));
-const ENGINE_PATH = path.join(process.cwd(), 'api', 'engines', 'chess', 'stockfish-18-lite-single.js');
+const initEngine = require(path.join(__dirname, '..', 'engines', 'chess', 'sf-loader.js'));
+const ENGINE_PATH = path.join(__dirname, '..', 'engines', 'chess', 'stockfish-18-lite-single.js');
 
 function runStockfish(commands, timeoutMs = 10000) {
   return new Promise((resolve, reject) => {

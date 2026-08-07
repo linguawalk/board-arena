@@ -5,7 +5,7 @@
 delete global.fetch;
 
 const path = require('path');
-const Stockfish = require(path.join(process.cwd(), 'api', 'engines', 'variant', 'stockfish.js'));
+const Stockfish = require(path.join(__dirname, '..', 'engines', 'variant', 'stockfish.js'));
 
 const SUPPORTED_VARIANTS = new Set([
   'janggi', 'janggicasual', 'janggimodern', 'janggitraditional',
