@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="../../shared/css/square-board.css" />
 <style>
   .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
-  .board-col { width: 460px; flex-shrink: 0; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
   .panel { flex: 1; min-width: 260px; }
   .panel select, .panel input { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
   .panel label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
@@ -21,6 +21,23 @@
 </style>
 </head>
 <body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = '오류 발생: ' + (e.message || e.error) + '\n' + (e.filename ? `(${e.filename}:${e.lineno})` : '');
+      }
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = '오류 발생(Promise): ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+      }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>체스 대국</h1>
 
