@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>장기 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/intersection-piece-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 480px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+  .variant-desc { font-size: 12px; color: #666; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; margin: -4px 0 10px; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = '오류 발생: ' + (e.message || e.error) + '\n' + (e.filename ? `(${e.filename}:${e.lineno})` : '');
+      }
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = '오류 발생(Promise): ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+      }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>장기 대국</h1>
 
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label for="variant-select">규칙</label>
+        <select id="variant-select">
+          <option value="janggi">정식 (janggi)</option>
+          <option value="janggicasual">캐주얼</option>
+          <option value="janggimodern">모던</option>
+          <option value="janggitraditional">전통</option>
+        </select>
+        <div id="variant-desc" class="variant-desc"></div>
+
+        <label for="level-select">AI 난이도</label>
+        <select id="level-select"></select>
+
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+
+        <div id="status-line" class="status-line">불러오는 중...</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+
+    // Fairy-Stockfish(ffish-es6)는 브라우저의 fetch로 wasm을 불러오도록 만들어져 있어
+    // 이 스크립트는 반드시 실제 웹 서버(HTTP)를 통해 열어야 합니다 (file:// 직접 열기 불가).
+    async function loadFfish() {
+      const mod = await import('../../shared/js/vendor/ffish.js');
+      return mod.default();
+    }
+
+    const GLYPHS = {
+      R: '車', C: '包', H: '馬', E: '象', A: '士', P: '兵', K: '漢',
+      r: '車', c: '包', h: '馬', e: '象', a: '士', p: '卒', k: '楚',
+    };
+
+    const VARIANT_INFO = {
+      janggi: '가장 널리 쓰이는 표준 장기 규칙입니다.',
+      janggicasual: '실전에서 흔히 쓰이는 캐주얼 규칙 (일부 무승부·반복수 판정이 표준과 다릅니다).',
+      janggimodern: '현대에 정리된 규칙 (궁성·기물 배치 세부 규정이 다듬어진 버전).',
+      janggitraditional: '옛 방식에 가까운 전통 규칙입니다.',
+    };
+
+    const AI_LEVELS = [];
+    for (let k = 18; k >= 1; k--) AI_LEVELS.push({ id: `k${k}`, label: `${k}급`, depth: 2 + Math.floor((18 - k) * 0.5) });
+    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: 12 + d });
+
+    const boardCol = document.getElementById('board-col');
+    const variantSelect = document.getElementById('variant-select');
+    const variantDesc = document.getElementById('variant-desc');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    for (const lvl of AI_LEVELS) {
+      const opt = document.createElement('option');
+      opt.value = lvl.id;
+      opt.textContent = lvl.label;
+      if (lvl.id === 'd1') opt.selected = true;
+      levelSelect.appendChild(opt);
+    }
+    function currentDepth() {
+      return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10); // 장기는 탐색이 무거워 상한
+    }
+    function updateVariantDesc() {
+      variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
+    }
+
+    const WIDTH = 9, HEIGHT = 10;
+    const PALACES = [
+      { cx: 4, cy: 1 },
+      { cx: 4, cy: 8 },
+    ];
+
+    let ffish = null;
+    let board = null;
+    let ui = null;
+    let humanColor = 'w';
+    let selectedPoint = null;
+    let gameOver = false;
+    let moveHistoryUci = [];
+
+    function fileToX(f) { return f.charCodeAt(0) - 97; }
+    function xToFile(x) { return String.fromCharCode(97 + x); }
+    function rankToY(r) { return HEIGHT - r; }
+    function yToRank(y) { return HEIGHT - y; }
+    function xyToSquare(x, y) { return `${xToFile(x)}${yToRank(y)}`; }
+    function squareToXY(sq) {
+      const m = sq.match(/^([a-i])(10|[1-9])/);
+      return { x: fileToX(m[1]), y: rankToY(parseInt(m[2], 10)) };
+    }
+    function parseSquareToken(str) {
+      const m = str.match(/^([a-i])(10|[1-9])/);
+      return { token: m[0] };
+    }
+    function splitUciMove(move) {
+      const first = parseSquareToken(move);
+      const rest = move.slice(first.token.length);
+      const second = parseSquareToken(rest);
+      return { from: first.token, to: second.token };
+    }
+
+    function parseFenPieces(fen) {
+      const rows = fen.split(' ')[0].split('/');
+      const pieces = [];
+      for (let y = 0; y < rows.length; y++) {
+        let x = 0;
+        for (const ch of rows[y]) {
+          if (/[0-9]/.test(ch)) {
+            x += parseInt(ch, 10);
+          } else {
+            pieces.push({ x, y, piece: ch });
+            x += 1;
+          }
+        }
+      }
+      return pieces;
+    }
+
+    function log(text) {
+      const p = document.createElement('div');
+      p.textContent = text;
+      moveLog.prepend(p);
+    }
+
+    function syncBoardFromFfish() {
+      const fen = board.fen();
+      const pieces = parseFenPieces(fen);
+      ui.pieceGlyphs = GLYPHS;
+      ui.loadPosition(pieces.map((p) => ({ x: p.x, y: p.y, piece: p.piece })));
+      ui.render();
+    }
+
+    function updateStatus() {
+      if (gameOver) return;
+      if (board.isGameOver()) {
+        gameOver = true;
+        statusLine.textContent = `게임 종료: ${board.result()}`;
+        return;
+      }
+      const whoseTurn = (board.turn() ? 'w' : 'b') === humanColor ? '당신 차례' : 'AI 차례';
+      statusLine.textContent = whoseTurn;
+    }
+
+    async function startNewGame() {
+      statusLine.textContent = '엔진 불러오는 중...';
+      if (!ffish) {
+        ffish = await loadFfish();
+      }
+      if (board) board.delete();
+      board = new ffish.Board(variantSelect.value);
+      gameOver = false;
+      selectedPoint = null;
+      moveHistoryUci = [];
+      moveLog.innerHTML = '';
+
+      boardCol.innerHTML = '';
+      ui = new IntersectionPieceBoard({
+        container: boardCol,
+        width: WIDTH,
+        height: HEIGHT,
+        interactive: true,
+        onPointClick: handlePointClick,
+        pieceGlyphs: GLYPHS,
+        palaces: PALACES,
+      });
+      syncBoardFromFfish();
+      updateStatus();
+      log(`새 게임 시작 (${variantSelect.options[variantSelect.selectedIndex].text})`);
+    }
+
+    function legalMovesFromSquare(square) {
+      const all = board.legalMoves().split(' ').filter((m) => m.length > 0);
+      return all.filter((m) => splitUciMove(m).from === square);
+    }
+
+    function handlePointClick(x, y) {
+      if (gameOver) return;
+      const humanTurn = (board.turn() ? 'w' : 'b') === humanColor;
+      if (!humanTurn) return;
+
+      const clickedSquare = xyToSquare(x, y);
+
+      if (selectedPoint) {
+        const selectedSquare = xyToSquare(selectedPoint.x, selectedPoint.y);
+        const moves = legalMovesFromSquare(selectedSquare);
+        const target = moves.find((m) => splitUciMove(m).to === clickedSquare);
+        if (target) {
+          playMove(target);
+          return;
+        }
+        selectedPoint = null;
+        ui.setSelection(null, []);
+        trySelect(x, y, clickedSquare);
+      } else {
+        trySelect(x, y, clickedSquare);
+      }
+    }
+
+    function trySelect(x, y, square) {
+      const moves = legalMovesFromSquare(square);
+      if (moves.length === 0) return;
+      selectedPoint = { x, y };
+      ui.setSelection({ x, y }, moves.map((m) => squareToXY(splitUciMove(m).to)));
+    }
+
+    function playMove(uci) {
+      board.push(uci);
+      moveHistoryUci.push(uci);
+      selectedPoint = null;
+      const { from, to } = splitUciMove(uci);
+      ui.markLastMove(squareToXY(from), squareToXY(to));
+      syncBoardFromFfish();
+      log(`당신: ${uci}`);
+      updateStatus();
+
+      if (!gameOver && (board.turn() ? 'w' : 'b') !== humanColor) {
+        requestAiMove();
+      }
+    }
+
+    async function requestAiMove() {
+      thinkingEl.style.display = 'block';
+      try {
+        const res = await fetch('/api/variant-engine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            variant: variantSelect.value,
+            moves: moveHistoryUci,
+            depth: currentDepth(),
+          }),
+        });
+        const data = await res.json();
+        if (data.gameOver || !data.uci) {
+          thinkingEl.style.display = 'none';
+          updateStatus();
+          return;
+        }
+        board.push(data.uci);
+        moveHistoryUci.push(data.uci);
+        const { from, to } = splitUciMove(data.uci);
+        ui.markLastMove(squareToXY(from), squareToXY(to));
+        syncBoardFromFfish();
+        log(`AI: ${data.uci}`);
+      } catch (e) {
+        log('AI 오류: ' + e.message);
+      }
+      thinkingEl.style.display = 'none';
+      updateStatus();
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+    variantSelect.addEventListener('change', () => {
+      updateVariantDesc();
+      startNewGame();
+    });
+
+    updateVariantDesc();
+    startNewGame();
+  </script>
+</body>
+</html>
