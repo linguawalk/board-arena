@@ -50,6 +50,7 @@
           <option value="kingofthehill">킹 오브 더 힐</option>
           <option value="3check">쓰리 체크</option>
           <option value="random960">랜덤 시작 배치</option>
+          <option value="atomic">아토믹</option>
         </select>
         <div id="variant-desc" style="font-size:12px;color:#666;background:#f7f7f7;padding:8px 10px;border-radius:6px;margin:-4px 0 10px;"></div>
 
@@ -107,6 +108,7 @@
       kingofthehill: '이동 규칙은 표준 체스와 동일합니다. 다만 자신의 왕이 중앙 4칸(d4·e4·d5·e5) 중 한 곳에 도달하는 순간, 체크메이트와 상관없이 즉시 승리합니다. 왕을 안전하게 중앙까지 진출시키는 것이 핵심입니다.',
       '3check': '이동 규칙은 표준 체스와 동일합니다. 다만 상대에게 체크를 총 3번 걸면(누적) 체크메이트 없이도 즉시 승리합니다. 공격적으로 체크를 노리는 것이 유리합니다.',
       random960: '기물의 이동 규칙은 표준 체스와 완전히 동일하지만, 시작 배치가 매 게임마다 무작위로 섞입니다(비숍은 서로 다른 색 칸에 위치). 정석 암기가 통하지 않아 첫 수부터 스스로 판단해야 합니다. 이 배치에서는 캐슬링을 사용하지 않습니다.',
+      atomic: '기물을 잡으면 그 자리를 중심으로 주변 8칸의 폰이 아닌 기물이 전부 "폭발"해서 사라집니다(잡은 기물 자신도 함께 사라집니다). 상대 왕이 폭발에 휘말려 사라지면 즉시 승리합니다. 그래서 함부로 잡았다가 내 왕까지 위험해질 수 있어 신중한 판단이 필요합니다.',
     };
 
     function updateVariantDesc() {
@@ -169,8 +171,34 @@
       board.render();
     }
 
+    function applyAtomicExplosion(toSquare) {
+      const { x, y } = squareToXY(toSquare);
+      chess.remove(toSquare); // 잡은 기물 자신도 폭발로 사라짐
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || nx > 7 || ny < 0 || ny > 7) continue;
+          const sq = xyToSquare(nx, ny);
+          const p = chess.get(sq);
+          if (p && p.type !== 'p') chess.remove(sq); // 폰은 폭발에서 살아남음
+        }
+      }
+    }
+
     function checkVariantEnd(moverColor) {
       const variant = variantSelect.value;
+
+      if (variant === 'atomic') {
+        const whiteKing = findKingSquare('w');
+        const blackKing = findKingSquare('b');
+        if (!whiteKing || !blackKing) {
+          const winnerText = whiteKing ? '백' : '흑';
+          statusLine.textContent = `상대 왕이 폭발했습니다! ${winnerText} 승리 (아토믹)`;
+          gameOver = true;
+          return true;
+        }
+      }
 
       if (variant === 'kingofthehill') {
         for (const color of ['w', 'b']) {
@@ -333,6 +361,9 @@
       const result = chess.move({ from, to, promotion });
       if (!result) return;
       selectedSquare = null;
+      if (variantSelect.value === 'atomic' && result.captured) {
+        applyAtomicExplosion(result.to);
+      }
       syncBoardFromChess();
       log(`${result.color === 'w' ? '백' : '흑'}: ${result.san}`);
       if (checkVariantEnd(result.color)) return;
@@ -382,6 +413,9 @@
         const promotion = uci.length > 4 ? uci[4] : undefined;
         const result = chess.move({ from, to, promotion });
         if (result) {
+          if (variant === 'atomic' && result.captured) {
+            applyAtomicExplosion(result.to);
+          }
           syncBoardFromChess();
           log(`${result.color === 'w' ? '백' : '흑'} (AI): ${result.san}`);
           if (checkVariantEnd(result.color)) {
