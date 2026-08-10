@@ -7,7 +7,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 export class IntersectionPieceBoard {
   constructor({
     container, width = 9, height = 10, interactive = true, onPointClick = null,
-    pieceGlyphs = {}, palaces = [],
+    pieceGlyphs = {}, palaces = [], riverGap = null, pieceColorClasses = null,
   }) {
     this.container = container;
     this.width = width;
@@ -16,6 +16,8 @@ export class IntersectionPieceBoard {
     this.onPointClick = onPointClick;
     this.pieceGlyphs = pieceGlyphs;
     this.palaces = palaces;
+    this.riverGap = riverGap; // {yTop, yBottom} - 이 사이 구간의 세로선을 끊어서 강을 표현
+    this.pieceColorClasses = pieceColorClasses || { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-blue' };
 
     this.pieces = new Map();
     this.selected = null;
@@ -76,13 +78,30 @@ export class IntersectionPieceBoard {
     svg.appendChild(bg);
 
     for (let x = 0; x < this.width; x++) {
-      const line = document.createElementNS(SVG_NS, 'line');
-      line.setAttribute('x1', px(x));
-      line.setAttribute('y1', py(0));
-      line.setAttribute('x2', px(x));
-      line.setAttribute('y2', py(this.height - 1));
-      line.setAttribute('class', 'ipb-line');
-      svg.appendChild(line);
+      if (this.riverGap) {
+        const l1 = document.createElementNS(SVG_NS, 'line');
+        l1.setAttribute('x1', px(x));
+        l1.setAttribute('y1', py(0));
+        l1.setAttribute('x2', px(x));
+        l1.setAttribute('y2', py(this.riverGap.yTop));
+        l1.setAttribute('class', 'ipb-line');
+        svg.appendChild(l1);
+        const l2 = document.createElementNS(SVG_NS, 'line');
+        l2.setAttribute('x1', px(x));
+        l2.setAttribute('y1', py(this.riverGap.yBottom));
+        l2.setAttribute('x2', px(x));
+        l2.setAttribute('y2', py(this.height - 1));
+        l2.setAttribute('class', 'ipb-line');
+        svg.appendChild(l2);
+      } else {
+        const line = document.createElementNS(SVG_NS, 'line');
+        line.setAttribute('x1', px(x));
+        line.setAttribute('y1', py(0));
+        line.setAttribute('x2', px(x));
+        line.setAttribute('y2', py(this.height - 1));
+        line.setAttribute('class', 'ipb-line');
+        svg.appendChild(line);
+      }
     }
     for (let y = 0; y < this.height; y++) {
       const line = document.createElementNS(SVG_NS, 'line');
@@ -132,7 +151,7 @@ export class IntersectionPieceBoard {
       disk.setAttribute('cx', px(x));
       disk.setAttribute('cy', py(y));
       disk.setAttribute('r', cellPx * 0.42);
-      disk.setAttribute('class', isRed ? 'ipb-piece-disk-red' : 'ipb-piece-disk-blue');
+      disk.setAttribute('class', isRed ? this.pieceColorClasses.light : this.pieceColorClasses.dark);
       svg.appendChild(disk);
 
       const text = document.createElementNS(SVG_NS, 'text');
