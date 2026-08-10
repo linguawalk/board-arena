@@ -46,6 +46,7 @@
         <label for="variant-select">규칙</label>
         <select id="variant-select">
           <option value="xiangqi">정식 (xiangqi)</option>
+          <option value="minixiangqi">미니 (7x7, 강·사·상 없음)</option>
         </select>
         <div id="variant-desc" class="variant-desc"></div>
 
@@ -86,6 +87,7 @@
 
     const VARIANT_INFO = {
       xiangqi: '가장 널리 쓰이는 표준 샹치(중국장기) 규칙입니다. 강을 사이에 두고 병사와 상(코끼리)의 이동이 제한됩니다.',
+      minixiangqi: '7x7의 작은 판에서 두는 축소판 샹치입니다. 강이 없고, 사(仕/士)와 상(相/象)도 없이 차·마·포·병(각 5개)만으로 겨룹니다. 병은 처음부터 옆으로도 움직일 수 있습니다.',
     };
 
     const AI_LEVELS = [];
@@ -115,11 +117,19 @@
       variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
     }
 
-    const WIDTH = 9, HEIGHT = 10;
-    const PALACES = [
-      { cx: 4, cy: 1 },
-      { cx: 4, cy: 8 },
-    ];
+    const BOARD_CONFIG = {
+      xiangqi: {
+        width: 9, height: 10,
+        palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }],
+        riverGap: { yTop: 4, yBottom: 5 },
+      },
+      minixiangqi: {
+        width: 7, height: 7,
+        palaces: [{ cx: 3, cy: 1 }, { cx: 3, cy: 5 }],
+        riverGap: null,
+      },
+    };
+    let boardWidth = 9, boardHeight = 10;
 
     let ffish = null;
     let board = null;
@@ -131,8 +141,8 @@
 
     function fileToX(f) { return f.charCodeAt(0) - 97; }
     function xToFile(x) { return String.fromCharCode(97 + x); }
-    function rankToY(r) { return HEIGHT - r; }
-    function yToRank(y) { return HEIGHT - y; }
+    function rankToY(r) { return boardHeight - r; }
+    function yToRank(y) { return boardHeight - y; }
     function xyToSquare(x, y) { return `${xToFile(x)}${yToRank(y)}`; }
     function squareToXY(sq) {
       const m = sq.match(/^([a-i])(10|[1-9])/);
@@ -208,15 +218,21 @@
       moveHistoryUci = [];
       moveLog.innerHTML = '';
 
+      const cfg = BOARD_CONFIG[variantSelect.value] || BOARD_CONFIG.xiangqi;
+      boardWidth = cfg.width;
+      boardHeight = cfg.height;
+
       boardCol.innerHTML = '';
       ui = new IntersectionPieceBoard({
         container: boardCol,
-        width: WIDTH,
-        height: HEIGHT,
+        width: cfg.width,
+        height: cfg.height,
         interactive: true,
         onPointClick: handlePointClick,
         pieceGlyphs: GLYPHS,
-        palaces: PALACES,
+        palaces: cfg.palaces,
+        riverGap: cfg.riverGap,
+        pieceColorClasses: { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-black' },
       });
       syncBoardFromFfish();
       updateStatus();
