@@ -70,13 +70,18 @@
   <script type="module">
     import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
 
-    // Fairy-Stockfish(ffish-es6)는 브라우저의 fetch로 wasm을 불러오도록 만들어져 있어
-    // 이 스크립트는 반드시 실제 웹 서버(HTTP)를 통해 열어야 합니다 (file:// 직접 열기 불가).
+    // Fairy-Stockfish(ffish-es6)는 원래 브라우저의 fetch로 wasm을 불러오도록 만들어져 있는데,
+    // 내부 locateFile 경로 계산이 module script 환경(document.currentScript 없음)에서 어긋나는 문제가 있어,
+    // 여기서 직접 fetch로 wasm 바이너리를 받아온 뒤 엔진에 넘겨주는 방식으로 우회한다.
     async function loadFfish() {
+      const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
+      const wasmResponse = await fetch(wasmUrl);
+      if (!wasmResponse.ok) {
+        throw new Error(`ffish.wasm 요청 실패: HTTP ${wasmResponse.status} (${wasmUrl})`);
+      }
+      const wasmBinary = new Uint8Array(await wasmResponse.arrayBuffer());
       const mod = await import('../../shared/js/vendor/ffish.js');
-      return mod.default({
-        locateFile: (path) => '/shared/js/vendor/' + path,
-      });
+      return mod.default({ wasmBinary });
     }
 
     const GLYPHS = {
@@ -112,7 +117,7 @@
       levelSelect.appendChild(opt);
     }
     function currentDepth() {
-      return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10); // 장기는 탐색이 무거워 상한
+      return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
     }
     function updateVariantDesc() {
       variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
@@ -196,8 +201,13 @@
 
     async function startNewGame() {
       statusLine.textContent = '엔진 불러오는 중...';
-      if (!ffish) {
-        ffish = await loadFfish();
+      try {
+        if (!ffish) {
+          ffish = await loadFfish();
+        }
+      } catch (e) {
+        statusLine.textContent = '엔진 로드 실패';
+        throw e;
       }
       if (board) board.delete();
       board = new ffish.Board(variantSelect.value);
