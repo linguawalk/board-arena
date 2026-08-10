@@ -1,21 +1,10 @@
 /**
  * intersection-piece-board.js
  * 장기·샹치처럼 "선의 교차점에 기물을 놓고 이동시키는" 게임들의 공용 렌더링 컴포넌트.
- * 바둑의 GoBoard와 비슷한 좌표계(교차점)를 쓰지만, 기물이 이동한다는 점은 체스 계열과 같다.
  */
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 export class IntersectionPieceBoard {
-  /**
-   * @param {Object} config
-   * @param {HTMLElement} config.container
-   * @param {number} config.width - 세로선 개수 (장기=9)
-   * @param {number} config.height - 가로선 개수 (장기=10)
-   * @param {boolean} [config.interactive=true]
-   * @param {(x:number,y:number)=>void} [config.onPointClick]
-   * @param {Object} [config.pieceGlyphs] - {"h_cha":"車", ...} 기물 코드->한자 매핑
-   * @param {Array<{x:number,y:number}>} [config.palaces] - 궁성 대각선을 그릴 3x3 영역의 중심점들
-   */
   constructor({
     container, width = 9, height = 10, interactive = true, onPointClick = null,
     pieceGlyphs = {}, palaces = [],
@@ -26,9 +15,9 @@ export class IntersectionPieceBoard {
     this.interactive = interactive;
     this.onPointClick = onPointClick;
     this.pieceGlyphs = pieceGlyphs;
-    this.palaces = palaces; // [{cx, cy}] 궁성 중심 좌표 (3x3 영역)
+    this.palaces = palaces;
 
-    this.pieces = new Map(); // "x,y" -> 기물 코드
+    this.pieces = new Map();
     this.selected = null;
     this.legalTargets = [];
     this.lastMove = null;
@@ -78,7 +67,6 @@ export class IntersectionPieceBoard {
     const px = (x) => margin + x * cellPx;
     const py = (y) => margin + y * cellPx;
 
-    // 배경
     const bg = document.createElementNS(SVG_NS, 'rect');
     bg.setAttribute('x', 0);
     bg.setAttribute('y', 0);
@@ -87,7 +75,6 @@ export class IntersectionPieceBoard {
     bg.setAttribute('class', 'ipb-bg');
     svg.appendChild(bg);
 
-    // 세로선
     for (let x = 0; x < this.width; x++) {
       const line = document.createElementNS(SVG_NS, 'line');
       line.setAttribute('x1', px(x));
@@ -97,7 +84,6 @@ export class IntersectionPieceBoard {
       line.setAttribute('class', 'ipb-line');
       svg.appendChild(line);
     }
-    // 가로선
     for (let y = 0; y < this.height; y++) {
       const line = document.createElementNS(SVG_NS, 'line');
       line.setAttribute('x1', px(0));
@@ -107,7 +93,6 @@ export class IntersectionPieceBoard {
       line.setAttribute('class', 'ipb-line');
       svg.appendChild(line);
     }
-    // 궁성 대각선(X자)
     for (const pal of this.palaces) {
       for (const [dx1, dy1, dx2, dy2] of [[-1, -1, 1, 1], [-1, 1, 1, -1]]) {
         const line = document.createElementNS(SVG_NS, 'line');
@@ -120,7 +105,6 @@ export class IntersectionPieceBoard {
       }
     }
 
-    // 마지막 수 강조
     if (this.lastMove) {
       for (const pt of [this.lastMove.from, this.lastMove.to]) {
         const c = document.createElementNS(SVG_NS, 'circle');
@@ -132,7 +116,6 @@ export class IntersectionPieceBoard {
       }
     }
 
-    // 선택된 지점
     if (this.selected) {
       const c = document.createElementNS(SVG_NS, 'circle');
       c.setAttribute('cx', px(this.selected.x));
@@ -142,10 +125,9 @@ export class IntersectionPieceBoard {
       svg.appendChild(c);
     }
 
-    // 기물
     for (const [key, piece] of this.pieces.entries()) {
       const [x, y] = key.split(',').map(Number);
-      const isRed = piece.startsWith('r_') || piece.startsWith('h_');
+      const isRed = /^[A-Z]$/.test(piece);
       const disk = document.createElementNS(SVG_NS, 'circle');
       disk.setAttribute('cx', px(x));
       disk.setAttribute('cy', py(y));
@@ -163,7 +145,6 @@ export class IntersectionPieceBoard {
       svg.appendChild(text);
     }
 
-    // 합법 목적지 표시
     for (const t of this.legalTargets) {
       const dot = document.createElementNS(SVG_NS, 'circle');
       dot.setAttribute('cx', px(t.x));
@@ -173,7 +154,6 @@ export class IntersectionPieceBoard {
       svg.appendChild(dot);
     }
 
-    // 클릭 히트영역
     if (this.interactive) {
       for (let y = 0; y < this.height; y++) {
         for (let x = 0; x < this.width; x++) {
