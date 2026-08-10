@@ -5,6 +5,7 @@
 .ipb-selected { fill: rgba(80, 160, 255, 0.45); pointer-events: none; }
 .ipb-piece-disk-red { fill: #fdf6e3; stroke: #b3261e; stroke-width: 2.5; }
 .ipb-piece-disk-blue { fill: #fdf6e3; stroke: #1a3a8f; stroke-width: 2.5; }
+.ipb-piece-disk-black { fill: #fdf6e3; stroke: #1a1a1a; stroke-width: 2.5; }
 .ipb-piece-glyph {
   font-size: 24px;
   font-weight: 700;
