@@ -176,7 +176,11 @@
         btn.addEventListener('click', () => {
           selectedDropPiece = selectedDropPiece === letter ? null : letter;
           selectedSquare = null;
-          ui.setSelection(null, []);
+          if (selectedDropPiece) {
+            ui.setSelection(null, legalDropTargets(selectedDropPiece).map((sq) => squareToXY(sq)));
+          } else {
+            ui.setSelection(null, []);
+          }
           renderDropOptions();
         });
         dropButtons.appendChild(btn);
