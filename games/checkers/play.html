@@ -1,1 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>체커 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/square-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 440px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>체커 대국</h1>
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="3">쉬움</option>
+          <option value="5" selected>보통</option>
+          <option value="7">어려움</option>
+        </select>
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <div id="status-line" class="status-line">당신 차례 (흑)</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
 
+  <script type="module">
+    import { SquareBoard } from '../../shared/js/square-board.js';
+
+    const SIZE = 8;
+    const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    // 기물: 'b','w' 일반 / 'B','W' 킹. 흑(b/B)은 아래(y 큰 쪽)에서 시작해 위로(y 감소) 전진, 백(w/W)은 반대.
+    let grid = [];
+    let ui = null;
+    let humanColor = 'b';
+    let gameOver = false;
+    let forcedContinueFrom = null; // 연속 점프 중인 말의 위치
+
+    function log(text) { const p = document.createElement('div'); p.textContent = text; moveLog.prepend(p); }
+    function inBounds(x, y) { return x >= 0 && x < SIZE && y >= 0 && y < SIZE; }
+    function isDark(square) { return square === square.toLowerCase(); }
+    function colorOf(p) { return p.toLowerCase(); }
+    function isKing(p) { return p === p.toUpperCase(); }
+    function opponentColor(c) { return c === 'b' ? 'w' : 'b'; }
+
+    function startGrid() {
+      const g = Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => null));
+      for (let y = 0; y < 3; y++) for (let x = 0; x < SIZE; x++) if ((x + y) % 2 === 1) g[y][x] = 'w';
+      for (let y = 5; y < 8; y++) for (let x = 0; x < SIZE; x++) if ((x + y) % 2 === 1) g[y][x] = 'b';
+      return g;
+    }
+
+    function pieceMoves(g, x, y) {
+      const p = g[y][x];
+      if (!p) return { simple: [], jumps: [] };
+      const color = colorOf(p);
+      const king = isKing(p);
+      const forward = color === 'b' ? -1 : 1;
+      const dirsY = king ? [-1, 1] : [forward];
+      const simple = [], jumps = [];
+      for (const dy of dirsY) {
+        for (const dx of [-1, 1]) {
+          const nx = x + dx, ny = y + dy;
+          if (inBounds(nx, ny) && !g[ny][nx]) simple.push({ x: nx, y: ny });
+          const jx = x + dx * 2, jy = y + dy * 2;
+          if (inBounds(jx, jy) && !g[jy][jx] && inBounds(nx, ny) && g[ny][nx] && colorOf(g[ny][nx]) === opponentColor(color)) {
+            jumps.push({ x: jx, y: jy, captured: { x: nx, y: ny } });
+          }
+        }
+      }
+      return { simple, jumps };
+    }
+
+    function allMoves(g, color) {
+      let jumpMoves = [], simpleMoves = [];
+      for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
+        if (g[y][x] && colorOf(g[y][x]) === color) {
+          const { simple, jumps } = pieceMoves(g, x, y);
+          for (const j of jumps) jumpMoves.push({ from: { x, y }, to: j, captured: j.captured });
+          for (const s of simple) simpleMoves.push({ from: { x, y }, to: s });
+        }
+      }
+      return jumpMoves.length > 0 ? jumpMoves.map((m) => ({ ...m, isJump: true })) : simpleMoves.map((m) => ({ ...m, isJump: false }));
+    }
+
+    function applyMove(g, move) {
+      const ng = g.map((row) => row.slice());
+      let p = ng[move.from.y][move.from.x];
+      ng[move.from.y][move.from.x] = null;
+      if (move.isJump) ng[move.captured.y][move.captured.x] = null;
+      const promoteRow = colorOf(p) === 'b' ? 0 : SIZE - 1;
+      if (move.to.y === promoteRow) p = p.toUpperCase();
+      ng[move.to.y][move.to.x] = p;
+      return ng;
+    }
+
+    function furtherJumps(g, x, y) {
+      return pieceMoves(g, x, y).jumps;
+    }
+
+    function syncUi(lastMove) {
+      const pieces = [];
+      for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) if (grid[y][x]) pieces.push({ x, y, piece: grid[y][x] });
+      const GLYPHS = { b: '●', w: '●', B: '♛', W: '♛' };
+      ui.pieceGlyphs = GLYPHS;
+      ui.loadPosition(pieces);
+      if (lastMove) ui.markLastMove(lastMove.from, lastMove.to);
+      ui.render();
+    }
+
+    function startNewGame() {
+      grid = startGrid();
+      gameOver = false;
+      forcedContinueFrom = null;
+      moveLog.innerHTML = '';
+      boardCol.innerHTML = '';
+      ui = new SquareBoard({
+        container: boardCol, width: SIZE, height: SIZE, interactive: true,
+        onSquareClick: handleSquareClick, pieceGlyphs: { b: '●', w: '●', B: '♛', W: '♛' },
+        lightColor: '#eeeeee', darkColor: '#5b4636',
+      });
+      syncUi(null);
+      statusLine.textContent = '당신 차례 (흑)';
+      log('새 게임 시작');
+    }
+
+    let selected = null;
+
+    function handleSquareClick(x, y) {
+      if (gameOver) return;
+      const moves = allMoves(grid, humanColor);
+      const forcedJump = moves.length > 0 && moves[0].isJump;
+
+      if (forcedContinueFrom) {
+        const from = forcedContinueFrom;
+        const jumps = furtherJumps(grid, from.x, from.y);
+        const jm = jumps.find((j) => j.x === x && j.y === y);
+        if (jm) {
+          grid = applyMove(grid, { from, to: { x, y }, captured: jm.captured, isJump: true });
+          syncUi({ from, to: { x, y } });
+          log(`당신: 연속 점프 (${x},${y})`);
+          const more = furtherJumps(grid, x, y);
+          if (more.length > 0) {
+            forcedContinueFrom = { x, y };
+            ui.setSelection({ x, y }, more.map((m) => ({ x: m.x, y: m.y })));
+            return;
+          }
+          forcedContinueFrom = null;
+          if (checkGameOver()) return;
+          statusLine.textContent = 'AI 차례...';
+          thinkingEl.style.display = 'block';
+          setTimeout(aiTurn, 30);
+        }
+        return;
+      }
+
+      if (selected) {
+        const m = moves.find((mv) => mv.from.x === selected.x && mv.from.y === selected.y && mv.to.x === x && mv.to.y === y);
+        if (m) {
+          grid = applyMove(grid, m);
+          syncUi({ from: m.from, to: m.to });
+          log(`당신: (${m.from.x},${m.from.y}) → (${x},${y})`);
+          selected = null;
+          if (m.isJump) {
+            const more = furtherJumps(grid, x, y);
+            if (more.length > 0) {
+              forcedContinueFrom = { x, y };
+              ui.setSelection({ x, y }, more.map((mm) => ({ x: mm.x, y: mm.y })));
+              return;
+            }
+          }
+          ui.setSelection(null, []);
+          if (checkGameOver()) return;
+          statusLine.textContent = 'AI 차례...';
+          thinkingEl.style.display = 'block';
+          setTimeout(aiTurn, 30);
+          return;
+        }
+        selected = null;
+        ui.setSelection(null, []);
+      }
+
+      const piece = grid[y][x];
+      if (piece && colorOf(piece) === humanColor) {
+        const pieceMovesList = moves.filter((mv) => mv.from.x === x && mv.from.y === y);
+        if (forcedJump && pieceMovesList.length === 0) return; // 다른 말이 점프해야 함
+        if (pieceMovesList.length === 0) return;
+        selected = { x, y };
+        ui.setSelection({ x, y }, pieceMovesList.map((mv) => ({ x: mv.to.x, y: mv.to.y })));
+      }
+    }
+
+    function checkGameOver() {
+      const bMoves = allMoves(grid, 'b').length;
+      const wMoves = allMoves(grid, 'w').length;
+      if (bMoves === 0) { gameOver = true; statusLine.textContent = humanColor === 'b' ? 'AI 승리' : '당신 승리!'; return true; }
+      if (wMoves === 0) { gameOver = true; statusLine.textContent = humanColor === 'w' ? 'AI 승리' : '당신 승리!'; return true; }
+      return false;
+    }
+
+    function evaluate(g, color) {
+      let score = 0;
+      for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
+        const p = g[y][x];
+        if (!p) continue;
+        const val = isKing(p) ? 3 : 1;
+        score += colorOf(p) === color ? val : -val;
+      }
+      return score;
+    }
+
+    function minimax(g, color, depth, alpha, beta, maximizing, rootColor) {
+      const moves = allMoves(g, color);
+      if (depth === 0 || moves.length === 0) return evaluate(g, rootColor) + (moves.length === 0 ? (maximizing ? -50 : 50) : 0);
+      if (maximizing) {
+        let best = -Infinity;
+        for (const m of moves) {
+          const ng = applyMove(g, m);
+          best = Math.max(best, minimax(ng, opponentColor(color), depth - 1, alpha, beta, false, rootColor));
+          alpha = Math.max(alpha, best);
+          if (beta <= alpha) break;
+        }
+        return best;
+      } else {
+        let best = Infinity;
+        for (const m of moves) {
+          const ng = applyMove(g, m);
+          best = Math.min(best, minimax(ng, opponentColor(color), depth - 1, alpha, beta, true, rootColor));
+          beta = Math.min(beta, best);
+          if (beta <= alpha) break;
+        }
+        return best;
+      }
+    }
+
+    function aiTurn() {
+      const aiColor = opponentColor(humanColor);
+      const depth = parseInt(levelSelect.value, 10);
+      const moves = allMoves(grid, aiColor);
+      if (moves.length === 0) { checkGameOver(); thinkingEl.style.display = 'none'; return; }
+      let best = null, bestScore = -Infinity;
+      for (const m of moves) {
+        const ng = applyMove(grid, m);
+        const score = minimax(ng, opponentColor(aiColor), depth - 1, -Infinity, Infinity, false, aiColor);
+        if (score > bestScore) { bestScore = score; best = m; }
+      }
+      grid = applyMove(grid, best);
+      syncUi({ from: best.from, to: best.to });
+      log(`AI: (${best.from.x},${best.from.y}) → (${best.to.x},${best.to.y})`);
+      let cur = best.to;
+      while (best.isJump) {
+        const more = furtherJumps(grid, cur.x, cur.y);
+        if (more.length === 0) break;
+        const ng2 = applyMove(grid, { from: cur, to: { x: more[0].x, y: more[0].y }, captured: more[0].captured, isJump: true });
+        grid = ng2;
+        syncUi({ from: cur, to: { x: more[0].x, y: more[0].y } });
+        log(`AI: 연속 점프 (${more[0].x},${more[0].y})`);
+        cur = { x: more[0].x, y: more[0].y };
+      }
+      thinkingEl.style.display = 'none';
+      if (checkGameOver()) return;
+      statusLine.textContent = '당신 차례';
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+
+    startNewGame();
+  </script>
+</body>
+</html>
