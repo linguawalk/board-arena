@@ -1,1 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>오목 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/intersection-piece-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 500px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>오목 대국</h1>
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="1">쉬움</option>
+          <option value="2" selected>보통</option>
+          <option value="3">어려움</option>
+        </select>
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <div id="status-line" class="status-line">당신 차례 (흑)</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
 
+  <script type="module">
+    import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+
+    const SIZE = 15;
+    const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    let grid = []; // grid[y][x] = 'B' | 'W' | null
+    let ui = null;
+    let humanColor = 'B';
+    let gameOver = false;
+
+    function log(text) {
+      const p = document.createElement('div');
+      p.textContent = text;
+      moveLog.prepend(p);
+    }
+
+    function emptyGrid() {
+      return Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, () => null));
+    }
+
+    function syncUi(lastMove) {
+      const pieces = [];
+      for (let y = 0; y < SIZE; y++) {
+        for (let x = 0; x < SIZE; x++) {
+          if (grid[y][x]) pieces.push({ x, y, piece: grid[y][x] === 'B' ? 'B' : 'W' });
+        }
+      }
+      ui.pieceGlyphs = { B: '●', W: '●' };
+      ui.loadPosition(pieces);
+      if (lastMove) ui.markLastMove(lastMove, lastMove);
+      ui.render();
+    }
+
+    function checkWin(g, x, y, color) {
+      const dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+      for (const [dx, dy] of dirs) {
+        let count = 1;
+        for (let s = 1; s < 5; s++) {
+          const nx = x + dx * s, ny = y + dy * s;
+          if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE || g[ny][nx] !== color) break;
+          count++;
+        }
+        for (let s = 1; s < 5; s++) {
+          const nx = x - dx * s, ny = y - dy * s;
+          if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE || g[ny][nx] !== color) break;
+          count++;
+        }
+        if (count >= 5) return true;
+      }
+      return false;
+    }
+
+    function isFull(g) {
+      return g.every((row) => row.every((c) => c !== null));
+    }
+
+    function startNewGame() {
+      grid = emptyGrid();
+      gameOver = false;
+      moveLog.innerHTML = '';
+      boardCol.innerHTML = '';
+      ui = new IntersectionPieceBoard({
+        container: boardCol,
+        width: SIZE,
+        height: SIZE,
+        interactive: true,
+        onPointClick: handlePointClick,
+        pieceGlyphs: { B: '●', W: '●' },
+        palaces: [],
+      });
+      syncUi(null);
+      statusLine.textContent = '당신 차례 (흑)';
+      log('새 게임 시작');
+    }
+
+    function handlePointClick(x, y) {
+      if (gameOver || grid[y][x]) return;
+      grid[y][x] = humanColor;
+      syncUi({ x, y });
+      log(`당신: (${x},${y})`);
+      if (checkWin(grid, x, y, humanColor)) {
+        gameOver = true;
+        statusLine.textContent = '당신 승리!';
+        return;
+      }
+      if (isFull(grid)) {
+        gameOver = true;
+        statusLine.textContent = '무승부';
+        return;
+      }
+      statusLine.textContent = 'AI 차례...';
+      thinkingEl.style.display = 'block';
+      setTimeout(aiMove, 30);
+    }
+
+    // 각 빈 칸의 "가치"를 주변 패턴으로 평가하는 휴리스틱 오목 AI (완전 탐색이 아니라 빠른 근사)
+    function scoreLine(g, x, y, dx, dy, color) {
+      let score = 0;
+      let count = 0, openEnds = 0;
+      for (let s = 0; s < 5; s++) {
+        const nx = x + dx * s, ny = y + dy * s;
+        if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) return 0;
+        if (g[ny][nx] === color) count++;
+        else if (g[ny][nx] !== null) return 0;
+      }
+      const beforeX = x - dx, beforeY = y - dy;
+      const afterX = x + dx * 5, afterY = y + dy * 5;
+      if (beforeX >= 0 && beforeX < SIZE && beforeY >= 0 && beforeY < SIZE && g[beforeY][beforeX] === null) openEnds++;
+      if (afterX >= 0 && afterX < SIZE && afterY >= 0 && afterY < SIZE && g[afterY][afterX] === null) openEnds++;
+      const base = [0, 1, 10, 100, 1000, 100000][count];
+      return openEnds > 0 ? base * openEnds : base * 0.3;
+    }
+
+    function evaluatePoint(g, x, y, color) {
+      const dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+      let total = 0;
+      for (const [dx, dy] of dirs) {
+        for (let start = -4; start <= 0; start++) {
+          total += scoreLine(g, x + dx * start, y + dy * start, dx, dy, color);
+        }
+      }
+      return total;
+    }
+
+    function candidateMoves(g) {
+      const set = new Set();
+      for (let y = 0; y < SIZE; y++) {
+        for (let x = 0; x < SIZE; x++) {
+          if (!g[y][x]) continue;
+          for (let dy = -2; dy <= 2; dy++) {
+            for (let dx = -2; dx <= 2; dx++) {
+              const nx = x + dx, ny = y + dy;
+              if (nx >= 0 && nx < SIZE && ny >= 0 && ny < SIZE && !g[ny][nx]) set.add(`${nx},${ny}`);
+            }
+          }
+        }
+      }
+      if (set.size === 0) set.add(`${Math.floor(SIZE / 2)},${Math.floor(SIZE / 2)}`);
+      return [...set].map((s) => { const [x, y] = s.split(',').map(Number); return { x, y }; });
+    }
+
+    function aiMove() {
+      const aiColor = humanColor === 'B' ? 'W' : 'B';
+      const level = parseInt(levelSelect.value, 10);
+      const moves = candidateMoves(grid);
+
+      let best = null, bestScore = -Infinity;
+      for (const m of moves) {
+        const offense = evaluatePoint(grid, m.x, m.y, aiColor);
+        const defense = level >= 2 ? evaluatePoint(grid, m.x, m.y, humanColor) : 0;
+        const weight = level >= 3 ? 1.1 : 1.0;
+        const score = offense * weight + defense * 0.9;
+        if (score > bestScore) { bestScore = score; best = m; }
+      }
+
+      grid[best.y][best.x] = aiColor;
+      syncUi({ x: best.x, y: best.y });
+      log(`AI: (${best.x},${best.y})`);
+      thinkingEl.style.display = 'none';
+
+      if (checkWin(grid, best.x, best.y, aiColor)) {
+        gameOver = true;
+        statusLine.textContent = 'AI 승리';
+        return;
+      }
+      if (isFull(grid)) {
+        gameOver = true;
+        statusLine.textContent = '무승부';
+        return;
+      }
+      statusLine.textContent = '당신 차례';
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+
+    startNewGame();
+  </script>
+</body>
+</html>
