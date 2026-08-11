@@ -1,1 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>쇼기 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/square-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 470px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+  .variant-desc { font-size: 12px; color: #666; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; margin: -4px 0 10px; }
+  .hand-panel { margin: 10px 0; }
+  .hand-title { font-size: 13px; color: #555; margin-bottom: 4px; }
+  .hand-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hand-buttons button { font-size: 20px; padding: 4px 10px; }
+  .promo-ask { display: none; gap: 8px; margin: 10px 0; align-items: center; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = '오류 발생: ' + (e.message || e.error) + '\n' + (e.filename ? `(${e.filename}:${e.lineno})` : '');
+      }
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) {
+        el.style.display = 'block';
+        el.textContent = '오류 발생(Promise): ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+      }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>쇼기 대국</h1>
 
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label for="variant-select">규칙</label>
+        <select id="variant-select">
+          <option value="shogi">정식 (shogi)</option>
+          <option value="minishogi">미니 쇼기 (5x5)</option>
+        </select>
+        <div id="variant-desc" class="variant-desc"></div>
+
+        <label for="level-select">AI 난이도</label>
+        <select id="level-select"></select>
+
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <button id="save-review-btn">복기용으로 저장</button>
+
+        <div id="hand-panel" class="hand-panel">
+          <div class="hand-title">내가 잡은 기물 (클릭 후 빈 칸에 드롭)</div>
+          <div id="hand-buttons" class="hand-buttons"></div>
+          <div id="opp-hand-line" style="font-size:12px;color:#888;margin-top:6px;"></div>
+        </div>
+
+        <div id="promo-ask" class="promo-ask">
+          <span style="font-size:13px;color:#555;">성(成)으로 승진하시겠습니까?</span>
+          <button id="promo-yes">예</button>
+          <button id="promo-no">아니오</button>
+        </div>
+
+        <div id="status-line" class="status-line">불러오는 중...</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="save-msg" style="font-size:12px;color:var(--accent);display:none;">저장됐습니다.</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { SquareBoard } from '../../shared/js/square-board.js';
+
+    async function loadFfish() {
+      const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
+      const wasmResponse = await fetch(wasmUrl);
+      if (!wasmResponse.ok) {
+        throw new Error(`ffish.wasm 요청 실패: HTTP ${wasmResponse.status} (${wasmUrl})`);
+      }
+      const wasmBinary = new Uint8Array(await wasmResponse.arrayBuffer());
+      const mod = await import('../../shared/js/vendor/ffish.js');
+      return mod.default({ wasmBinary });
+    }
+
+    const GLYPHS = {
+      K: '王', k: '玉',
+      R: '飛', r: '飛', '+R': '龍', '+r': '龍',
+      B: '角', b: '角', '+B': '馬', '+b': '馬',
+      G: '金', g: '金',
+      S: '銀', s: '銀', '+S': '全', '+s': '全',
+      N: '桂', n: '桂', '+N': '圭', '+n': '圭',
+      L: '香', l: '香', '+L': '杏', '+l': '杏',
+      P: '歩', p: '歩', '+P': 'と', '+p': 'と',
+    };
+
+    const VARIANT_INFO = {
+      shogi: '가장 널리 쓰이는 표준 쇼기(일본장기) 규칙입니다. 잡은 상대 기물은 사라지지 않고 내 것이 되어, 손에 들고 있다가 빈 칸에 다시 놓을 수 있습니다(드롭).',
+      minishogi: '5x5의 작은 판에서 두는 축소판 쇼기입니다. 기물 종류가 줄고 게임이 훨씬 빠르게 끝납니다. 드롭 규칙은 정식과 동일합니다.',
+    };
+
+    const BOARD_SIZE = { shogi: 9, minishogi: 5 };
+
+    const AI_LEVELS = [];
+    for (let k = 18; k >= 1; k--) AI_LEVELS.push({ id: `k${k}`, label: `${k}급`, depth: 2 + Math.floor((18 - k) * 0.5) });
+    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: 12 + d });
+
+    const boardCol = document.getElementById('board-col');
+    const variantSelect = document.getElementById('variant-select');
+    const variantDesc = document.getElementById('variant-desc');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+    const saveMsg = document.getElementById('save-msg');
+    const handButtons = document.getElementById('hand-buttons');
+    const oppHandLine = document.getElementById('opp-hand-line');
+    const promoAsk = document.getElementById('promo-ask');
+
+    for (const lvl of AI_LEVELS) {
+      const opt = document.createElement('option');
+      opt.value = lvl.id;
+      opt.textContent = lvl.label;
+      if (lvl.id === 'd1') opt.selected = true;
+      levelSelect.appendChild(opt);
+    }
+    function currentDepth() {
+      return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
+    }
+    function updateVariantDesc() {
+      variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
+    }
+
+    let boardSize = 9;
+    let ffish = null;
+    let board = null;
+    let ui = null;
+    let humanColor = 'w';
+    let selectedSquare = null;
+    let selectedDropPiece = null;
+    let gameOver = false;
+    let moveHistoryUci = [];
+    let pendingPromoChoice = null;
+
+    function fileToX(f) { return parseInt(f, 10) - 1; }
+    function rankToY(r) { return r.charCodeAt(0) - 97; }
+    function xyToSquare(x, y) { return `${x + 1}${String.fromCharCode(97 + y)}`; }
+    function squareToXY(sq) { return { x: fileToX(sq[0]), y: rankToY(sq[1]) }; }
+
+    function moveIsPromo(m) { return m.length > 4 && m[4] === '+'; }
+    function moveToSquare(m) { return m.slice(2, 4); }
+    function moveFromSquare(m) { return m.slice(0, 2); }
+
+    function parseFenBoard(fen) {
+      const rows = fen.split(' ')[0].split('/');
+      const pieces = [];
+      for (let y = 0; y < rows.length; y++) {
+        let x = 0;
+        let i = 0;
+        const row = rows[y];
+        while (i < row.length) {
+          const ch = row[i];
+          if (/[0-9]/.test(ch)) {
+            let numStr = '';
+            while (i < row.length && /[0-9]/.test(row[i])) { numStr += row[i]; i++; }
+            x += parseInt(numStr, 10);
+          } else if (ch === '+') {
+            pieces.push({ x, y, piece: '+' + row[i + 1] });
+            x += 1;
+            i += 2;
+          } else {
+            pieces.push({ x, y, piece: ch });
+            x += 1;
+            i += 1;
+          }
+        }
+      }
+      return pieces;
+    }
+
+    function parseHand(fen) {
+      const parts = fen.split(' ');
+      const handStr = parts[2] || '-';
+      const hand = {};
+      if (handStr === '-') return hand;
+      let i = 0;
+      while (i < handStr.length) {
+        let numStr = '';
+        while (i < handStr.length && /[0-9]/.test(handStr[i])) { numStr += handStr[i]; i++; }
+        const count = numStr ? parseInt(numStr, 10) : 1;
+        const letter = handStr[i];
+        i += 1;
+        hand[letter] = (hand[letter] || 0) + count;
+      }
+      return hand;
+    }
+
+    function log(text) {
+      const p = document.createElement('div');
+      p.textContent = text;
+      moveLog.prepend(p);
+    }
+
+    function syncBoardFromFfish() {
+      const fen = board.fen();
+      const pieces = parseFenBoard(fen);
+      ui.pieceGlyphs = GLYPHS;
+      ui.loadPosition(pieces);
+      ui.render();
+      renderHandPanel(fen);
+    }
+
+    function renderHandPanel(fen) {
+      const hand = parseHand(fen);
+      handButtons.innerHTML = '';
+      const myLetters = Object.keys(hand).filter((l) => (humanColor === 'w' ? /[A-Z]/.test(l) : /[a-z]/.test(l)));
+      for (const letter of myLetters) {
+        const count = hand[letter];
+        if (count <= 0) continue;
+        const btn = document.createElement('button');
+        btn.textContent = `${GLYPHS[letter] || letter} ×${count}`;
+        if (selectedDropPiece === letter) btn.style.outline = '2px solid #4a90e2';
+        btn.addEventListener('click', () => {
+          selectedDropPiece = selectedDropPiece === letter ? null : letter;
+          selectedSquare = null;
+          ui.setSelection(null, []);
+          renderHandPanel(fen);
+        });
+        handButtons.appendChild(btn);
+      }
+      const oppLetters = Object.keys(hand).filter((l) => (humanColor === 'w' ? /[a-z]/.test(l) : /[A-Z]/.test(l)));
+      const oppText = oppLetters.map((l) => `${GLYPHS[l] || l}×${hand[l]}`).join(' ');
+      oppHandLine.textContent = oppText ? `상대 보유: ${oppText}` : '';
+    }
+
+    function updateStatus() {
+      if (gameOver) return;
+      if (board.isGameOver()) {
+        gameOver = true;
+        statusLine.textContent = `게임 종료: ${board.result()}`;
+        return;
+      }
+      const whoseTurn = (board.turn() ? 'w' : 'b') === humanColor ? '당신 차례' : 'AI 차례';
+      statusLine.textContent = whoseTurn;
+    }
+
+    async function startNewGame() {
+      statusLine.textContent = '엔진 불러오는 중...';
+      try {
+        if (!ffish) {
+          ffish = await loadFfish();
+        }
+      } catch (e) {
+        statusLine.textContent = '엔진 로드 실패';
+        throw e;
+      }
+      if (board) board.delete();
+      board = new ffish.Board(variantSelect.value);
+      boardSize = BOARD_SIZE[variantSelect.value] || 9;
+      gameOver = false;
+      selectedSquare = null;
+      selectedDropPiece = null;
+      moveHistoryUci = [];
+      moveLog.innerHTML = '';
+      promoAsk.style.display = 'none';
+
+      boardCol.innerHTML = '';
+      ui = new SquareBoard({
+        container: boardCol,
+        width: boardSize,
+        height: boardSize,
+        interactive: true,
+        onSquareClick: handleSquareClick,
+        pieceGlyphs: GLYPHS,
+        lightColor: '#f2d9a6',
+        darkColor: '#d9b877',
+        colorByCase: true,
+      });
+      syncBoardFromFfish();
+      updateStatus();
+      log(`새 게임 시작 (${variantSelect.options[variantSelect.selectedIndex].text})`);
+    }
+
+    function legalMovesFromSquare(square) {
+      const all = board.legalMoves().split(' ').filter((m) => m.length > 0 && !m.includes('*'));
+      return all.filter((m) => moveFromSquare(m) === square);
+    }
+
+    function legalDropTargets(pieceLetter) {
+      const all = board.legalMoves().split(' ').filter((m) => m.length > 0 && m.startsWith(pieceLetter + '*'));
+      return all.map((m) => m.split('*')[1]);
+    }
+
+    function handleSquareClick(x, y) {
+      if (gameOver || pendingPromoChoice) return;
+      const humanTurn = (board.turn() ? 'w' : 'b') === humanColor;
+      if (!humanTurn) return;
+
+      const clickedSquare = xyToSquare(x, y);
+
+      if (selectedDropPiece) {
+        const targets = legalDropTargets(selectedDropPiece);
+        if (targets.includes(clickedSquare)) {
+          playMove(`${selectedDropPiece}*${clickedSquare}`);
+        }
+        return;
+      }
+
+      if (selectedSquare) {
+        const moves = legalMovesFromSquare(selectedSquare);
+        const matches = moves.filter((m) => moveToSquare(m) === clickedSquare);
+        if (matches.length === 1) {
+          playMove(matches[0]);
+          return;
+        }
+        if (matches.length === 2) {
+          const withPromo = matches.find((m) => moveIsPromo(m));
+          const withoutPromo = matches.find((m) => !moveIsPromo(m));
+          pendingPromoChoice = { withPromo, withoutPromo };
+          promoAsk.style.display = 'flex';
+          selectedSquare = null;
+          ui.setSelection(null, []);
+          return;
+        }
+        selectedSquare = null;
+        ui.setSelection(null, []);
+        trySelect(x, y, clickedSquare);
+      } else {
+        trySelect(x, y, clickedSquare);
+      }
+    }
+
+    function trySelect(x, y, square) {
+      const moves = legalMovesFromSquare(square);
+      if (moves.length === 0) return;
+      selectedSquare = square;
+      ui.setSelection({ x, y }, moves.map((m) => squareToXY(moveToSquare(m))));
+    }
+
+    function playMove(uci) {
+      board.push(uci);
+      moveHistoryUci.push(uci);
+      selectedSquare = null;
+      selectedDropPiece = null;
+      const isDrop = uci.includes('*');
+      if (isDrop) {
+        const to = squareToXY(uci.split('*')[1]);
+        ui.markLastMove(to, to);
+      } else {
+        ui.markLastMove(squareToXY(moveFromSquare(uci)), squareToXY(moveToSquare(uci)));
+      }
+      syncBoardFromFfish();
+      log(`당신: ${uci}`);
+      updateStatus();
+
+      if (!gameOver && (board.turn() ? 'w' : 'b') !== humanColor) {
+        requestAiMove();
+      }
+    }
+
+    document.getElementById('promo-yes').addEventListener('click', () => {
+      if (!pendingPromoChoice) return;
+      const mv = pendingPromoChoice.withPromo;
+      pendingPromoChoice = null;
+      promoAsk.style.display = 'none';
+      playMove(mv);
+    });
+    document.getElementById('promo-no').addEventListener('click', () => {
+      if (!pendingPromoChoice) return;
+      const mv = pendingPromoChoice.withoutPromo;
+      pendingPromoChoice = null;
+      promoAsk.style.display = 'none';
+      playMove(mv);
+    });
+
+    async function requestAiMove() {
+      thinkingEl.style.display = 'block';
+      try {
+        const res = await fetch('/api/variant-engine', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            variant: variantSelect.value,
+            moves: moveHistoryUci,
+            depth: currentDepth(),
+          }),
+        });
+        const data = await res.json();
+        if (data.gameOver || !data.uci) {
+          thinkingEl.style.display = 'none';
+          updateStatus();
+          return;
+        }
+        board.push(data.uci);
+        moveHistoryUci.push(data.uci);
+        const isDrop = data.uci.includes('*');
+        if (isDrop) {
+          const to = squareToXY(data.uci.split('*')[1]);
+          ui.markLastMove(to, to);
+        } else {
+          ui.markLastMove(squareToXY(moveFromSquare(data.uci)), squareToXY(moveToSquare(data.uci)));
+        }
+        syncBoardFromFfish();
+        log(`AI: ${data.uci}`);
+      } catch (e) {
+        log('AI 오류: ' + e.message);
+      }
+      thinkingEl.style.display = 'none';
+      updateStatus();
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+    document.getElementById('save-review-btn').addEventListener('click', () => {
+      const games = JSON.parse(localStorage.getItem('board-arena-shogi-games') || '[]');
+      games.unshift({
+        id: Date.now(),
+        savedAt: new Date().toISOString(),
+        variant: variantSelect.value,
+        moves: moveHistoryUci,
+      });
+      localStorage.setItem('board-arena-shogi-games', JSON.stringify(games.slice(0, 30)));
+      saveMsg.style.display = 'block';
+      setTimeout(() => (saveMsg.style.display = 'none'), 2500);
+    });
+    variantSelect.addEventListener('change', () => {
+      updateVariantDesc();
+      startNewGame();
+    });
+
+    updateVariantDesc();
+    startNewGame();
+  </script>
+</body>
+</html>
