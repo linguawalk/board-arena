@@ -1,1 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>만칼라 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 620px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
 
+  .mancala-board { display: flex; align-items: stretch; gap: 8px; background: #8a5a34; padding: 16px; border-radius: 16px; }
+  .store { width: 70px; display: flex; align-items: center; justify-content: center; background: #6b4423; border-radius: 12px; color: white; font-size: 22px; font-weight: 700; }
+  .pits-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .pit-row { display: flex; gap: 8px; }
+  .pit {
+    flex: 1; aspect-ratio: 1/1; border-radius: 50%; background: #c99a5b; display: flex;
+    align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #3a2712;
+    cursor: pointer; border: 3px solid transparent;
+  }
+  .pit.disabled { cursor: default; opacity: 0.6; }
+  .pit.mine:hover:not(.disabled) { border-color: #4a90e2; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>만칼라 대국</h1>
+    <p style="color:#777;font-size:14px;">내 쪽 구덩이를 골라 시계 반대 방향으로 한 알씩 뿌립니다. 마지막 알이 내 창고에 들어가면 한 번 더, 내 빈 구덩이에 들어가면 맞은편 상대 알까지 전부 내 창고로 가져갑니다.</p>
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="3">쉬움</option>
+          <option value="6" selected>보통</option>
+          <option value="9">어려움</option>
+        </select>
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <div id="status-line" class="status-line">당신 차례</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    const HUMAN_PITS = [0,1,2,3,4,5];
+    const HUMAN_STORE = 6;
+    const AI_PITS = [7,8,9,10,11,12];
+    const AI_STORE = 13;
+
+    const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    let board = [];
+    let gameOver = false;
+
+    function log(text) { const p = document.createElement('div'); p.textContent = text; moveLog.prepend(p); }
+    function opponentStore(store) { return store === HUMAN_STORE ? AI_STORE : HUMAN_STORE; }
+    function isOwnPit(pit, store) { return store === HUMAN_STORE ? HUMAN_PITS.includes(pit) : AI_PITS.includes(pit); }
+    function oppositePit(pit) {
+      const map = { 0:12,1:11,2:10,3:9,4:8,5:7,7:5,8:4,9:3,10:2,11:1,12:0 };
+      return map[pit];
+    }
+
+    function sow(b, pit, store) {
+      const nb = b.slice();
+      let seeds = nb[pit];
+      nb[pit] = 0;
+      let cur = pit;
+      const skipStore = opponentStore(store);
+      while (seeds > 0) {
+        cur = (cur + 1) % 14;
+        if (cur === skipStore) continue;
+        nb[cur]++;
+        seeds--;
+      }
+      let extraTurn = cur === store;
+      if (!extraTurn && isOwnPit(cur, store) && nb[cur] === 1) {
+        const opp = oppositePit(cur);
+        if (nb[opp] > 0) {
+          nb[store] += nb[opp] + nb[cur];
+          nb[opp] = 0;
+          nb[cur] = 0;
+        }
+      }
+      return { board: nb, extraTurn };
+    }
+
+    function legalPits(b, store) {
+      const pits = store === HUMAN_STORE ? HUMAN_PITS : AI_PITS;
+      return pits.filter((p) => b[p] > 0);
+    }
+
+    function isRoundOver(b) {
+      return HUMAN_PITS.every((p) => b[p] === 0) || AI_PITS.every((p) => b[p] === 0);
+    }
+
+    function finalizeBoard(b) {
+      const nb = b.slice();
+      const humanLeft = HUMAN_PITS.reduce((s, p) => s + nb[p], 0);
+      const aiLeft = AI_PITS.reduce((s, p) => s + nb[p], 0);
+      nb[HUMAN_STORE] += humanLeft; nb[AI_STORE] += aiLeft;
+      for (const p of HUMAN_PITS) nb[p] = 0;
+      for (const p of AI_PITS) nb[p] = 0;
+      return nb;
+    }
+
+    function renderBoard() {
+      boardCol.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.className = 'mancala-board';
+
+      const storeB = document.createElement('div');
+      storeB.className = 'store';
+      storeB.id = 'store-ai';
+      wrap.appendChild(storeB);
+
+      const pitsCol = document.createElement('div');
+      pitsCol.className = 'pits-col';
+
+      const topRow = document.createElement('div');
+      topRow.className = 'pit-row';
+      for (const p of [12,11,10,9,8,7]) {
+        const el = document.createElement('div');
+        el.className = 'pit';
+        el.id = `pit-${p}`;
+        el.addEventListener('click', () => handlePitClick(p));
+        topRow.appendChild(el);
+      }
+      const bottomRow = document.createElement('div');
+      bottomRow.className = 'pit-row';
+      for (const p of [0,1,2,3,4,5]) {
+        const el = document.createElement('div');
+        el.className = 'pit mine';
+        el.id = `pit-${p}`;
+        el.addEventListener('click', () => handlePitClick(p));
+        bottomRow.appendChild(el);
+      }
+      pitsCol.appendChild(topRow);
+      pitsCol.appendChild(bottomRow);
+      wrap.appendChild(pitsCol);
+
+      const storeA = document.createElement('div');
+      storeA.className = 'store';
+      storeA.id = 'store-human';
+      wrap.appendChild(storeA);
+
+      boardCol.appendChild(wrap);
+      syncBoard();
+    }
+
+    function syncBoard() {
+      for (let i = 0; i < 14; i++) {
+        if (i === HUMAN_STORE || i === AI_STORE) continue;
+        const el = document.getElementById(`pit-${i}`);
+        el.textContent = board[i];
+        const disabled = !(HUMAN_PITS.includes(i) && board[i] > 0 && !gameOver);
+        el.classList.toggle('disabled', disabled);
+      }
+      document.getElementById('store-human').textContent = board[HUMAN_STORE];
+      document.getElementById('store-ai').textContent = board[AI_STORE];
+    }
+
+    function startNewGame() {
+      board = Array(14).fill(4);
+      board[HUMAN_STORE] = 0; board[AI_STORE] = 0;
+      gameOver = false;
+      moveLog.innerHTML = '';
+      renderBoard();
+      statusLine.textContent = '당신 차례';
+      log('새 게임 시작');
+    }
+
+    function checkRoundEnd() {
+      if (isRoundOver(board)) {
+        board = finalizeBoard(board);
+        syncBoard();
+        gameOver = true;
+        if (board[HUMAN_STORE] > board[AI_STORE]) statusLine.textContent = `당신 승리! (${board[HUMAN_STORE]} : ${board[AI_STORE]})`;
+        else if (board[HUMAN_STORE] < board[AI_STORE]) statusLine.textContent = `AI 승리 (${board[HUMAN_STORE]} : ${board[AI_STORE]})`;
+        else statusLine.textContent = `무승부 (${board[HUMAN_STORE]} : ${board[AI_STORE]})`;
+        return true;
+      }
+      return false;
+    }
+
+    function handlePitClick(pit) {
+      if (gameOver || !HUMAN_PITS.includes(pit) || board[pit] === 0) return;
+      const { board: nb, extraTurn } = sow(board, pit, HUMAN_STORE);
+      board = nb;
+      syncBoard();
+      log(`당신: (${pit})`);
+      if (checkRoundEnd()) return;
+      if (extraTurn) {
+        statusLine.textContent = '한 번 더! 당신 차례';
+        return;
+      }
+      statusLine.textContent = 'AI 차례...';
+      thinkingEl.style.display = 'block';
+      setTimeout(aiTurn, 200);
+    }
+
+    function evaluate(b) { return b[AI_STORE] - b[HUMAN_STORE]; }
+
+    function minimax(b, store, depth, alpha, beta, maximizing) {
+      const pits = legalPits(b, store);
+      if (depth === 0 || pits.length === 0 || isRoundOver(b)) {
+        return evaluate(isRoundOver(b) ? finalizeBoard(b) : b);
+      }
+      if (maximizing) {
+        let best = -Infinity;
+        for (const p of pits) {
+          const { board: nb, extraTurn } = sow(b, p, store);
+          const nextStore = extraTurn ? store : opponentStore(store);
+          const val = minimax(nb, nextStore, depth - 1, alpha, beta, nextStore === AI_STORE);
+          best = Math.max(best, val);
+          alpha = Math.max(alpha, best);
+          if (beta <= alpha) break;
+        }
+        return best;
+      } else {
+        let best = Infinity;
+        for (const p of pits) {
+          const { board: nb, extraTurn } = sow(b, p, store);
+          const nextStore = extraTurn ? store : opponentStore(store);
+          const val = minimax(nb, nextStore, depth - 1, alpha, beta, nextStore === AI_STORE);
+          best = Math.min(best, val);
+          beta = Math.min(beta, best);
+          if (beta <= alpha) break;
+        }
+        return best;
+      }
+    }
+
+    function aiTurn() {
+      const depth = parseInt(levelSelect.value, 10);
+      const pits = legalPits(board, AI_STORE);
+      if (pits.length === 0) { checkRoundEnd(); thinkingEl.style.display = 'none'; return; }
+      let best = null, bestScore = -Infinity;
+      for (const p of pits) {
+        const { board: nb, extraTurn } = sow(board, p, AI_STORE);
+        const nextStore = extraTurn ? AI_STORE : HUMAN_STORE;
+        const score = minimax(nb, nextStore, depth - 1, -Infinity, Infinity, nextStore === AI_STORE);
+        if (score > bestScore) { bestScore = score; best = p; }
+      }
+      const { board: nb, extraTurn } = sow(board, best, AI_STORE);
+      board = nb;
+      syncBoard();
+      log(`AI: (${best})`);
+      thinkingEl.style.display = 'none';
+      if (checkRoundEnd()) return;
+      if (extraTurn) {
+        statusLine.textContent = 'AI가 한 번 더 둡니다...';
+        setTimeout(aiTurn, 300);
+        return;
+      }
+      statusLine.textContent = '당신 차례';
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+
+    startNewGame();
+  </script>
+</body>
+</html>
