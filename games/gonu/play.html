@@ -1,1 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>고누 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 420px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+  .variant-desc { font-size: 12px; color: #666; background: #f7f7f7; padding: 8px 10px; border-radius: 6px; margin: -4px 0 10px; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>고누 대국</h1>
+    <p style="color:#777;font-size:14px;">한국에는 40종이 넘는 고누가 있는데, 그중 가장 널리 알려진 우물고누(대표)와 호박고누를 골라 즐길 수 있습니다.</p>
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">종류</label>
+        <select id="variant-select">
+          <option value="umul">우물고누 (대표)</option>
+          <option value="hobak">호박고누</option>
+        </select>
+        <div id="variant-desc" class="variant-desc"></div>
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <div id="status-line" class="status-line">당신 차례 (검정)</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
 
+  <script type="module">
+    const boardCol = document.getElementById('board-col');
+    const variantSelect = document.getElementById('variant-select');
+    const variantDesc = document.getElementById('variant-desc');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    // 우물고누: 네 귀퉁이 + 중앙, 총 5점. 사각 둘레 4개 + 중앙으로 이어지는 대각선 4개 = 8개 선.
+    const UMUL = {
+      points: [[0,0],[2,0],[0,2],[2,2],[1,1]],
+      edges: [[0,1],[0,2],[1,3],[2,3],[0,4],[1,4],[2,4],[3,4]],
+      startBlack: [0,2], // 왼쪽 두 점
+      startWhite: [1,3], // 오른쪽 두 점
+      desc: '가장 단순한 고누입니다. 각자 돌 2개로 시작해서 선을 따라 한 칸씩 움직입니다. 상대가 더 이상 움직일 수 없게 가두면 승리합니다. (필승법이 없어 상대의 실수를 기다리는 게임입니다.)',
+    };
+
+    // 호박고누: 3x3 점 격자 + 중앙을 지나는 대각선. 각자 3개로 시작.
+    const HOBAK = {
+      points: [[0,0],[1,0],[2,0], [0,1],[1,1],[2,1], [0,2],[1,2],[2,2]],
+      edges: [
+        [0,1],[1,2],[3,4],[4,5],[6,7],[7,8], // 가로
+        [0,3],[3,6],[1,4],[4,7],[2,5],[5,8], // 세로
+        [0,4],[4,8],[2,4],[4,6], // 중앙을 지나는 대각선
+      ],
+      startBlack: [0,1,2], // 윗줄
+      startWhite: [6,7,8], // 아랫줄
+      desc: '우물고누보다 넓은 3x3 판에서 각자 돌 3개로 겨룹니다. 상대를 가두면 승리합니다. (원래는 출발선 규칙이 있는 변형도 있지만, 여기서는 가두기 승리로 단순화했습니다.)',
+    };
+
+    const VARIANTS = { umul: UMUL, hobak: HOBAK };
+
+    let cfg = UMUL;
+    let ADJ = [];
+    let board = [];
+    let humanColor = 'B';
+    let gameOver = false;
+    let selected = null;
+    let ui = { nodes: [] };
+
+    function log(text) { const p = document.createElement('div'); p.textContent = text; moveLog.prepend(p); }
+    function opponent(c) { return c === 'B' ? 'W' : 'B'; }
+
+    function buildAdj() {
+      ADJ = cfg.points.map(() => []);
+      for (const [a, b] of cfg.edges) { ADJ[a].push(b); ADJ[b].push(a); }
+    }
+
+    function legalMoves(b, color) {
+      const moves = [];
+      for (let i = 0; i < b.length; i++) {
+        if (b[i] !== color) continue;
+        for (const t of ADJ[i]) if (!b[t]) moves.push({ from: i, to: t });
+      }
+      return moves;
+    }
+
+    function renderBoard() {
+      boardCol.innerHTML = '';
+      const scale = 130, margin = 40;
+      const maxX = Math.max(...cfg.points.map((p) => p[0]));
+      const maxY = Math.max(...cfg.points.map((p) => p[1]));
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', `0 0 ${maxX * scale + margin * 2} ${maxY * scale + margin * 2}`);
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+      const px = (i) => margin + cfg.points[i][0] * scale;
+      const py = (i) => margin + cfg.points[i][1] * scale;
+
+      for (const [a, b] of cfg.edges) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', px(a)); line.setAttribute('y1', py(a));
+        line.setAttribute('x2', px(b)); line.setAttribute('y2', py(b));
+        line.setAttribute('stroke', '#3a2a17'); line.setAttribute('stroke-width', '2');
+        svg.appendChild(line);
+      }
+
+      ui.nodes = [];
+      for (let i = 0; i < cfg.points.length; i++) {
+        const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        hit.setAttribute('cx', px(i)); hit.setAttribute('cy', py(i)); hit.setAttribute('r', 20);
+        hit.setAttribute('fill', 'transparent'); hit.style.cursor = 'pointer';
+        hit.addEventListener('click', () => handlePointClick(i));
+        svg.appendChild(hit);
+
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(i)); dot.setAttribute('cy', py(i)); dot.setAttribute('r', 3);
+        dot.setAttribute('fill', '#3a2a17');
+        svg.appendChild(dot);
+
+        const stone = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        stone.setAttribute('cx', px(i)); stone.setAttribute('cy', py(i)); stone.setAttribute('r', 15);
+        stone.setAttribute('visibility', 'hidden');
+        svg.appendChild(stone);
+        ui.nodes.push(stone);
+      }
+      boardCol.appendChild(svg);
+      syncStones();
+    }
+
+    function syncStones() {
+      for (let i = 0; i < cfg.points.length; i++) {
+        const el = ui.nodes[i];
+        if (board[i] === 'B') { el.setAttribute('visibility', 'visible'); el.setAttribute('fill', '#1a1a1a'); }
+        else if (board[i] === 'W') { el.setAttribute('visibility', 'visible'); el.setAttribute('fill', '#f5f5f0'); }
+        else el.setAttribute('visibility', 'hidden');
+        const isSel = selected === i;
+        el.setAttribute('stroke', isSel ? '#4a90e2' : (board[i] === 'W' ? '#333' : 'none'));
+        el.setAttribute('stroke-width', isSel ? '3' : (board[i] === 'W' ? '2' : '0'));
+      }
+    }
+
+    function updateVariantDesc() { variantDesc.textContent = cfg.desc; }
+
+    function startNewGame() {
+      cfg = VARIANTS[variantSelect.value];
+      buildAdj();
+      board = Array(cfg.points.length).fill(null);
+      for (const i of cfg.startBlack) board[i] = 'B';
+      for (const i of cfg.startWhite) board[i] = 'W';
+      gameOver = false;
+      selected = null;
+      moveLog.innerHTML = '';
+      updateVariantDesc();
+      renderBoard();
+      statusLine.textContent = '당신 차례 (검정)';
+      log('새 게임 시작 (' + variantSelect.options[variantSelect.selectedIndex].text + ')');
+    }
+
+    function checkGameOver(color) {
+      if (legalMoves(board, color).length === 0) {
+        gameOver = true;
+        statusLine.textContent = color === humanColor ? 'AI 승리! (당신이 갇혔습니다)' : '당신 승리! (상대가 갇혔습니다)';
+        return true;
+      }
+      return false;
+    }
+
+    function handlePointClick(i) {
+      if (gameOver) return;
+      if (selected === null) {
+        if (board[i] === humanColor) {
+          const moves = legalMoves(board, humanColor).filter((m) => m.from === i);
+          if (moves.length === 0) return;
+          selected = i;
+          syncStones();
+        }
+        return;
+      }
+      const moves = legalMoves(board, humanColor).filter((m) => m.from === selected);
+      const mv = moves.find((m) => m.to === i);
+      if (mv) {
+        board[mv.from] = null;
+        board[mv.to] = humanColor;
+        selected = null;
+        syncStones();
+        log(`당신: (${mv.from}) → (${mv.to})`);
+        const aiColor = opponent(humanColor);
+        if (checkGameOver(aiColor)) return;
+        statusLine.textContent = 'AI 차례...';
+        thinkingEl.style.display = 'block';
+        setTimeout(aiTurn, 200);
+      } else if (board[i] === humanColor) {
+        selected = i;
+        syncStones();
+      } else {
+        selected = null;
+        syncStones();
+      }
+    }
+
+    function countMobility(b, color) { return legalMoves(b, color).length; }
+
+    function aiTurn() {
+      const aiColor = opponent(humanColor);
+      const moves = legalMoves(board, aiColor);
+      if (moves.length === 0) { checkGameOver(aiColor); thinkingEl.style.display = 'none'; return; }
+      // 상대(사람)의 남은 활동성을 최소화하는 수를 우선 선택하는 그리디 AI
+      let best = null, bestScore = Infinity;
+      for (const m of moves) {
+        const save = board[m.to];
+        board[m.from] = null; board[m.to] = aiColor;
+        const humanMobility = countMobility(board, humanColor);
+        board[m.from] = aiColor; board[m.to] = save;
+        if (humanMobility < bestScore) { bestScore = humanMobility; best = m; }
+      }
+      board[best.from] = null;
+      board[best.to] = aiColor;
+      syncStones();
+      log(`AI: (${best.from}) → (${best.to})`);
+      thinkingEl.style.display = 'none';
+      if (checkGameOver(humanColor)) return;
+      statusLine.textContent = '당신 차례';
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+    variantSelect.addEventListener('change', startNewGame);
+
+    startNewGame();
+  </script>
+</body>
+</html>
