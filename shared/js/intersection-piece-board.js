@@ -139,7 +139,7 @@ export class IntersectionPieceBoard {
         const c = document.createElementNS(SVG_NS, 'circle');
         c.setAttribute('cx', px(pt.x));
         c.setAttribute('cy', py(pt.y));
-        c.setAttribute('r', cellPx * 0.46);
+        c.setAttribute('r', cellPx * 0.5);
         c.setAttribute('class', 'ipb-last-move');
         svg.appendChild(c);
       }
@@ -170,7 +170,7 @@ export class IntersectionPieceBoard {
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('dominant-baseline', 'central');
       text.setAttribute('class', 'ipb-piece-glyph');
-      text.textContent = this.pieceGlyphs[piece] || '?';
+      text.textContent = piece in this.pieceGlyphs ? this.pieceGlyphs[piece] : '?';
       svg.appendChild(text);
     }
 
