@@ -1,1 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>차이니즈 체커 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 560px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>차이니즈 체커 대국</h1>
+    <p style="color:#777;font-size:14px;">내 돌 10개를 전부 반대편 별 꼭짓점(상대 시작 자리)으로 먼저 옮기면 승리합니다. 한 칸 이동하거나, 인접한 돌(내 돌이든 상대 돌이든)을 뛰어넘어 연속으로 점프할 수 있습니다.</p>
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <div id="status-line" class="status-line">당신 차례 (빨강)</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
 
+  <script type="module">
+    const ALL_POINTS = [[-12,5],[-12,6],[-12,7],[-12,8],[-11,5],[-11,6],[-11,7],[-10,5],[-10,6],[-9,5],[-8,-4],[-7,-5],[-7,-4],[-7,12],[-6,-6],[-6,-5],[-6,-4],[-6,11],[-6,12],[-5,-7],[-5,-6],[-5,-5],[-5,-4],[-5,10],[-5,11],[-5,12],[-4,0],[-4,1],[-4,2],[-4,3],[-4,4],[-4,9],[-4,10],[-4,11],[-4,12],[-3,-1],[-3,0],[-3,1],[-3,2],[-3,3],[-3,4],[-2,-2],[-2,-1],[-2,0],[-2,1],[-2,2],[-2,3],[-2,4],[-1,-3],[-1,-2],[-1,-1],[-1,0],[-1,1],[-1,2],[-1,3],[-1,4],[0,-4],[0,-3],[0,-2],[0,-1],[0,0],[0,1],[0,2],[0,3],[0,4],[1,-4],[1,-3],[1,-2],[1,-1],[1,0],[1,1],[1,2],[1,3],[2,-4],[2,-3],[2,-2],[2,-1],[2,0],[2,1],[2,2],[3,-4],[3,-3],[3,-2],[3,-1],[3,0],[3,1],[4,-12],[4,-11],[4,-10],[4,-9],[4,-4],[4,-3],[4,-2],[4,-1],[4,0],[5,-12],[5,-11],[5,-10],[5,4],[5,5],[5,6],[5,7],[6,-12],[6,-11],[6,4],[6,5],[6,6],[7,-12],[7,4],[7,5],[8,4],[9,-5],[10,-6],[10,-5],[11,-7],[11,-6],[11,-5],[12,-8],[12,-7],[12,-6],[12,-5]];
+    const START_A = [[9,-5],[10,-6],[10,-5],[11,-7],[11,-6],[11,-5],[12,-8],[12,-7],[12,-6],[12,-5]];
+    const START_B = [[-9,5],[-10,6],[-10,5],[-11,7],[-11,6],[-11,5],[-12,8],[-12,7],[-12,6],[-12,5]];
+    const DIRS = [[1,-1],[1,0],[0,1],[-1,1],[-1,0],[0,-1]];
+
+    const boardCol = document.getElementById('board-col');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    const VALID = new Set(ALL_POINTS.map(([x,y]) => `${x},${y}`));
+    let board = new Map(); // "x,y" -> 'A' | 'B'
+    let humanColor = 'A';
+    let gameOver = false;
+    let selected = null;
+    let ui = { nodes: new Map() };
+
+    function key(x, y) { return `${x},${y}`; }
+    function log(text) { const p = document.createElement('div'); p.textContent = text; moveLog.prepend(p); }
+    function opponent(c) { return c === 'A' ? 'B' : 'A'; }
+    function hexDist(a, b) {
+      const dx = a[0] - b[0], dy = a[1] - b[1];
+      return (Math.abs(dx) + Math.abs(dy) + Math.abs(dx + dy)) / 2;
+    }
+    function centroid(pts) {
+      const sx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+      const sy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+      return [sx, sy];
+    }
+    const GOAL = { A: centroid(START_B), B: centroid(START_A) };
+
+    function singleStepMoves(x, y) {
+      const moves = [];
+      for (const [dx, dy] of DIRS) {
+        const nx = x + dx, ny = y + dy;
+        if (VALID.has(key(nx, ny)) && !board.has(key(nx, ny))) moves.push([nx, ny]);
+      }
+      return moves;
+    }
+
+    function jumpChains(x, y) {
+      const visited = new Set([key(x, y)]);
+      const result = [];
+      function dfs(cx, cy) {
+        for (const [dx, dy] of DIRS) {
+          const mx = cx + dx, my = cy + dy; // 뛰어넘을 대상
+          const lx = cx + dx * 2, ly = cy + dy * 2; // 착지점
+          if (!VALID.has(key(mx, my)) || !board.has(key(mx, my))) continue;
+          if (!VALID.has(key(lx, ly)) || board.has(key(lx, ly))) continue;
+          const k = key(lx, ly);
+          if (visited.has(k)) continue;
+          visited.add(k);
+          result.push([lx, ly]);
+          dfs(lx, ly);
+        }
+      }
+      dfs(x, y);
+      return result;
+    }
+
+    function legalTargets(x, y) {
+      return [...singleStepMoves(x, y), ...jumpChains(x, y)];
+    }
+
+    function renderBoard() {
+      boardCol.innerHTML = '';
+      const size = 17;
+      let minPx = Infinity, maxPx = -Infinity, minPy = Infinity, maxPy = -Infinity;
+      const pixelOf = (x, y) => [size * (Math.sqrt(3) * x + Math.sqrt(3) / 2 * y), size * (1.5 * y)];
+      for (const [x, y] of ALL_POINTS) {
+        const [px, py] = pixelOf(x, y);
+        minPx = Math.min(minPx, px); maxPx = Math.max(maxPx, px);
+        minPy = Math.min(minPy, py); maxPy = Math.max(maxPy, py);
+      }
+      const margin = 20;
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', `${minPx - margin} ${minPy - margin} ${maxPx - minPx + margin * 2} ${maxPy - minPy + margin * 2}`);
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+
+      ui.nodes.clear();
+      for (const [x, y] of ALL_POINTS) {
+        const [px, py] = pixelOf(x, y);
+        const hit = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        hit.setAttribute('cx', px); hit.setAttribute('cy', py); hit.setAttribute('r', size * 0.5);
+        hit.setAttribute('fill', '#e8d9b5'); hit.setAttribute('stroke', '#c9b98a'); hit.style.cursor = 'pointer';
+        hit.addEventListener('click', () => handlePointClick(x, y));
+        svg.appendChild(hit);
+
+        const stone = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        stone.setAttribute('cx', px); stone.setAttribute('cy', py); stone.setAttribute('r', size * 0.42);
+        stone.setAttribute('visibility', 'hidden');
+        stone.style.pointerEvents = 'none';
+        svg.appendChild(stone);
+        ui.nodes.set(key(x, y), stone);
+      }
+      boardCol.appendChild(svg);
+      syncStones();
+    }
+
+    function syncStones() {
+      for (const [x, y] of ALL_POINTS) {
+        const el = ui.nodes.get(key(x, y));
+        const owner = board.get(key(x, y));
+        if (owner === 'A') { el.setAttribute('visibility', 'visible'); el.setAttribute('fill', '#e63946'); el.setAttribute('stroke', 'none'); }
+        else if (owner === 'B') { el.setAttribute('visibility', 'visible'); el.setAttribute('fill', '#3a5fcd'); el.setAttribute('stroke', 'none'); }
+        else el.setAttribute('visibility', 'hidden');
+        const isSel = selected && selected[0] === x && selected[1] === y;
+        if (isSel) { el.setAttribute('stroke', '#ffd700'); el.setAttribute('stroke-width', '3'); }
+      }
+    }
+
+    function startNewGame() {
+      board = new Map();
+      for (const [x, y] of START_A) board.set(key(x, y), 'A');
+      for (const [x, y] of START_B) board.set(key(x, y), 'B');
+      gameOver = false;
+      selected = null;
+      moveLog.innerHTML = '';
+      renderBoard();
+      statusLine.textContent = '당신 차례 (빨강)';
+      log('새 게임 시작');
+    }
+
+    function checkWin(color) {
+      const goalPts = color === 'A' ? START_B : START_A;
+      return goalPts.every(([x, y]) => board.get(key(x, y)) === color);
+    }
+
+    function handlePointClick(x, y) {
+      if (gameOver) return;
+      const owner = board.get(key(x, y));
+      if (selected) {
+        const targets = legalTargets(selected[0], selected[1]);
+        const found = targets.find((t) => t[0] === x && t[1] === y);
+        if (found) {
+          board.delete(key(selected[0], selected[1]));
+          board.set(key(x, y), humanColor);
+          selected = null;
+          syncStones();
+          log(`당신: (${x},${y})로 이동`);
+          if (checkWin(humanColor)) { gameOver = true; statusLine.textContent = '당신 승리!'; return; }
+          statusLine.textContent = 'AI 차례...';
+          thinkingEl.style.display = 'block';
+          setTimeout(aiTurn, 200);
+          return;
+        }
+      }
+      if (owner === humanColor) {
+        selected = [x, y];
+        syncStones();
+      } else {
+        selected = null;
+        syncStones();
+      }
+    }
+
+    function allMoves(color) {
+      const moves = [];
+      for (const [k, v] of board.entries()) {
+        if (v !== color) continue;
+        const [x, y] = k.split(',').map(Number);
+        for (const t of legalTargets(x, y)) moves.push({ from: [x, y], to: t });
+      }
+      return moves;
+    }
+
+    function aiTurn() {
+      const aiColor = opponent(humanColor);
+      const moves = allMoves(aiColor);
+      if (moves.length === 0) { thinkingEl.style.display = 'none'; statusLine.textContent = '당신 차례'; return; }
+      let best = null, bestScore = -Infinity;
+      for (const m of moves) {
+        const before = hexDist(m.from, GOAL[aiColor]);
+        const after = hexDist(m.to, GOAL[aiColor]);
+        const score = before - after; // 목표에 가까워질수록 높은 점수
+        if (score > bestScore) { bestScore = score; best = m; }
+      }
+      board.delete(key(best.from[0], best.from[1]));
+      board.set(key(best.to[0], best.to[1]), aiColor);
+      syncStones();
+      log(`AI: (${best.to[0]},${best.to[1]})로 이동`);
+      thinkingEl.style.display = 'none';
+      if (checkWin(aiColor)) { gameOver = true; statusLine.textContent = 'AI 승리'; return; }
+      statusLine.textContent = '당신 차례';
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+
+    startNewGame();
+  </script>
+</body>
+</html>
