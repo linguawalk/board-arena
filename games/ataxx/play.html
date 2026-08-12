@@ -111,7 +111,7 @@
     function syncUi(lastMove) {
       const pieces = [];
       for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) if (grid[y][x]) pieces.push({ x, y, piece: grid[y][x] });
-      ui.pieceGlyphs = { B: '●', W: '●' };
+      ui.pieceGlyphs = { B: '●', W: '○' };
       ui.loadPosition(pieces);
       if (lastMove) ui.markLastMove(lastMove.from || lastMove.to, lastMove.to);
       ui.render();
@@ -129,7 +129,7 @@
       boardCol.innerHTML = '';
       ui = new SquareBoard({
         container: boardCol, width: SIZE, height: SIZE, interactive: true,
-        onSquareClick: handleSquareClick, pieceGlyphs: { B: '●', W: '●' },
+        onSquareClick: handleSquareClick, pieceGlyphs: { B: '●', W: '○' },
         lightColor: '#d8c39a', darkColor: '#b89b6a',
       });
       syncUi(null);
