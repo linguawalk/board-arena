@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>헥스 대국 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 520px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .status-line { font-size: 15px; font-weight: 600; margin: 10px 0; }
+  .thinking { font-size: 13px; color: var(--accent); display: none; }
+  .move-log { font-size: 13px; color: #666; max-height: 220px; overflow-y: auto; margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
+  .hex-cell { cursor: pointer; stroke: #333; stroke-width: 1; }
+  .hex-cell:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+  <script>
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+  </script>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>헥스 대국</h1>
+    <p style="color:#777;font-size:14px;">빨강은 위-아래를, 파랑은 왼쪽-오른쪽을 자신의 돌로 연결하면 승리합니다.</p>
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="1">쉬움</option>
+          <option value="2" selected>보통</option>
+        </select>
+        <button id="new-game-btn">새 게임</button>
+        <button id="resign-btn">기권</button>
+        <div id="status-line" class="status-line">당신 차례 (빨강)</div>
+        <div id="thinking" class="thinking">AI가 생각 중...</div>
+        <div id="move-log" class="move-log"></div>
+      </div>
+    </div>
+  </main>
 
+  <script type="module">
+    const N = 11;
+    const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
+    const statusLine = document.getElementById('status-line');
+    const thinkingEl = document.getElementById('thinking');
+    const moveLog = document.getElementById('move-log');
+
+    let grid = [];
+    let gameOver = false;
+    const humanColor = 'R';
+
+    function log(text) { const p = document.createElement('div'); p.textContent = text; moveLog.prepend(p); }
+    function opponent(c) { return c === 'R' ? 'B' : 'R'; }
+
+    function neighbors(q, r) {
+      const deltas = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, -1], [-1, 1]];
+      return deltas.map(([dq, dr]) => [q + dq, r + dr]).filter(([nq, nr]) => nq >= 0 && nq < N && nr >= 0 && nr < N);
+    }
+
+    function connectionCost(g, color) {
+      const dist = Array.from({ length: N }, () => Array(N).fill(Infinity));
+      const deque = [];
+      const pushFront = (item) => deque.unshift(item);
+      const pushBack = (item) => deque.push(item);
+
+      const startCells = color === 'R'
+        ? Array.from({ length: N }, (_, q) => [q, 0])
+        : Array.from({ length: N }, (_, r) => [0, r]);
+
+      for (const [q, r] of startCells) {
+        if (g[r][q] === opponent(color)) continue;
+        const cost = g[r][q] === color ? 0 : 1;
+        if (cost < dist[r][q]) { dist[r][q] = cost; (cost === 0 ? pushFront : pushBack)([q, r]); }
+      }
+
+      while (deque.length > 0) {
+        const [q, r] = deque.shift();
+        const d = dist[r][q];
+        for (const [nq, nr] of neighbors(q, r)) {
+          if (g[nr][nq] === opponent(color)) continue;
+          const stepCost = g[nr][nq] === color ? 0 : 1;
+          const nd = d + stepCost;
+          if (nd < dist[nr][nq]) {
+            dist[nr][nq] = nd;
+            (stepCost === 0 ? pushFront : pushBack)([nq, nr]);
+          }
+        }
+      }
+
+      const endCells = color === 'R'
+        ? Array.from({ length: N }, (_, q) => [q, N - 1])
+        : Array.from({ length: N }, (_, r) => [N - 1, r]);
+      return Math.min(...endCells.map(([q, r]) => dist[r][q]));
+    }
+
+    function checkConnected(g, color) {
+      return connectionCost(g, color) === 0;
+    }
+
+    let ui = { cells: new Map() };
+
+    function hexPoints(cx, cy, size) {
+      const pts = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = Math.PI / 180 * (60 * i - 30);
+        pts.push(`${cx + size * Math.cos(angle)},${cy + size * Math.sin(angle)}`);
+      }
+      return pts.join(' ');
+    }
+
+    function renderBoard() {
+      boardCol.innerHTML = '';
+      const size = 22;
+      const w = size * Math.sqrt(3);
+      const h = size * 1.5;
+      const svgW = w * N + w * N / 2 + 40;
+      const svgH = h * N + 40;
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+
+      ui.cells.clear();
+      for (let r = 0; r < N; r++) {
+        for (let q = 0; q < N; q++) {
+          const cx = 30 + w * q + w / 2 * r;
+          const cy = 30 + h * r;
+          const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+          poly.setAttribute('points', hexPoints(cx, cy, size - 1));
+          poly.setAttribute('class', 'hex-cell');
+          poly.addEventListener('click', () => handleClick(q, r));
+          svg.appendChild(poly);
+          ui.cells.set(`${q},${r}`, poly);
+        }
+      }
+      boardCol.appendChild(svg);
+      syncColors();
+    }
+
+    function cellColor(v) {
+      if (v === 'R') return '#e63946';
+      if (v === 'B') return '#3a5fcd';
+      return '#e8d9b5';
+    }
+
+    function syncColors() {
+      for (let r = 0; r < N; r++) {
+        for (let q = 0; q < N; q++) {
+          ui.cells.get(`${q},${r}`).setAttribute('fill', cellColor(grid[r][q]));
+        }
+      }
+    }
+
+    function startNewGame() {
+      grid = Array.from({ length: N }, () => Array(N).fill(null));
+      gameOver = false;
+      moveLog.innerHTML = '';
+      renderBoard();
+      statusLine.textContent = '당신 차례 (빨강)';
+      log('새 게임 시작');
+    }
+
+    function handleClick(q, r) {
+      if (gameOver || grid[r][q]) return;
+      grid[r][q] = humanColor;
+      syncColors();
+      log(`당신: (${q},${r})`);
+      if (checkConnected(grid, humanColor)) {
+        gameOver = true;
+        statusLine.textContent = '당신 승리!';
+        return;
+      }
+      statusLine.textContent = 'AI 차례...';
+      thinkingEl.style.display = 'block';
+      setTimeout(aiMove, 30);
+    }
+
+    function aiMove() {
+      const aiColor = opponent(humanColor);
+      const level = parseInt(levelSelect.value, 10);
+      let best = null, bestScore = -Infinity;
+      const empties = [];
+      for (let r = 0; r < N; r++) for (let q = 0; q < N; q++) if (!grid[r][q]) empties.push([q, r]);
+
+      for (const [q, r] of empties) {
+        grid[r][q] = aiColor;
+        const myCost = connectionCost(grid, aiColor);
+        const oppCost = level >= 2 ? connectionCost(grid, humanColor) : 0;
+        grid[r][q] = null;
+        const score = -myCost * 2 + oppCost;
+        if (score > bestScore) { bestScore = score; best = [q, r]; }
+      }
+
+      grid[best[1]][best[0]] = aiColor;
+      syncColors();
+      log(`AI: (${best[0]},${best[1]})`);
+      thinkingEl.style.display = 'none';
+      if (checkConnected(grid, aiColor)) {
+        gameOver = true;
+        statusLine.textContent = 'AI 승리';
+        return;
+      }
+      statusLine.textContent = '당신 차례';
+    }
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+    document.getElementById('resign-btn').addEventListener('click', () => {
+      if (gameOver) return;
+      gameOver = true;
+      statusLine.textContent = '기권했습니다.';
+      log('기권');
+    });
+
+    startNewGame();
+  </script>
+</body>
+</html>
