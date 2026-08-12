@@ -36,6 +36,9 @@
           <option value="2" selected>보통</option>
           <option value="3">어려움</option>
         </select>
+        <label style="font-size:13px;color:#555;display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+          <input type="checkbox" id="renju-check" /> 삼삼 금지 적용 (흑백 모두, 정식 렌주룰과 달리 대칭 적용)
+        </label>
         <button id="new-game-btn">새 게임</button>
         <button id="resign-btn">기권</button>
         <div id="status-line" class="status-line">당신 차례 (흑)</div>
@@ -51,6 +54,7 @@
     const SIZE = 15;
     const boardCol = document.getElementById('board-col');
     const levelSelect = document.getElementById('level-select');
+    const renjuCheck = document.getElementById('renju-check');
     const statusLine = document.getElementById('status-line');
     const thinkingEl = document.getElementById('thinking');
     const moveLog = document.getElementById('move-log');
@@ -81,6 +85,43 @@
       ui.loadPosition(pieces);
       if (lastMove) ui.markLastMove(lastMove, lastMove);
       ui.render();
+    }
+
+    // 렌주룰 삼삼 금지 판정: 이 수를 두면 "열린 삼"이 2개 이상 동시에 생기는지 확인
+    function lineToString(g, x, y, dx, dy, color, range) {
+      let s = '';
+      for (let i = -range; i <= range; i++) {
+        const nx = x + dx * i, ny = y + dy * i;
+        if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) s += 'O';
+        else if (g[ny][nx] === color) s += 'B';
+        else if (g[ny][nx] === null) s += 'E';
+        else s += 'O';
+      }
+      return s;
+    }
+
+    function hasOpenThreeInLine(s, centerIdx) {
+      const patterns = ['EBBBE', 'EBBEBE', 'EBEBBE'];
+      for (const pat of patterns) {
+        let idx = s.indexOf(pat);
+        while (idx !== -1) {
+          if (centerIdx >= idx && centerIdx < idx + pat.length) return true;
+          idx = s.indexOf(pat, idx + 1);
+        }
+      }
+      return false;
+    }
+
+    function isDoubleThree(g, x, y, color) {
+      const dirs = [[1, 0], [0, 1], [1, 1], [1, -1]];
+      const testGrid = g.map((row) => row.slice());
+      testGrid[y][x] = color;
+      let count = 0;
+      for (const [dx, dy] of dirs) {
+        const s = lineToString(testGrid, x, y, dx, dy, color, 4);
+        if (hasOpenThreeInLine(s, 4)) count++;
+      }
+      return count >= 2;
     }
 
     function checkWin(g, x, y, color) {
@@ -129,6 +170,10 @@
 
     function handlePointClick(x, y) {
       if (gameOver || grid[y][x]) return;
+      if (renjuCheck.checked && isDoubleThree(grid, x, y, humanColor)) {
+        statusLine.textContent = '삼삼은 금지된 수입니다. 다른 곳에 두세요.';
+        return;
+      }
       grid[y][x] = humanColor;
       syncUi({ x, y });
       log(`당신: (${x},${y})`);
@@ -196,7 +241,11 @@
     function aiMove() {
       const aiColor = humanColor === 'B' ? 'W' : 'B';
       const level = parseInt(levelSelect.value, 10);
-      const moves = candidateMoves(grid);
+      let moves = candidateMoves(grid);
+      if (renjuCheck.checked) {
+        moves = moves.filter((m) => !isDoubleThree(grid, m.x, m.y, aiColor));
+        if (moves.length === 0) moves = candidateMoves(grid); // 모든 후보가 막히는 극단적 상황 대비
+      }
 
       let best = null, bestScore = -Infinity;
       for (const m of moves) {
