@@ -74,10 +74,10 @@
       const pieces = [];
       for (let y = 0; y < SIZE; y++) {
         for (let x = 0; x < SIZE; x++) {
-          if (grid[y][x]) pieces.push({ x, y, piece: grid[y][x] === 'B' ? 'B' : 'W' });
+          if (grid[y][x]) pieces.push({ x, y, piece: grid[y][x] === 'B' ? 'B' : 'w' });
         }
       }
-      ui.pieceGlyphs = { B: '●', W: '●' };
+      ui.pieceGlyphs = { B: '', w: '' };
       ui.loadPosition(pieces);
       if (lastMove) ui.markLastMove(lastMove, lastMove);
       ui.render();
@@ -117,9 +117,10 @@
         height: SIZE,
         interactive: true,
         onPointClick: handlePointClick,
-        pieceGlyphs: { B: '●', W: '●' },
+        pieceGlyphs: { B: '', w: '' },
         palaces: [],
         starPoints: [3, 7, 11].flatMap((x) => [3, 7, 11].map((y) => ({ x, y }))),
+        pieceColorClasses: { light: 'ipb-stone-black', dark: 'ipb-stone-white' },
       });
       syncUi(null);
       statusLine.textContent = '당신 차례 (흑)';
