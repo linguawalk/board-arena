@@ -119,6 +119,7 @@
         onPointClick: handlePointClick,
         pieceGlyphs: { B: '●', W: '●' },
         palaces: [],
+        starPoints: [3, 7, 11].flatMap((x) => [3, 7, 11].map((y) => ({ x, y }))),
       });
       syncUi(null);
       statusLine.textContent = '당신 차례 (흑)';
