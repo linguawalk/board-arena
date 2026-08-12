@@ -7,7 +7,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 export class IntersectionPieceBoard {
   constructor({
     container, width = 9, height = 10, interactive = true, onPointClick = null,
-    pieceGlyphs = {}, palaces = [], riverGap = null, pieceColorClasses = null,
+    pieceGlyphs = {}, palaces = [], riverGap = null, pieceColorClasses = null, starPoints = [],
   }) {
     this.container = container;
     this.width = width;
@@ -18,6 +18,7 @@ export class IntersectionPieceBoard {
     this.palaces = palaces;
     this.riverGap = riverGap; // {yTop, yBottom} - 이 사이 구간의 세로선을 끊어서 강을 표현
     this.pieceColorClasses = pieceColorClasses || { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-blue' };
+    this.starPoints = starPoints; // [{x,y}] - 바둑판 화점처럼 위치 파악용 작은 점
 
     this.pieces = new Map();
     this.selected = null;
@@ -122,6 +123,15 @@ export class IntersectionPieceBoard {
         line.setAttribute('class', 'ipb-line');
         svg.appendChild(line);
       }
+    }
+
+    for (const sp of this.starPoints) {
+      const dot = document.createElementNS(SVG_NS, 'circle');
+      dot.setAttribute('cx', px(sp.x));
+      dot.setAttribute('cy', py(sp.y));
+      dot.setAttribute('r', cellPx * 0.09);
+      dot.setAttribute('class', 'ipb-star-point');
+      svg.appendChild(dot);
     }
 
     if (this.lastMove) {
