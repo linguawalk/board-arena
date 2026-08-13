@@ -39,6 +39,23 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>샹치 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 상대의 장/수(왕)를 외통(체크메이트)시키면 승리합니다. 양쪽 왕이 강을 사이에 두지 않고 같은 세로줄에서 서로 마주보게 되는 수는 둘 수 없습니다("장군끼리 마주보기 금지").</p>
+        <p><b>기물별 이동법</b> (아래 그림: 파란 점 = 이동 가능한 자리)</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <ul style="margin:4px 0 8px 18px; padding:0;">
+          <li><b>장/수(帥/將)</b>: 자기 궁성 안에서만 상하좌우 한 칸씩 움직입니다.</li>
+          <li><b>사(仕/士)</b>: 궁성 안에서만 대각선으로 한 칸씩 움직입니다.</li>
+          <li><b>상(相/象)</b>: 대각선으로 정확히 두 칸(밭 전 자 모양) 이동하며, 강을 절대 건널 수 없습니다. 중간 지점(코끼리 눈)에 기물이 있으면 막힙니다.</li>
+          <li><b>마(馬)</b>: 체스 나이트처럼 'ㄴ'자로 이동하되, 바로 옆(멱)에 기물이 있으면 그 방향으로 못 갑니다.</li>
+          <li><b>차(車)</b>: 상하좌우로 원하는 만큼 직선 이동합니다.</li>
+          <li><b>포(砲)</b>: 평소 이동은 차와 같이 직선으로 원하는 만큼 움직이지만, <b>상대 기물을 잡을 때만</b> 다른 기물 하나를 뛰어넘어야 합니다.</li>
+          <li><b>병/졸(兵/卒)</b>: 강을 건너기 전에는 앞으로만 한 칸, 강을 건넌 후에는 앞 또는 좌우로 한 칸씩 움직입니다(뒤로는 못 감).</li>
+        </ul>
+      </div>
+    </details>
 
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -344,6 +361,76 @@
       startNewGame();
     });
 
+    // ── 규칙 설명용 미니 다이어그램 ──
+    function renderMiniDiagram(container, { label, targets, showPalaceX = false, pieceGlyph = '●' }) {
+      const R = 3;
+      const cell = 30, margin = 10;
+      const size = margin * 2 + cell * R * 2;
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size);
+      svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const px = (dx) => margin + (dx + R) * cell;
+      const py = (dy) => margin + (dy + R) * cell;
+
+      for (let i = -R; i <= R; i++) {
+        const l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        l1.setAttribute('x1', px(i)); l1.setAttribute('y1', py(-R));
+        l1.setAttribute('x2', px(i)); l1.setAttribute('y2', py(R));
+        l1.setAttribute('stroke', '#c9b98a');
+        svg.appendChild(l1);
+        const l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        l2.setAttribute('x1', px(-R)); l2.setAttribute('y1', py(i));
+        l2.setAttribute('x2', px(R)); l2.setAttribute('y2', py(i));
+        l2.setAttribute('stroke', '#c9b98a');
+        svg.appendChild(l2);
+      }
+      if (showPalaceX) {
+        for (const [dx1, dy1, dx2, dy2] of [[-1, -1, 1, 1], [-1, 1, 1, -1]]) {
+          const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          l.setAttribute('x1', px(dx1)); l.setAttribute('y1', py(dy1));
+          l.setAttribute('x2', px(dx2)); l.setAttribute('y2', py(dy2));
+          l.setAttribute('stroke', '#c9b98a');
+          svg.appendChild(l);
+        }
+      }
+      for (const [tx, ty] of targets) {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(tx)); dot.setAttribute('cy', py(ty)); dot.setAttribute('r', 5);
+        dot.setAttribute('fill', '#4a90e2');
+        svg.appendChild(dot);
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      piece.setAttribute('x', px(0)); piece.setAttribute('y', py(0));
+      piece.setAttribute('text-anchor', 'middle'); piece.setAttribute('dominant-baseline', 'central');
+      piece.setAttribute('font-size', '22');
+      piece.textContent = pieceGlyph;
+      svg.appendChild(piece);
+
+      wrap.appendChild(svg);
+      const caption = document.createElement('div');
+      caption.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      caption.textContent = label;
+      wrap.appendChild(caption);
+      container.appendChild(wrap);
+    }
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const around4orth = [[0,-1],[0,1],[-1,0],[1,0]];
+      renderMiniDiagram(el, { label: '장/수: 궁성 내 상하좌우 1칸', targets: around4orth, showPalaceX: true, pieceGlyph: '帥' });
+      renderMiniDiagram(el, { label: '사: 궁성 내 대각선 1칸', targets: [[-1,-1],[1,-1],[-1,1],[1,1]], showPalaceX: true, pieceGlyph: '仕' });
+      renderMiniDiagram(el, { label: '상: 대각선 정확히 2칸 (강 못 건넘)', targets: [[2,2],[-2,2],[2,-2],[-2,-2]], pieceGlyph: '相' });
+      renderMiniDiagram(el, { label: '마: 나이트형 이동', targets: [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]], pieceGlyph: '馬' });
+      renderMiniDiagram(el, { label: '차: 직선 무제한', targets: [-3,-2,-1,1,2,3].flatMap((n) => [[n,0],[0,n]]), pieceGlyph: '車' });
+      renderMiniDiagram(el, { label: '포: 잡을 때는 기물 하나를 넘어야 함', targets: [[0,-2],[0,2],[-2,0],[2,0]], pieceGlyph: '砲' });
+      renderMiniDiagram(el, { label: '병/졸: 전진(강 건넌 뒤 좌우도 가능)', targets: [[0,-1]], pieceGlyph: '兵' });
+    }
+
+    renderRuleDiagrams();
     updateVariantDesc();
     startNewGame();
   </script>
