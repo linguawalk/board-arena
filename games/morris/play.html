@@ -30,6 +30,14 @@
     <div class="layout">
       <div id="board-col" class="board-col"></div>
       <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="1">매우 쉬움</option>
+          <option value="2">쉬움</option>
+          <option value="3" selected>보통</option>
+          <option value="4">어려움</option>
+          <option value="5">매우 어려움</option>
+        </select>
         <button id="new-game-btn">새 게임</button>
         <button id="resign-btn">기권</button>
         <div id="counts-line" class="counts-line"></div>
@@ -42,6 +50,7 @@
 
   <script type="module">
     const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
     const statusLine = document.getElementById('status-line');
     const countsLine = document.getElementById('counts-line');
     const thinkingEl = document.getElementById('thinking');
@@ -271,13 +280,22 @@
       setTimeout(aiTurn, 30);
     }
 
+    function mistakeChance() {
+      const level = parseInt(levelSelect.value, 10);
+      return [0.7, 0.45, 0.22, 0.08, 0][level - 1];
+    }
+
     function aiTurn() {
       const aiColor = opponent(humanColor);
+      const makeMistake = Math.random() < mistakeChance();
 
       if (phase === 'place') {
         const empties = board.map((v, i) => (v === null ? i : -1)).filter((i) => i >= 0);
-        let choice = empties.find((i) => { board[i] = aiColor; const ok = formsMill(board, i, aiColor); board[i] = null; return ok; });
-        if (choice === undefined) choice = empties.find((i) => { board[i] = humanColor; const ok = formsMill(board, i, humanColor); board[i] = null; return ok; });
+        let choice;
+        if (!makeMistake) {
+          choice = empties.find((i) => { board[i] = aiColor; const ok = formsMill(board, i, aiColor); board[i] = null; return ok; });
+          if (choice === undefined) choice = empties.find((i) => { board[i] = humanColor; const ok = formsMill(board, i, humanColor); board[i] = null; return ok; });
+        }
         if (choice === undefined) choice = empties[Math.floor(Math.random() * empties.length)];
         board[choice] = aiColor;
         placedCount[aiColor]++;
@@ -293,7 +311,10 @@
       }
 
       const moves = legalMovesForColor(board, aiColor);
-      let best = moves.find((m) => { const save = board[m.to]; board[m.from] = null; board[m.to] = aiColor; const ok = formsMill(board, m.to, aiColor); board[m.from] = aiColor; board[m.to] = save; return ok; });
+      let best;
+      if (!makeMistake) {
+        best = moves.find((m) => { const save = board[m.to]; board[m.from] = null; board[m.to] = aiColor; const ok = formsMill(board, m.to, aiColor); board[m.from] = aiColor; board[m.to] = save; return ok; });
+      }
       if (!best) best = moves[Math.floor(Math.random() * moves.length)];
       board[best.from] = null;
       board[best.to] = aiColor;
