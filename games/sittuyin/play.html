@@ -88,8 +88,7 @@
     const LS_KEY = 'board-arena-sittuyin-games';
 
     const AI_LEVELS = [];
-    for (let k = 18; k >= 1; k--) AI_LEVELS.push({ id: `k${k}`, label: `${k}급`, depth: 2 + Math.floor((18 - k) * 0.5) });
-    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: 12 + d });
+    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: d + 3 });
 
     const boardCol = document.getElementById('board-col');
     const levelSelect = document.getElementById('level-select');
@@ -102,11 +101,11 @@
       const opt = document.createElement('option');
       opt.value = lvl.id;
       opt.textContent = lvl.label;
-      if (lvl.id === 'd1') opt.selected = true;
+      if (lvl.id === 'd3') opt.selected = true;
       levelSelect.appendChild(opt);
     }
     function currentDepth() {
-      return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
+      return AI_LEVELS.find((l) => l.id === levelSelect.value).depth;
     }
 
     let ffish = null;
