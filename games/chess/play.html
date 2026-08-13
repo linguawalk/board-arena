@@ -40,6 +40,23 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>체스 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 상대의 왕을 체크메이트(왕이 어떤 수를 둬도 잡히는 상황을 피할 수 없게 만듦)시키면 승리합니다. 스테일메이트(둘 수는 있지만 체크가 아닌 상태에서 합법수가 없음)나 3회 동형 반복, 50수 무진전 등은 무승부입니다.</p>
+        <p><b>기물별 이동법</b> (아래 그림: 파란 점 = 이동 가능한 자리)</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <ul style="margin:4px 0 8px 18px; padding:0;">
+          <li><b>왕(♔)</b>: 상하좌우·대각선 어느 방향으로든 한 칸 이동합니다. 상대 기물에게 공격받는 칸으로는 갈 수 없습니다. 조건이 맞으면 룩과 함께 캐슬링(왕은 두 칸, 룩은 왕을 건너뜀)할 수 있습니다.</li>
+          <li><b>퀸(♕)</b>: 상하좌우·대각선으로 원하는 만큼 직선 이동합니다.</li>
+          <li><b>룩(♖)</b>: 상하좌우로 원하는 만큼 직선 이동합니다.</li>
+          <li><b>비숍(♗)</b>: 대각선으로 원하는 만큼 이동합니다. 처음 놓인 칸 색을 벗어나지 못합니다.</li>
+          <li><b>나이트(♘)</b>: 'ㄴ'자(2칸+1칸)로 이동하며, 다른 기물을 뛰어넘을 수 있는 유일한 기물입니다.</li>
+          <li><b>폰(♙)</b>: 앞으로 한 칸(첫 이동은 두 칸도 가능) 전진하며, 잡을 때는 대각선 앞 한 칸입니다. 앙파상, 끝줄 도달 시 프로모션(다른 기물로 승진) 규칙이 있습니다.</li>
+        </ul>
+        <p><b>기타</b>: 아래 "규칙" 선택에서 킹오브더힐·쓰리체크·랜덤배치·체스960·아토믹·레이싱킹스·크레이지하우스·호드 등 다양한 변형 규칙도 즐길 수 있습니다.</p>
+      </div>
+    </details>
 
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -741,6 +758,64 @@
       setTimeout(() => (saveMsg.style.display = 'none'), 2500);
     });
 
+    // ── 규칙 설명용 미니 다이어그램 (칸 기반) ──
+    function renderMiniDiagramSquare(container, { label, targets, pieceGlyph }) {
+      const R = 3; // 중심 기준 반경 3칸 (7x7 칸)
+      const cell = 30, margin = 6;
+      const size = margin * 2 + cell * (R * 2 + 1);
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size);
+      svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const px = (dx) => margin + (dx + R) * cell;
+      const py = (dy) => margin + (dy + R) * cell;
+
+      for (let y = -R; y <= R; y++) {
+        for (let x = -R; x <= R; x++) {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', px(x)); rect.setAttribute('y', py(y));
+          rect.setAttribute('width', cell); rect.setAttribute('height', cell);
+          rect.setAttribute('fill', (x + y) % 2 === 0 ? '#f0d9b5' : '#b58863');
+          svg.appendChild(rect);
+        }
+      }
+      for (const [tx, ty] of targets) {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(tx) + cell / 2); dot.setAttribute('cy', py(ty) + cell / 2); dot.setAttribute('r', 6);
+        dot.setAttribute('fill', '#4a90e2');
+        svg.appendChild(dot);
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      piece.setAttribute('x', px(0) + cell / 2); piece.setAttribute('y', py(0) + cell / 2);
+      piece.setAttribute('text-anchor', 'middle'); piece.setAttribute('dominant-baseline', 'central');
+      piece.setAttribute('font-size', '24');
+      piece.textContent = pieceGlyph;
+      svg.appendChild(piece);
+
+      wrap.appendChild(svg);
+      const caption = document.createElement('div');
+      caption.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      caption.textContent = label;
+      wrap.appendChild(caption);
+      container.appendChild(wrap);
+    }
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const around8 = [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]];
+      const line8 = [-3,-2,-1,1,2,3];
+      renderMiniDiagramSquare(el, { label: '왕: 8방향 1칸', targets: around8, pieceGlyph: '♔' });
+      renderMiniDiagramSquare(el, { label: '퀸: 직선+대각선 무제한', targets: line8.flatMap((n) => [[n,0],[0,n],[n,n],[n,-n]]), pieceGlyph: '♕' });
+      renderMiniDiagramSquare(el, { label: '룩: 직선 무제한', targets: line8.flatMap((n) => [[n,0],[0,n]]), pieceGlyph: '♖' });
+      renderMiniDiagramSquare(el, { label: '비숍: 대각선 무제한', targets: line8.flatMap((n) => [[n,n],[n,-n]]), pieceGlyph: '♗' });
+      renderMiniDiagramSquare(el, { label: '나이트: ㄴ자 이동', targets: [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]], pieceGlyph: '♘' });
+      renderMiniDiagramSquare(el, { label: '폰: 전진(첫수 2칸)+대각선 포획', targets: [[0,-1],[0,-2]], pieceGlyph: '♙' });
+    }
+
+    renderRuleDiagrams();
     updateVariantDesc();
     startNewGame();
   </script>
