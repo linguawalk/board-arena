@@ -52,6 +52,8 @@
   <header class="site-header">
     <div class="logo">Board Arena</div>
     <nav>
+      <a href="#go">바둑</a>
+      <a href="#core">대표 게임</a>
       <a href="#chaturanga">차투랑가 계열</a>
       <a href="#simple">단순 전략게임</a>
     </nav>
@@ -60,6 +62,11 @@
   <main>
     <h1>고전 전략게임을 한 곳에서</h1>
     <p>바둑부터 체스, 장기, 샹치까지 — 완전정보 전략게임을 모아 AI와 대국하고 배워보세요.</p>
+
+    <section class="tier-section" id="go">
+      <h2>바둑</h2>
+      <div class="game-grid" id="grid-go"></div>
+    </section>
 
     <section class="tier-section" id="core">
       <h2>대표 게임</h2>
@@ -81,14 +88,16 @@
 
   <script type="module">
     const games = {
-      core: [
+      go: [
         { emoji: '⚫', name: '바둑', origin: '한·중·일', path: 'games/go/play.html' },
+      ],
+      core: [
         { emoji: '♟️', name: '체스', origin: '서양', path: 'games/chess/play.html' },
         { emoji: '🐘', name: '장기', origin: '대한민국', path: 'games/janggi/play.html' },
-      ],
-      chaturanga: [
         { emoji: '🀄', name: '샹치', origin: '중국', path: 'games/xiangqi/play.html' },
         { emoji: '🎌', name: '쇼기', origin: '일본', path: 'games/shogi/play.html' },
+      ],
+      chaturanga: [
         { emoji: '🇹🇭', name: '막룩', origin: '태국', path: 'games/makruk/play.html' },
         { emoji: '🕌', name: '샤트란지', origin: '페르시아', path: 'games/shatranj/play.html' },
         { emoji: '🇲🇲', name: '시투인', origin: '미얀마', path: 'games/sittuyin/play.html' },
@@ -128,6 +137,7 @@
       }
     }
 
+    renderGrid('grid-go', games.go);
     renderGrid('grid-core', games.core);
     renderGrid('grid-chaturanga', games.chaturanga);
     renderGrid('grid-simple', games.simple);
