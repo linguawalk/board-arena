@@ -33,8 +33,15 @@
       <div class="panel">
         <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
         <select id="level-select">
-          <option value="1">쉬움</option>
-          <option value="2" selected>보통</option>
+          <option value="1">1단</option>
+          <option value="2">2단</option>
+          <option value="3" selected>3단</option>
+          <option value="4">4단</option>
+          <option value="5">5단</option>
+          <option value="6">6단</option>
+          <option value="7">7단</option>
+          <option value="8">8단</option>
+          <option value="9">9단</option>
         </select>
         <button id="new-game-btn">새 게임</button>
         <button id="resign-btn">기권</button>
@@ -223,23 +230,30 @@
 
     function aiTurn() {
       const aiColor = opponent(humanColor);
-      const depth = parseInt(levelSelect.value, 10);
+      const level = parseInt(levelSelect.value, 10);
+      const lookahead = level >= 5; // 5단부터 상대 응수까지 내다봄
+      const mistakeChance = [0.6, 0.4, 0.22, 0.1, 0.05, 0.02, 0, 0, 0][level - 1];
       const moves = allMoves(board, aiColor);
       if (moves.length === 0) { thinkingEl.style.display = 'none'; statusLine.textContent = '당신 차례'; return; }
-      let best = null, bestScore = -Infinity;
-      for (const m of moves) {
-        const nb = applyMove(board, m);
-        let score = evaluate(nb, aiColor);
-        if (depth >= 2) {
-          const oppMoves = allMoves(nb, humanColor);
-          let worst = Infinity;
-          for (const om of oppMoves.slice(0, 20)) {
-            const nb2 = applyMove(nb, om);
-            worst = Math.min(worst, evaluate(nb2, aiColor));
+      let best;
+      if (Math.random() < mistakeChance) {
+        best = moves[Math.floor(Math.random() * moves.length)];
+      } else {
+        let bestScore = -Infinity;
+        for (const m of moves) {
+          const nb = applyMove(board, m);
+          let score = evaluate(nb, aiColor);
+          if (lookahead) {
+            const oppMoves = allMoves(nb, humanColor);
+            let worst = Infinity;
+            for (const om of oppMoves.slice(0, 20)) {
+              const nb2 = applyMove(nb, om);
+              worst = Math.min(worst, evaluate(nb2, aiColor));
+            }
+            if (oppMoves.length > 0) score = worst;
           }
-          if (oppMoves.length > 0) score = worst;
+          if (score > bestScore) { bestScore = score; best = m; }
         }
-        if (score > bestScore) { bestScore = score; best = m; }
       }
       board = applyMove(board, best);
       syncBoard(best);
