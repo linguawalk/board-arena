@@ -34,8 +34,11 @@
       <div class="panel">
         <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
         <select id="level-select">
-          <option value="1">쉬움</option>
-          <option value="2" selected>보통</option>
+          <option value="1">매우 쉬움</option>
+          <option value="2">쉬움</option>
+          <option value="3" selected>보통</option>
+          <option value="4">어려움</option>
+          <option value="5">매우 어려움</option>
         </select>
         <button id="new-game-btn">새 게임</button>
         <button id="resign-btn">기권</button>
@@ -194,9 +197,11 @@
       for (const [q, r] of empties) {
         grid[r][q] = aiColor;
         const myCost = connectionCost(grid, aiColor);
-        const oppCost = level >= 2 ? connectionCost(grid, humanColor) : 0;
+        const oppCost = connectionCost(grid, humanColor);
         grid[r][q] = null;
-        const score = -myCost * 2 + oppCost;
+        const myCostWeight = [1.0, 1.5, 2.0, 2.5, 3.0][level - 1];
+        const oppCostWeight = [0, 0.3, 0.7, 1.2, 1.8][level - 1];
+        const score = -myCost * myCostWeight + oppCost * oppCostWeight;
         if (score > bestScore) { bestScore = score; best = [q, r]; }
       }
 
