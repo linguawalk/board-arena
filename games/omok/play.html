@@ -32,9 +32,11 @@
       <div class="panel">
         <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
         <select id="level-select">
-          <option value="1">쉬움</option>
-          <option value="2" selected>보통</option>
-          <option value="3">어려움</option>
+          <option value="1">매우 쉬움</option>
+          <option value="2">쉬움</option>
+          <option value="3" selected>보통</option>
+          <option value="4">어려움</option>
+          <option value="5">매우 어려움</option>
         </select>
         <label style="font-size:13px;color:#555;display:flex;align-items:center;gap:6px;margin-bottom:10px;">
           <input type="checkbox" id="renju-check" /> 삼삼 금지 적용 (흑백 모두, 정식 렌주룰과 달리 대칭 적용)
@@ -250,8 +252,10 @@
       let best = null, bestScore = -Infinity;
       for (const m of moves) {
         const offense = evaluatePoint(grid, m.x, m.y, aiColor);
-        const defense = level >= 2 ? evaluatePoint(grid, m.x, m.y, humanColor) : 0;
-        const weight = level >= 3 ? 1.1 : 1.0;
+        const defenseWeightByLevel = [0, 0.4, 0.75, 0.95, 1.15];
+        const offenseWeightByLevel = [0.85, 0.92, 1.0, 1.05, 1.15];
+        const defense = evaluatePoint(grid, m.x, m.y, humanColor) * defenseWeightByLevel[level - 1];
+        const weight = offenseWeightByLevel[level - 1];
         const score = offense * weight + defense * 0.9;
         if (score > bestScore) { bestScore = score; best = m; }
       }
