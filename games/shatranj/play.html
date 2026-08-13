@@ -51,6 +51,11 @@
         <button id="resign-btn">기권</button>
         <button id="save-review-btn">복기용으로 저장</button>
 
+        <div id="drop-panel" style="display:none;margin:10px 0;">
+          <div style="font-size:13px;color:#555;margin-bottom:4px;">배치 단계: 기물을 골라 내 진영 빈 칸에 놓으세요</div>
+          <div id="drop-buttons" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        </div>
+
         <div id="status-line" class="status-line">불러오는 중...</div>
         <div id="thinking" class="thinking">AI가 생각 중...</div>
         <div id="save-msg" style="font-size:12px;color:var(--accent);display:none;">저장됐습니다.</div>
@@ -75,16 +80,15 @@
 
     // 표준 체스 유니코드 기호를 재사용 (문화권 고유 기물명이 달라도 역할이 비슷한 기물에 매핑)
     const GLYPHS = {
-      K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', F: '♕', M: '♕', A: '♗', E: '♗', S: '♗', G: '♕',
-      k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟', f: '♛', m: '♛', a: '♝', e: '♝', s: '♝', g: '♛',
+      K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', F: '♕', M: '♕', A: '♗', E: '♗', S: '♗', G: '♕', J: '♕',
+      k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟', f: '♛', m: '♛', a: '♝', e: '♝', s: '♝', g: '♛', j: '♛',
     };
 
     const VARIANT_ID = 'shatranj';
     const LS_KEY = 'board-arena-shatranj-games';
 
     const AI_LEVELS = [];
-    for (let k = 18; k >= 1; k--) AI_LEVELS.push({ id: `k${k}`, label: `${k}급`, depth: 2 + Math.floor((18 - k) * 0.5) });
-    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: 12 + d });
+    for (let d = 1; d <= 9; d++) AI_LEVELS.push({ id: `d${d}`, label: `${d}단`, depth: d + 3 });
 
     const boardCol = document.getElementById('board-col');
     const levelSelect = document.getElementById('level-select');
@@ -97,11 +101,11 @@
       const opt = document.createElement('option');
       opt.value = lvl.id;
       opt.textContent = lvl.label;
-      if (lvl.id === 'd1') opt.selected = true;
+      if (lvl.id === 'd3') opt.selected = true;
       levelSelect.appendChild(opt);
     }
     function currentDepth() {
-      return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
+      return AI_LEVELS.find((l) => l.id === levelSelect.value).depth;
     }
 
     let ffish = null;
@@ -109,8 +113,11 @@
     let ui = null;
     let humanColor = 'w';
     let selectedSquare = null;
+    let selectedDropPiece = null;
     let gameOver = false;
     let moveHistoryUci = [];
+    const dropPanel = document.getElementById('drop-panel');
+    const dropButtons = document.getElementById('drop-buttons');
 
     function fileToX(f) { return f.charCodeAt(0) - 97; }
     function xToFile(x) { return String.fromCharCode(97 + x); }
@@ -146,6 +153,42 @@
       ui.pieceGlyphs = GLYPHS;
       ui.loadPosition(pieces);
       ui.render();
+      renderDropOptions();
+    }
+
+    function renderDropOptions() {
+      const all = board.legalMoves().split(' ').filter((m) => m.length > 0);
+      const drops = all.filter((m) => m.includes('@'));
+      if (drops.length === 0) {
+        dropPanel.style.display = 'none';
+        selectedDropPiece = null;
+        return;
+      }
+      dropPanel.style.display = 'block';
+      const letters = [...new Set(drops.map((m) => m.split('@')[0]))];
+      dropButtons.innerHTML = '';
+      for (const letter of letters) {
+        const btn = document.createElement('button');
+        btn.textContent = GLYPHS[letter] || letter;
+        btn.style.fontSize = '22px';
+        if (selectedDropPiece === letter) btn.style.outline = '2px solid #4a90e2';
+        btn.addEventListener('click', () => {
+          selectedDropPiece = selectedDropPiece === letter ? null : letter;
+          selectedSquare = null;
+          if (selectedDropPiece) {
+            ui.setSelection(null, legalDropTargets(selectedDropPiece).map((sq) => squareToXY(sq)));
+          } else {
+            ui.setSelection(null, []);
+          }
+          renderDropOptions();
+        });
+        dropButtons.appendChild(btn);
+      }
+    }
+
+    function legalDropTargets(letter) {
+      const all = board.legalMoves().split(' ').filter((m) => m.length > 0);
+      return all.filter((m) => m.startsWith(letter + '@')).map((m) => m.split('@')[1]);
     }
 
     function updateStatus() {
@@ -200,6 +243,14 @@
 
       const clickedSquare = xyToSquare(x, y);
 
+      if (selectedDropPiece) {
+        const targets = legalDropTargets(selectedDropPiece);
+        if (targets.includes(clickedSquare)) {
+          playMove(`${selectedDropPiece}@${clickedSquare}`);
+        }
+        return;
+      }
+
       if (selectedSquare) {
         const moves = legalMovesFromSquare(selectedSquare);
         const matches = moves.filter((m) => moveToSquare(m) === clickedSquare);
@@ -226,6 +277,7 @@
       board.push(uci);
       moveHistoryUci.push(uci);
       selectedSquare = null;
+      selectedDropPiece = null;
       if (uci.includes('@')) {
         const to = squareToXY(uci.split('@')[1]);
         ui.markLastMove(to, to);
