@@ -29,6 +29,14 @@
     <div class="layout">
       <div id="board-col" class="board-col"></div>
       <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="1">매우 쉬움</option>
+          <option value="2">쉬움</option>
+          <option value="3" selected>보통</option>
+          <option value="4">어려움</option>
+          <option value="5">매우 어려움</option>
+        </select>
         <button id="new-game-btn">새 게임</button>
         <button id="resign-btn">기권</button>
         <div id="status-line" class="status-line">당신 차례 (빨강)</div>
@@ -45,6 +53,7 @@
     const DIRS = [[1,-1],[1,0],[0,1],[-1,1],[-1,0],[0,-1]];
 
     const boardCol = document.getElementById('board-col');
+    const levelSelect = document.getElementById('level-select');
     const statusLine = document.getElementById('status-line');
     const thinkingEl = document.getElementById('thinking');
     const moveLog = document.getElementById('move-log');
@@ -210,12 +219,19 @@
       const aiColor = opponent(humanColor);
       const moves = allMoves(aiColor);
       if (moves.length === 0) { thinkingEl.style.display = 'none'; statusLine.textContent = '당신 차례'; return; }
-      let best = null, bestScore = -Infinity;
-      for (const m of moves) {
-        const before = hexDist(m.from, GOAL[aiColor]);
-        const after = hexDist(m.to, GOAL[aiColor]);
-        const score = before - after; // 목표에 가까워질수록 높은 점수
-        if (score > bestScore) { bestScore = score; best = m; }
+      const level = parseInt(levelSelect.value, 10);
+      const mistakeChance = [0.7, 0.45, 0.22, 0.08, 0][level - 1];
+      let best;
+      if (Math.random() < mistakeChance) {
+        best = moves[Math.floor(Math.random() * moves.length)];
+      } else {
+        let bestScore = -Infinity;
+        for (const m of moves) {
+          const before = hexDist(m.from, GOAL[aiColor]);
+          const after = hexDist(m.to, GOAL[aiColor]);
+          const score = before - after; // 목표에 가까워질수록 높은 점수
+          if (score > bestScore) { bestScore = score; best = m; }
+        }
       }
       board.delete(key(best.from[0], best.from[1]));
       board.set(key(best.to[0], best.to[1]), aiColor);
