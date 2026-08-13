@@ -36,6 +36,18 @@
           <option value="D">수비 (왕+스웨덴군)</option>
           <option value="A">공격 (모스크바군)</option>
         </select>
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">AI 난이도</label>
+        <select id="level-select">
+          <option value="1">1단</option>
+          <option value="2">2단</option>
+          <option value="3" selected>3단</option>
+          <option value="4">4단</option>
+          <option value="5">5단</option>
+          <option value="6">6단</option>
+          <option value="7">7단</option>
+          <option value="8">8단</option>
+          <option value="9">9단</option>
+        </select>
         <button id="new-game-btn">새 게임</button>
         <button id="resign-btn">기권</button>
         <div id="status-line" class="status-line">불러오는 중...</div>
@@ -68,6 +80,7 @@
 
     const boardCol = document.getElementById('board-col');
     const sideSelect = document.getElementById('side-select');
+    const levelSelect = document.getElementById('level-select');
     const statusLine = document.getElementById('status-line');
     const thinkingEl = document.getElementById('thinking');
     const moveLog = document.getElementById('move-log');
@@ -267,11 +280,18 @@
       const aiSide = turn;
       const moves = allMoves(board, aiSide);
       if (moves.length === 0) { thinkingEl.style.display = 'none'; gameOver = true; statusLine.textContent = (humanSide === aiSide ? 'AI' : '당신') + ' 승리 (상대가 둘 수 없음)'; return; }
-      let best = null, bestScore = -Infinity;
-      for (const m of moves) {
-        const { board: nb, captured } = applyMoveAndCapture(board, m, aiSide);
-        let score = evaluate(nb, aiSide) + captured.length * 5;
-        if (score > bestScore) { bestScore = score; best = m; }
+      const level = parseInt(levelSelect.value, 10);
+      const mistakeChance = [0.55, 0.38, 0.22, 0.12, 0.06, 0.02, 0, 0, 0][level - 1];
+      let best;
+      if (Math.random() < mistakeChance) {
+        best = moves[Math.floor(Math.random() * moves.length)];
+      } else {
+        let bestScore = -Infinity;
+        for (const m of moves) {
+          const { board: nb, captured } = applyMoveAndCapture(board, m, aiSide);
+          let score = evaluate(nb, aiSide) + captured.length * 5;
+          if (score > bestScore) { bestScore = score; best = m; }
+        }
       }
       const { board: nb, captured } = applyMoveAndCapture(board, best, aiSide);
       board = nb;
