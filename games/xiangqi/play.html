@@ -54,6 +54,7 @@
           <li><b>포(砲)</b>: 평소 이동은 차와 같이 직선으로 원하는 만큼 움직이지만, <b>상대 기물을 잡을 때만</b> 다른 기물 하나를 뛰어넘어야 합니다.</li>
           <li><b>병/졸(兵/卒)</b>: 강을 건너기 전에는 앞으로만 한 칸, 강을 건넌 후에는 앞 또는 좌우로 한 칸씩 움직입니다(뒤로는 못 감).</li>
         </ul>
+        <p><b>기타</b>: 아래 "규칙" 선택으로 정식 샹치와 미니샹치(7x7)를 고를 수 있습니다. 지금 고른 규칙: <span id="rule-variant-note"></span></p>
       </div>
     </details>
 
@@ -131,7 +132,10 @@
       return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
     }
     function updateVariantDesc() {
-      variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
+      const text = VARIANT_INFO[variantSelect.value] || '';
+      variantDesc.textContent = text;
+      const note = document.getElementById('rule-variant-note');
+      if (note) note.textContent = text;
     }
 
     const BOARD_CONFIG = {
