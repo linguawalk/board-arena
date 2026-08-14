@@ -54,7 +54,7 @@
           <li><b>사(士)</b>: 궁과 마찬가지로 자기 궁성 안에서만 가로·세로·대각선 한 칸씩 움직입니다.</li>
           <li><b>병(兵)/졸(卒)</b>: 앞 또는 좌우로 한 칸씩 움직입니다(뒤로는 못 감). 상대 궁성에 들어가면 궁성 안의 대각선으로도 움직일 수 있습니다.</li>
         </ul>
-        <p><b>기타</b>: 포는 첫 수부터 다른 기물을 넘어야 하므로 첫 수로는 움직일 수 없는 경우가 많습니다. 아래 "규칙" 선택으로 정식·캐주얼·모던·전통 4가지 세부 규칙을 고를 수 있습니다.</p>
+        <p><b>기타</b>: 포는 첫 수부터 다른 기물을 넘어야 하므로 첫 수로는 움직일 수 없는 경우가 많습니다. 아래 "규칙" 선택으로 정식·캐주얼·모던·전통 4가지 세부 규칙을 고를 수 있습니다. 지금 고른 규칙: <span id="rule-variant-note"></span></p>
       </div>
     </details>
 
@@ -138,7 +138,10 @@
       return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
     }
     function updateVariantDesc() {
-      variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
+      const text = VARIANT_INFO[variantSelect.value] || '';
+      variantDesc.textContent = text;
+      const note = document.getElementById('rule-variant-note');
+      if (note) note.textContent = text;
     }
 
     const WIDTH = 9, HEIGHT = 10;
