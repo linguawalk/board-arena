@@ -61,6 +61,7 @@
           <li><b>보(歩)</b>: 앞으로 한 칸만 이동합니다. 승진하면(と금) 금장처럼 움직입니다.</li>
         </ul>
         <p><b>드롭 규칙</b>: 잡은 기물은 언제든 내 차례에 빈 칸에 놓을 수 있습니다. 단, 보는 같은 세로줄에 내 보가 이미 있으면 드롭 불가(니후), 마지막 줄처럼 더 이상 전진할 수 없는 자리에는 보·향차·계마를 드롭할 수 없습니다.</p>
+        <p><b>기타</b>: 아래 "규칙" 선택으로 정식 쇼기와 미니 쇼기(5x5)를 고를 수 있습니다. 지금 고른 규칙: <span id="rule-variant-note"></span></p>
       </div>
     </details>
 
@@ -160,7 +161,10 @@
       return Math.min(AI_LEVELS.find((l) => l.id === levelSelect.value).depth, 10);
     }
     function updateVariantDesc() {
-      variantDesc.textContent = VARIANT_INFO[variantSelect.value] || '';
+      const text = VARIANT_INFO[variantSelect.value] || '';
+      variantDesc.textContent = text;
+      const note = document.getElementById('rule-variant-note');
+      if (note) note.textContent = text;
     }
 
     let boardSize = 9;
