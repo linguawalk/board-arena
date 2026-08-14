@@ -44,6 +44,25 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>쇼기 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 상대의 왕을 체크메이트시키면 승리합니다. 쇼기는 상대 기물을 잡으면 사라지지 않고 <b>내 것이 되어 손에 들고 있다가 빈 칸에 다시 놓을 수 있습니다(드롭)</b> — 이 점이 체스·장기와 가장 다른 특징입니다.</p>
+        <p><b>기물별 이동법</b> (아래 그림: 파란 점 = 이동 가능한 자리, 화살표 방향이 "전진")</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <ul style="margin:4px 0 8px 18px; padding:0;">
+          <li><b>왕(王/玉)</b>: 8방향으로 한 칸씩 이동합니다.</li>
+          <li><b>비차(飛)</b>: 상하좌우로 원하는 만큼 직선 이동. 승진하면 용왕(龍)이 되어 대각선 한 칸도 추가로 갈 수 있습니다.</li>
+          <li><b>각행(角)</b>: 대각선으로 원하는 만큼 이동. 승진하면 용마(馬)가 되어 상하좌우 한 칸도 추가로 갈 수 있습니다.</li>
+          <li><b>금장(金)</b>: 앞·옆·뒤(직선 4방향)와 대각선 앞 2방향, 총 6방향으로 한 칸씩 이동합니다(대각선 뒤로는 못 감).</li>
+          <li><b>은장(銀)</b>: 앞과 대각선 4방향, 총 5방향으로 한 칸씩 이동합니다(좌우·바로 뒤로는 못 감). 승진하면 금장처럼 움직입니다.</li>
+          <li><b>계마(桂)</b>: 앞으로 두 칸 간 뒤 좌우로 한 칸, 오직 전진 방향으로만 뛰어넘어 이동합니다. 승진하면 금장처럼 움직입니다.</li>
+          <li><b>향차(香)</b>: 앞으로만 원하는 만큼 직선 이동합니다. 승진하면 금장처럼 움직입니다.</li>
+          <li><b>보(歩)</b>: 앞으로 한 칸만 이동합니다. 승진하면(と금) 금장처럼 움직입니다.</li>
+        </ul>
+        <p><b>드롭 규칙</b>: 잡은 기물은 언제든 내 차례에 빈 칸에 놓을 수 있습니다. 단, 보는 같은 세로줄에 내 보가 이미 있으면 드롭 불가(니후), 마지막 줄처럼 더 이상 전진할 수 없는 자리에는 보·향차·계마를 드롭할 수 없습니다.</p>
+      </div>
+    </details>
 
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -446,6 +465,66 @@
       startNewGame();
     });
 
+    // ── 규칙 설명용 미니 다이어그램 (칸 기반, 화면 위쪽=전진 방향) ──
+    function renderMiniDiagramSquare(container, { label, targets, pieceGlyph }) {
+      const R = 3;
+      const cell = 28, margin = 6;
+      const size = margin * 2 + cell * (R * 2 + 1);
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size);
+      svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const px = (dx) => margin + (dx + R) * cell;
+      const py = (dy) => margin + (dy + R) * cell;
+
+      for (let y = -R; y <= R; y++) {
+        for (let x = -R; x <= R; x++) {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', px(x)); rect.setAttribute('y', py(y));
+          rect.setAttribute('width', cell); rect.setAttribute('height', cell);
+          rect.setAttribute('fill', (x + y) % 2 === 0 ? '#f2d9a6' : '#d9b877');
+          svg.appendChild(rect);
+        }
+      }
+      for (const [tx, ty] of targets) {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(tx) + cell / 2); dot.setAttribute('cy', py(ty) + cell / 2); dot.setAttribute('r', 6);
+        dot.setAttribute('fill', '#4a90e2');
+        svg.appendChild(dot);
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      piece.setAttribute('x', px(0) + cell / 2); piece.setAttribute('y', py(0) + cell / 2);
+      piece.setAttribute('text-anchor', 'middle'); piece.setAttribute('dominant-baseline', 'central');
+      piece.setAttribute('font-size', '20');
+      piece.textContent = pieceGlyph;
+      svg.appendChild(piece);
+
+      wrap.appendChild(svg);
+      const caption = document.createElement('div');
+      caption.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      caption.textContent = label;
+      wrap.appendChild(caption);
+      container.appendChild(wrap);
+    }
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const around8 = [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]];
+      const line8 = [-3,-2,-1,1,2,3];
+      renderMiniDiagramSquare(el, { label: '왕: 8방향 1칸', targets: around8, pieceGlyph: '王' });
+      renderMiniDiagramSquare(el, { label: '비차: 직선 무제한', targets: line8.flatMap((n) => [[n,0],[0,n]]), pieceGlyph: '飛' });
+      renderMiniDiagramSquare(el, { label: '각행: 대각선 무제한', targets: line8.flatMap((n) => [[n,n],[n,-n]]), pieceGlyph: '角' });
+      renderMiniDiagramSquare(el, { label: '금장: 6방향(대각선 뒤 제외)', targets: [[0,-1],[0,1],[-1,0],[1,0],[-1,-1],[1,-1]], pieceGlyph: '金' });
+      renderMiniDiagramSquare(el, { label: '은장: 5방향(전진+대각선)', targets: [[0,-1],[-1,-1],[1,-1],[-1,1],[1,1]], pieceGlyph: '銀' });
+      renderMiniDiagramSquare(el, { label: '계마: 전진 방향으로만 점프', targets: [[-1,-2],[1,-2]], pieceGlyph: '桂' });
+      renderMiniDiagramSquare(el, { label: '향차: 전진만 무제한', targets: [[0,-1],[0,-2],[0,-3]], pieceGlyph: '香' });
+      renderMiniDiagramSquare(el, { label: '보: 전진 1칸', targets: [[0,-1]], pieceGlyph: '歩' });
+    }
+
+    renderRuleDiagrams();
     updateVariantDesc();
     startNewGame();
   </script>
