@@ -28,6 +28,14 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>오델로 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>두는 법</b>: 내 돌을 놓아서 상대 돌을 일직선(가로·세로·대각선)으로 완전히 감싸면(양 끝이 내 돌), 그 사이 상대 돌이 전부 내 색으로 뒤집힙니다. 뒤집을 수 있는 자리에만 둘 수 있습니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>승리 조건</b>: 더 이상 아무도 둘 수 없을 때(보드가 가득 차거나 양쪽 다 둘 곳이 없을 때), 자기 색 돌이 더 많은 쪽이 승리합니다.</p>
+      </div>
+    </details>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
       <div class="panel">
@@ -245,6 +253,43 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const cell = 34, W = 4, margin = 4;
+      const size = margin * 2 + cell * W;
+      function draw(label, cells, highlightNew) {
+        const wrap = document.createElement('div');
+        wrap.style.textAlign = 'center';
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', size); svg.setAttribute('height', size);
+        svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+        for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+          const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          r.setAttribute('x', margin + x * cell); r.setAttribute('y', margin + y * cell);
+          r.setAttribute('width', cell); r.setAttribute('height', cell);
+          r.setAttribute('fill', '#2f8f4f'); r.setAttribute('stroke', '#267a42');
+          svg.appendChild(r);
+        }
+        for (const [x, y, color] of cells) {
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('cx', margin + x * cell + cell / 2); c.setAttribute('cy', margin + y * cell + cell / 2);
+          c.setAttribute('r', cell * 0.38);
+          c.setAttribute('fill', color === 'B' ? '#1a1a1a' : '#f5f5f0');
+          svg.appendChild(c);
+        }
+        wrap.appendChild(svg);
+        const cap = document.createElement('div');
+        cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;max-width:' + size + 'px;';
+        cap.textContent = label;
+        wrap.appendChild(cap);
+        el.appendChild(wrap);
+      }
+      draw('두기 전: 흑이 (3,1)에 두려는 상황', [[1,1,'W'],[2,1,'W'],[0,1,'B']]);
+      draw('둔 후: 사이의 흰 돌 2개가 검정으로 뒤집힘', [[0,1,'B'],[1,1,'B'],[2,1,'B'],[3,1,'B']]);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
