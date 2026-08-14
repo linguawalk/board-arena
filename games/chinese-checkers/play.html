@@ -26,6 +26,14 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>차이니즈 체커 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>두는 법</b>: 내 돌을 <b>인접한 빈 칸으로 한 칸 이동</b>하거나, <b>바로 옆에 있는 돌(내 돌이든 상대 돌이든 상관없이)을 뛰어넘어</b> 그 너머 빈 칸으로 점프할 수 있습니다. 뛰어넘긴 돌은 잡히지 않고 그대로 남습니다. 점프는 여러 번 연속으로 이어갈 수 있습니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>승리 조건</b>: 내 돌 10개를 전부 반대편 별 꼭짓점(원래 상대가 시작한 자리)으로 먼저 옮기면 승리합니다.</p>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">내 돌 10개를 전부 반대편 별 꼭짓점(상대 시작 자리)으로 먼저 옮기면 승리합니다. 한 칸 이동하거나, 인접한 돌(내 돌이든 상대 돌이든)을 뛰어넘어 연속으로 점프할 수 있습니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -250,6 +258,38 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const cell = 32, margin = 8;
+      const size = margin * 2 + cell * 3;
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size); svg.setAttribute('height', margin * 2 + cell);
+      svg.setAttribute('viewBox', `0 0 ${size} ${margin * 2 + cell}`);
+      const positions = [
+        { x: 0, color: '#e63946', label: '내 돌' },
+        { x: 1, color: '#3a5fcd', label: '뛰어넘을 돌' },
+        { x: 2, color: null, label: '착지(점프 후)' },
+      ];
+      for (let i = 0; i < 3; i++) {
+        const cx = margin + cell * i + cell / 2, cy = margin + cell / 2;
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', cell * 0.4);
+        c.setAttribute('fill', i === 2 ? 'none' : positions[i].color);
+        c.setAttribute('stroke', i === 2 ? '#4a90e2' : 'none'); c.setAttribute('stroke-width', '2');
+        svg.appendChild(c);
+      }
+      wrap.appendChild(svg);
+      const cap = document.createElement('div');
+      cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;max-width:' + size + 'px;';
+      cap.textContent = '내 돌이 다른 돌을 뛰어넘어 착지 (뛰어넘긴 돌은 그대로 남음)';
+      wrap.appendChild(cap);
+      el.appendChild(wrap);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
