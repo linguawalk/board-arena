@@ -27,6 +27,16 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>모리스 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>1단계(배치)</b>: 각자 돌 9개를 번갈아 빈 점에 놓습니다.</p>
+        <p><b>2단계(이동)</b>: 배치가 끝나면, 선을 따라 인접한 빈 점으로 돌을 하나씩 옮깁니다. 내 돌이 3개 남으면 아무 빈 점으로나 "날아서" 이동할 수 있습니다.</p>
+        <p><b>밀(mill)</b>: 아래 그림처럼 내 돌 3개가 선을 따라 일직선으로 나란히 놓이면, 상대 돌 하나를 제거합니다(상대의 밀 안에 있는 돌은 다른 곳에 뺄 돌이 없을 때만 제거 가능).</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>승리 조건</b>: 상대 돌을 2개 이하로 줄이거나, 상대가 더 이상 움직일 수 없게 만들면 승리합니다.</p>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">각자 9개씩 놓은 뒤, 선을 따라 인접한 점으로 옮겨 다닙니다. 내 돌 3개를 일직선(밀)으로 만들면 상대 돌 하나를 제거합니다. 상대를 2개 이하로 줄이거나 움직일 수 없게 만들면 승리합니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -348,6 +358,36 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const cell = 40, margin = 10;
+      const size = margin * 2 + cell * 2;
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size); svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', margin); line.setAttribute('y1', margin + cell);
+      line.setAttribute('x2', margin + cell * 2); line.setAttribute('y2', margin + cell);
+      line.setAttribute('stroke', '#3a2a17'); line.setAttribute('stroke-width', '2');
+      svg.appendChild(line);
+      for (let i = 0; i <= 2; i++) {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', margin + cell * i); c.setAttribute('cy', margin + cell); c.setAttribute('r', 13);
+        c.setAttribute('fill', '#1a1a1a');
+        svg.appendChild(c);
+      }
+      wrap.appendChild(svg);
+      const cap = document.createElement('div');
+      cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      cap.textContent = '밀 완성: 상대 돌 하나 제거';
+      wrap.appendChild(cap);
+      el.appendChild(wrap);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
