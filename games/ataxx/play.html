@@ -28,6 +28,14 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>Ataxx 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>두는 법</b>: 내 돌 주변 <b>1칸(인접) 빈 자리</b>에 두면 그 자리에 돌이 새로 "복제"됩니다(원래 돌은 그대로 남음). <b>2칸 떨어진 빈 자리</b>에 두면 "점프"해서 원래 자리의 돌이 사라지고 새 자리에만 남습니다. 어느 쪽이든, 두는 순간 그 자리에 인접한 상대 돌은 전부 내 색으로 바뀝니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>승리 조건</b>: 보드가 가득 차거나 어느 한쪽이 더 이상 둘 수 없을 때, 자기 색 돌이 더 많은 쪽이 승리합니다.</p>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">인접 칸(1칸)에 두면 복제되고, 2칸 떨어진 칸으로는 점프합니다. 두는 순간 주변 상대 돌은 전부 내 색으로 바뀝니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -235,6 +243,43 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const cell = 30, W = 5, margin = 4;
+      const size = margin * 2 + cell * W;
+      function draw(label, cells) {
+        const wrap = document.createElement('div');
+        wrap.style.textAlign = 'center';
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', size); svg.setAttribute('height', size);
+        svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+        for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+          const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          r.setAttribute('x', margin + x * cell); r.setAttribute('y', margin + y * cell);
+          r.setAttribute('width', cell); r.setAttribute('height', cell);
+          r.setAttribute('fill', '#d8c39a'); r.setAttribute('stroke', '#b89b6a');
+          svg.appendChild(r);
+        }
+        for (const [x, y, color] of cells) {
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('cx', margin + x * cell + cell / 2); c.setAttribute('cy', margin + y * cell + cell / 2);
+          c.setAttribute('r', cell * 0.38);
+          c.setAttribute('fill', color === 'B' ? '#1a1a1a' : '#f5f5f0');
+          svg.appendChild(c);
+        }
+        wrap.appendChild(svg);
+        const cap = document.createElement('div');
+        cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;max-width:' + size + 'px;';
+        cap.textContent = label;
+        wrap.appendChild(cap);
+        el.appendChild(wrap);
+      }
+      draw('복제: 1칸 옆에 두면 원래 자리도 유지', [[1,2,'B'],[2,2,'B'],[3,2,'W']]);
+      draw('점프: 2칸 떨어진 곳에 두면 원래 자리는 사라짐', [[3,2,'B']]);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
