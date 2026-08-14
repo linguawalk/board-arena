@@ -27,6 +27,22 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>센테레지 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 이 페이지에서는 체크메이트 대신 <b>상대 왕을 실제로 잡으면</b> 승리하는 방식으로 단순화했습니다.</p>
+        <p><b>기물별 이동법</b> (아래 그림: 파란 점 = 이동 가능한 자리)</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <ul style="margin:4px 0 8px 18px; padding:0;">
+          <li><b>왕(♔)</b>: 8방향으로 한 칸씩 이동합니다.</li>
+          <li><b>페르스(♕, 퀸 역할)</b>: 대각선으로 한 칸씩만 이동합니다.</li>
+          <li><b>사바(♗, 비숍 역할)</b>: 대각선으로 정확히 두 칸을 뛰어넘듯 이동합니다(중간 기물 무시).</li>
+          <li><b>나이트(♘)</b>: 체스와 같은 'ㄴ'자 이동입니다.</li>
+          <li><b>룩(♖)</b>: 상하좌우로 원하는 만큼 직선 이동합니다.</li>
+          <li><b>폰(♙)</b>: 앞으로 한 칸씩만 이동하며, 끝줄에 닿으면 페르스로 승진합니다.</li>
+        </ul>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">에티오피아의 전통 체스입니다. 페르스(퀸 역할)는 대각선 1칸만, 사바(비숍 역할)는 대각선으로 정확히 2칸을 뛰어넘습니다. 이 페이지에서는 체크메이트 대신 <b>왕을 실제로 잡으면 승리</b>하는 방식으로 단순화했습니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -270,6 +286,60 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderMiniDiagramSquare(container, { label, targets, pieceGlyph }) {
+      const R = 3;
+      const cell = 30, margin = 6;
+      const size = margin * 2 + cell * (R * 2 + 1);
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size);
+      svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const px = (dx) => margin + (dx + R) * cell;
+      const py = (dy) => margin + (dy + R) * cell;
+      for (let y = -R; y <= R; y++) {
+        for (let x = -R; x <= R; x++) {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', px(x)); rect.setAttribute('y', py(y));
+          rect.setAttribute('width', cell); rect.setAttribute('height', cell);
+          rect.setAttribute('fill', (x + y) % 2 === 0 ? '#f0d9b5' : '#b58863');
+          svg.appendChild(rect);
+        }
+      }
+      for (const [tx, ty] of targets) {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(tx) + cell / 2); dot.setAttribute('cy', py(ty) + cell / 2); dot.setAttribute('r', 6);
+        dot.setAttribute('fill', '#4a90e2');
+        svg.appendChild(dot);
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      piece.setAttribute('x', px(0) + cell / 2); piece.setAttribute('y', py(0) + cell / 2);
+      piece.setAttribute('text-anchor', 'middle'); piece.setAttribute('dominant-baseline', 'central');
+      piece.setAttribute('font-size', '24');
+      piece.textContent = pieceGlyph;
+      svg.appendChild(piece);
+      wrap.appendChild(svg);
+      const caption = document.createElement('div');
+      caption.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      caption.textContent = label;
+      wrap.appendChild(caption);
+      container.appendChild(wrap);
+    }
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const around8 = [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]];
+      const line8 = [-3,-2,-1,1,2,3];
+      renderMiniDiagramSquare(el, { label: '왕: 8방향 1칸', targets: around8, pieceGlyph: '♔' });
+      renderMiniDiagramSquare(el, { label: '페르스: 대각선 1칸만', targets: [[-1,-1],[1,-1],[-1,1],[1,1]], pieceGlyph: '♕' });
+      renderMiniDiagramSquare(el, { label: '사바: 대각선 정확히 2칸(뛰어넘음)', targets: [[2,2],[-2,2],[2,-2],[-2,-2]], pieceGlyph: '♗' });
+      renderMiniDiagramSquare(el, { label: '나이트: ㄴ자 이동', targets: [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]], pieceGlyph: '♘' });
+      renderMiniDiagramSquare(el, { label: '룩: 직선 무제한', targets: line8.flatMap((n) => [[n,0],[0,n]]), pieceGlyph: '♖' });
+      renderMiniDiagramSquare(el, { label: '폰: 전진 1칸', targets: [[0,-1]], pieceGlyph: '♙' });
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
