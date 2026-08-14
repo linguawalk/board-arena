@@ -27,6 +27,14 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>오목 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 가로·세로·대각선 어느 방향으로든 내 돌 5개를 연속으로 놓으면 승리합니다. 아래 그림처럼 방향은 상관없습니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>기타</b>: "삼삼 금지" 옵션을 켜면, 한 수로 열린 삼(다음에 열린 사로 이어질 수 있는 모양)을 동시에 2개 만드는 자리에는 둘 수 없습니다(흑백 모두 적용).</p>
+      </div>
+    </details>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
       <div class="panel">
@@ -285,6 +293,45 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const cell = 26, R = 3, margin = 6;
+      const size = margin * 2 + cell * (R * 2 + 1);
+      function draw(label, cells) {
+        const wrap = document.createElement('div');
+        wrap.style.textAlign = 'center';
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', size); svg.setAttribute('height', size);
+        svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+        const px = (dx) => margin + (dx + R) * cell;
+        const py = (dy) => margin + (dy + R) * cell;
+        for (let i = -R; i <= R; i++) {
+          const l1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          l1.setAttribute('x1', px(i)); l1.setAttribute('y1', py(-R)); l1.setAttribute('x2', px(i)); l1.setAttribute('y2', py(R));
+          l1.setAttribute('stroke', '#c9b98a'); svg.appendChild(l1);
+          const l2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          l2.setAttribute('x1', px(-R)); l2.setAttribute('y1', py(i)); l2.setAttribute('x2', px(R)); l2.setAttribute('y2', py(i));
+          l2.setAttribute('stroke', '#c9b98a'); svg.appendChild(l2);
+        }
+        for (const [x, y] of cells) {
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('cx', px(x)); c.setAttribute('cy', py(y)); c.setAttribute('r', 9);
+          c.setAttribute('fill', '#1a1a1a');
+          svg.appendChild(c);
+        }
+        wrap.appendChild(svg);
+        const cap = document.createElement('div');
+        cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+        cap.textContent = label;
+        wrap.appendChild(cap);
+        el.appendChild(wrap);
+      }
+      draw('가로로 5개', [[-2,0],[-1,0],[0,0],[1,0],[2,0]]);
+      draw('대각선으로 5개', [[-2,-2],[-1,-1],[0,0],[1,1],[2,2]]);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
