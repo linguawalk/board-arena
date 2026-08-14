@@ -27,6 +27,14 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>고누 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>두는 법</b>: 아래 그림처럼, 자기 차례에 돌 하나를 <b>선으로 연결된 인접한 빈 점</b>으로 옮깁니다. 잡는 규칙은 없고, 오직 이동만 합니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>승리 조건</b>: 상대가 더 이상 어느 돌도 움직일 수 없게(사방이 막히게) 만들면 승리합니다. 세부 규칙은 종류(우물고누/호박고누)에 따라 아래 설명처럼 조금씩 다릅니다.</p>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">한국에는 40종이 넘는 고누가 있는데, 그중 가장 널리 알려진 우물고누(대표)와 호박고누를 골라 즐길 수 있습니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -265,6 +273,52 @@
       log('기권');
     });
     variantSelect.addEventListener('change', startNewGame);
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const cell = 44, margin = 12;
+      const size = margin * 2 + cell * 2;
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size); svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const pts = [[0,0],[2,0],[0,2],[2,2],[1,1]];
+      const edges = [[0,1],[0,2],[1,3],[2,3],[0,4],[1,4],[2,4],[3,4]];
+      const px = (i) => margin + pts[i][0] * cell / 2;
+      const py = (i) => margin + pts[i][1] * cell / 2;
+      for (const [a, b] of edges) {
+        const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        l.setAttribute('x1', px(a)); l.setAttribute('y1', py(a)); l.setAttribute('x2', px(b)); l.setAttribute('y2', py(b));
+        l.setAttribute('stroke', '#3a2a17');
+        svg.appendChild(l);
+      }
+      for (let i = 0; i < pts.length; i++) {
+        const dotR = i === 4 ? 6 : 4;
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(i)); dot.setAttribute('cy', py(i)); dot.setAttribute('r', 3);
+        dot.setAttribute('fill', '#3a2a17');
+        svg.appendChild(dot);
+        if (i === 4) {
+          const hl = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          hl.setAttribute('cx', px(i)); hl.setAttribute('cy', py(i)); hl.setAttribute('r', 8);
+          hl.setAttribute('fill', 'none'); hl.setAttribute('stroke', '#4a90e2'); hl.setAttribute('stroke-width', '2');
+          svg.appendChild(hl);
+        }
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      piece.setAttribute('cx', px(0)); piece.setAttribute('cy', py(0)); piece.setAttribute('r', 12);
+      piece.setAttribute('fill', '#1a1a1a');
+      svg.appendChild(piece);
+      wrap.appendChild(svg);
+      const cap = document.createElement('div');
+      cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      cap.textContent = '선을 따라 인접한 점으로만 이동 (파란 원 = 이동 가능)';
+      wrap.appendChild(cap);
+      el.appendChild(wrap);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
