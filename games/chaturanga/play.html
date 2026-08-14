@@ -39,6 +39,22 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>차투랑가 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 상대의 왕을 체크메이트시키면 승리합니다.</p>
+        <p><b>기물별 이동법</b> (아래 그림: 파란 점 = 이동 가능한 자리)</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <ul style="margin:4px 0 8px 18px; padding:0;">
+          <li><b>왕(♔)</b>: 8방향으로 한 칸씩 이동합니다.</li>
+          <li><b>만트리(♕, 퀸 역할)</b>: 대각선으로 한 칸씩만 이동합니다.</li>
+          <li><b>가자(♗, 비숍 역할, 코끼리)</b>: 대각선으로 정확히 두 칸을 뛰어넘듯 이동합니다.</li>
+          <li><b>아슈바(♘, 나이트 역할, 말)</b>: 체스 나이트와 같은 'ㄴ'자 이동입니다.</li>
+          <li><b>라타(♖, 룩 역할, 전차)</b>: 상하좌우로 원하는 만큼 직선 이동합니다.</li>
+          <li><b>파다티(♙, 폰 역할, 보병)</b>: 앞으로 한 칸씩만 이동합니다.</li>
+        </ul>
+      </div>
+    </details>
     <p class="variant-desc">체스·장기·샹치·쇼기 등 오늘날 모든 장기 계열 게임의 공통 조상으로 여겨지는, 인도에서 유래한 가장 오래된 형태입니다.</p>
 
     <div class="layout">
@@ -338,6 +354,59 @@
       saveMsg.style.display = 'block';
       setTimeout(() => (saveMsg.style.display = 'none'), 2500);
     });
+
+    function renderMiniDiagramSquare(container, { label, targets, pieceGlyph }) {
+      const R = 3;
+      const cell = 30, margin = 6;
+      const size = margin * 2 + cell * (R * 2 + 1);
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size);
+      svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const px = (dx) => margin + (dx + R) * cell;
+      const py = (dy) => margin + (dy + R) * cell;
+      for (let y = -R; y <= R; y++) {
+        for (let x = -R; x <= R; x++) {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', px(x)); rect.setAttribute('y', py(y));
+          rect.setAttribute('width', cell); rect.setAttribute('height', cell);
+          rect.setAttribute('fill', (x + y) % 2 === 0 ? '#f0d9b5' : '#b58863');
+          svg.appendChild(rect);
+        }
+      }
+      for (const [tx, ty] of targets) {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(tx) + cell / 2); dot.setAttribute('cy', py(ty) + cell / 2); dot.setAttribute('r', 6);
+        dot.setAttribute('fill', '#4a90e2');
+        svg.appendChild(dot);
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      piece.setAttribute('x', px(0) + cell / 2); piece.setAttribute('y', py(0) + cell / 2);
+      piece.setAttribute('text-anchor', 'middle'); piece.setAttribute('dominant-baseline', 'central');
+      piece.setAttribute('font-size', '24');
+      piece.textContent = pieceGlyph;
+      svg.appendChild(piece);
+      wrap.appendChild(svg);
+      const caption = document.createElement('div');
+      caption.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      caption.textContent = label;
+      wrap.appendChild(caption);
+      container.appendChild(wrap);
+    }
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      renderMiniDiagramSquare(el, { label: '왕: 8방향 1칸', targets: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]], pieceGlyph: '♔' });
+      renderMiniDiagramSquare(el, { label: '만트리: 대각선 1칸만', targets: [[-1,-1],[1,-1],[-1,1],[1,1]], pieceGlyph: '♕' });
+      renderMiniDiagramSquare(el, { label: '가자: 대각선 정확히 2칸(뛰어넘음)', targets: [[2,2],[-2,2],[2,-2],[-2,-2]], pieceGlyph: '♗' });
+      renderMiniDiagramSquare(el, { label: '아슈바: 나이트형 이동', targets: [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]], pieceGlyph: '♘' });
+      renderMiniDiagramSquare(el, { label: '라타: 직선 무제한', targets: [-3,-2,-1,1,2,3].flatMap((n) => [[n,0],[0,n]]), pieceGlyph: '♖' });
+      renderMiniDiagramSquare(el, { label: '파다티: 전진 1칸', targets: [[0,-1]], pieceGlyph: '♙' });
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
