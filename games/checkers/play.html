@@ -27,6 +27,19 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>체커 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>승리 조건</b>: 상대 기물을 모두 잡거나, 상대가 더 이상 움직일 수 없게 만들면 승리합니다.</p>
+        <p><b>기물별 이동법</b> (아래 그림: 파란 점 = 이동 가능한 자리)</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <ul style="margin:4px 0 8px 18px; padding:0;">
+          <li><b>일반 기물(●)</b>: 어두운 칸에서만, 대각선 앞쪽 두 방향으로 한 칸씩 이동합니다(뒤로는 못 감). 상대 기물이 대각선으로 인접해 있고 그 너머가 비어 있으면 뛰어넘어 잡을 수 있습니다.</li>
+          <li><b>킹(♛)</b>: 맨 끝줄에 도달하면 승진합니다. 대각선 앞뒤 네 방향 모두로 한 칸씩 이동·포획할 수 있습니다.</li>
+        </ul>
+        <p><b>기타</b>: 잡을 수 있는 수가 있으면 반드시 잡아야 합니다. 한 번에 여러 기물을 연속으로 뛰어넘어 잡는 것도 가능합니다.</p>
+      </div>
+    </details>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
       <div class="panel">
@@ -298,6 +311,59 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    // ── 규칙 설명용 미니 다이어그램 (어두운 칸 위주 표시) ──
+    function renderMiniDiagramSquare(container, { label, targets, pieceGlyph }) {
+      const R = 3;
+      const cell = 30, margin = 6;
+      const size = margin * 2 + cell * (R * 2 + 1);
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', size);
+      svg.setAttribute('height', size);
+      svg.setAttribute('viewBox', `0 0 ${size} ${size}`);
+      const px = (dx) => margin + (dx + R) * cell;
+      const py = (dy) => margin + (dy + R) * cell;
+
+      for (let y = -R; y <= R; y++) {
+        for (let x = -R; x <= R; x++) {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', px(x)); rect.setAttribute('y', py(y));
+          rect.setAttribute('width', cell); rect.setAttribute('height', cell);
+          rect.setAttribute('fill', (x + y) % 2 === 0 ? '#eeeeee' : '#5b4636');
+          svg.appendChild(rect);
+        }
+      }
+      for (const [tx, ty] of targets) {
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', px(tx) + cell / 2); dot.setAttribute('cy', py(ty) + cell / 2); dot.setAttribute('r', 6);
+        dot.setAttribute('fill', '#4a90e2');
+        svg.appendChild(dot);
+      }
+      const piece = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      piece.setAttribute('x', px(0) + cell / 2); piece.setAttribute('y', py(0) + cell / 2);
+      piece.setAttribute('text-anchor', 'middle'); piece.setAttribute('dominant-baseline', 'central');
+      piece.setAttribute('font-size', '22');
+      piece.setAttribute('fill', '#1a1a1a');
+      piece.textContent = pieceGlyph;
+      svg.appendChild(piece);
+
+      wrap.appendChild(svg);
+      const caption = document.createElement('div');
+      caption.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      caption.textContent = label;
+      wrap.appendChild(caption);
+      container.appendChild(wrap);
+    }
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      renderMiniDiagramSquare(el, { label: '일반 기물: 대각선 앞 2방향', targets: [[-1,-1],[1,-1]], pieceGlyph: '●' });
+      renderMiniDiagramSquare(el, { label: '킹: 대각선 4방향', targets: [[-1,-1],[1,-1],[-1,1],[1,1]], pieceGlyph: '♛' });
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
