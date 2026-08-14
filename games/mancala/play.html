@@ -38,6 +38,16 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>만칼라 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>두는 법</b>: 내 쪽 구덩이 중 하나를 골라, 그 안의 알을 전부 집어 시계 반대 방향으로 옆 구덩이부터 한 알씩 뿌립니다(상대 창고는 건너뜁니다).</p>
+        <p><b>추가 턴</b>: 마지막 알이 내 창고에 들어가면 한 번 더 둘 수 있습니다.</p>
+        <p><b>포획</b>: 마지막 알이 <b>내 쪽의 비어 있던 구덩이</b>에 들어가고 맞은편 상대 구덩이에 알이 있으면, 그 알과 방금 넣은 내 알까지 전부 내 창고로 가져갑니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+        <p><b>승리 조건</b>: 한쪽 구덩이가 전부 비면 게임이 끝나고, 남은 알은 각자 자기 창고로 들어갑니다. 창고에 알이 더 많은 쪽이 승리합니다.</p>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">내 쪽 구덩이를 골라 시계 반대 방향으로 한 알씩 뿌립니다. 마지막 알이 내 창고에 들어가면 한 번 더, 내 빈 구덩이에 들어가면 맞은편 상대 알까지 전부 내 창고로 가져갑니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -285,6 +295,40 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      function drawRow(label, pits) {
+        const cell = 34, margin = 6;
+        const size = margin * 2 + cell * pits.length;
+        const wrap = document.createElement('div');
+        wrap.style.textAlign = 'center';
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', size); svg.setAttribute('height', margin * 2 + cell);
+        svg.setAttribute('viewBox', `0 0 ${size} ${margin * 2 + cell}`);
+        pits.forEach((n, i) => {
+          const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          c.setAttribute('cx', margin + cell * i + cell / 2); c.setAttribute('cy', margin + cell / 2); c.setAttribute('r', cell * 0.42);
+          c.setAttribute('fill', '#c99a5b'); c.setAttribute('stroke', n < 0 ? '#4a90e2' : 'none'); c.setAttribute('stroke-width', '3');
+          svg.appendChild(c);
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('x', margin + cell * i + cell / 2); t.setAttribute('y', margin + cell / 2);
+          t.setAttribute('text-anchor', 'middle'); t.setAttribute('dominant-baseline', 'central');
+          t.setAttribute('font-size', '16'); t.textContent = Math.abs(n);
+          svg.appendChild(t);
+        });
+        wrap.appendChild(svg);
+        const cap = document.createElement('div');
+        cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;max-width:' + size + 'px;';
+        cap.textContent = label;
+        wrap.appendChild(cap);
+        el.appendChild(wrap);
+      }
+      drawRow('두기 전: 마지막 알이 내 빈 구덩이(파란 테두리)에 들어감', [3, -0, 2]);
+      drawRow('포획 후: 내 알+맞은편 상대 알 전부 창고로', [3, 0, 0]);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
