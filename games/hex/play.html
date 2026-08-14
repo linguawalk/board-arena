@@ -28,6 +28,14 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>헥스 대국</h1>
+    <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기</summary>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
+        <p><b>두는 법</b>: 매 차례 빈 육각형 칸 하나에 내 돌을 놓습니다. 한 번 놓은 돌은 움직이거나 잡히지 않습니다.</p>
+        <p><b>승리 조건</b>: 빨강은 <b>위쪽 변과 아래쪽 변</b>을, 파랑은 <b>왼쪽 변과 오른쪽 변</b>을 자기 돌로 끊김 없이 이어지는 길로 연결하면 즉시 승리합니다. 무승부가 존재하지 않는 게임이라 누군가는 반드시 이깁니다.</p>
+        <div id="rule-diagrams" style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;"></div>
+      </div>
+    </details>
     <p style="color:#777;font-size:14px;">빨강은 위-아래를, 파랑은 왼쪽-오른쪽을 자신의 돌로 연결하면 승리합니다.</p>
     <div class="layout">
       <div id="board-col" class="board-col"></div>
@@ -224,6 +232,38 @@
       statusLine.textContent = '기권했습니다.';
       log('기권');
     });
+
+    function renderRuleDiagrams() {
+      const el = document.getElementById('rule-diagrams');
+      if (!el) return;
+      const n = 4, size = 16;
+      const w = size * Math.sqrt(3), h = size * 1.5;
+      const svgW = w * n + w * n / 2 + 20, svgH = h * n + 20;
+      const wrap = document.createElement('div');
+      wrap.style.textAlign = 'center';
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', svgW); svg.setAttribute('height', svgH);
+      svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+      const winPath = new Set(['1,0','1,1','2,1','2,2']);
+      for (let r = 0; r < n; r++) {
+        for (let q = 0; q < n; q++) {
+          const cx = 15 + w * q + w / 2 * r, cy = 15 + h * r;
+          const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+          poly.setAttribute('points', hexPoints(cx, cy, size - 1));
+          const key = `${q},${r}`;
+          poly.setAttribute('fill', winPath.has(key) ? '#e63946' : '#e8d9b5');
+          poly.setAttribute('stroke', '#333');
+          svg.appendChild(poly);
+        }
+      }
+      wrap.appendChild(svg);
+      const cap = document.createElement('div');
+      cap.style.cssText = 'font-size:12px;color:#666;margin-top:2px;';
+      cap.textContent = '빨강이 위-아래를 자기 돌로 연결한 예시';
+      wrap.appendChild(cap);
+      el.appendChild(wrap);
+    }
+    renderRuleDiagrams();
 
     startNewGame();
   </script>
