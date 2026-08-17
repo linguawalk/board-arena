@@ -1,0 +1,7 @@
+{
+  "name": "board-arena-ai-interpret",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}
