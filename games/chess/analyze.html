@@ -98,10 +98,22 @@
         const opt = document.createElement('option');
         opt.value = i;
         const date = new Date(g.savedAt).toLocaleString('ko-KR');
-        opt.textContent = `${date} (${g.pgn.split(' ').length}수 근처)`;
+        const moveCount = countMoves(g.pgn);
+        const moveLabel = moveCount === 0 ? '수를 두지 않고 저장됨' : `${moveCount}수`;
+        opt.textContent = `${date} (${moveLabel})`;
         reviewSelect.appendChild(opt);
       });
       return games;
+    }
+
+    function countMoves(pgn) {
+      try {
+        const tmp = new Chess();
+        tmp.load_pgn ? tmp.load_pgn(pgn) : tmp.loadPgn(pgn);
+        return tmp.history().length;
+      } catch (e) {
+        return 0;
+      }
     }
 
     let games = loadReviewList();
