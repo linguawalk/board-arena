@@ -1,0 +1,129 @@
+/* ai-interpret-panel.css
+   review-interpret-panel.js 가 생성하는 마크업에 대응하는 기본 스타일.
+   사이트 전역 톤에 맞게 색상 값은 자유롭게 교체하세요. */
+
+.ai-interpret-box {
+  border: 1px solid var(--panel-border, #333);
+  border-radius: 10px;
+  padding: 16px;
+  background: var(--panel-bg, #1e1e1e);
+  color: var(--panel-text, #eee);
+  margin-top: 16px;
+}
+
+.ai-interpret-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.ai-interpret-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.ai-interpret-credits {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.ai-interpret-tiers {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.ai-tier-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.ai-interpret-tiers-fixed {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  margin-bottom: 10px;
+}
+
+.ai-interpret-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent, #4a7cff);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ai-interpret-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ai-interpret-status {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  min-height: 1.2em;
+}
+
+.ai-interpret-result {
+  margin-top: 14px;
+}
+
+.ai-summary-text {
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.ai-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.ai-highlight-card {
+  display: flex;
+  gap: 10px;
+  border: 1px solid var(--panel-border, #333);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--panel-bg-alt, #262626);
+}
+
+.ai-highlight-board svg {
+  display: block;
+  border-radius: 4px;
+}
+
+.ai-highlight-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-highlight-move {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.ai-highlight-comment {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.ai-board-fallback {
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel-bg-alt, #262626);
+  color: #999;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
