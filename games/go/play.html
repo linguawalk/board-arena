@@ -6,41 +6,64 @@
 <title>바둑 대국 - Board Arena</title>
 <link rel="stylesheet" href="../../shared/css/common.css" />
 <link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  /* 체스 등 다른 게임 페이지와 통일: 보드는 왼쪽, 옵션 패널은 오른쪽 */
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
+  .panel label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .study-nav { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .study-nav a { display: inline-block; padding: 7px 12px; border-radius: 6px; border: 1px solid var(--accent, #4a7cff); color: var(--accent, #4a7cff); text-decoration: none; font-size: 13px; font-weight: 600; }
+  .study-nav a:hover { background: var(--accent, #4a7cff); color: #fff; }
+</style>
 </head>
 <body>
-  <main class="board-panel">
-    <div id="go-board-container" class="board-container"></div>
+  <main>
+    <h1>바둑 대국</h1>
 
-    <aside class="board-controls">
-      <h1>바둑 대국</h1>
+    <!-- TODO: 실제 파일명/경로에 맞게 href를 조정해 주세요.
+         review.html = 저장된 복기 목록/재생 페이지, quiz.html = 사활 문제 등 퀴즈 페이지 (아직 없다면 추후 생성) -->
+    <nav class="study-nav">
+      <a href="review.html">📋 내 복기 보기</a>
+      <a href="quiz.html">🧩 사활 문제 풀기</a>
+    </nav>
 
-      <label for="board-size">보드 크기</label>
-      <select id="board-size" class="board-size-select">
-        <option value="9">9 x 9</option>
-        <option value="11">11 x 11</option>
-        <option value="13">13 x 13</option>
-        <option value="15">15 x 15</option>
-        <option value="17">17 x 17</option>
-        <option value="19" selected>19 x 19 (정식)</option>
-        <option value="21">21 x 21</option>
-        <option value="23">23 x 23</option>
-        <option value="25">25 x 25</option>
-      </select>
+    <div class="layout">
+      <div id="board-col" class="board-col">
+        <div id="go-board-container" class="board-container"></div>
+      </div>
 
-      <label for="ai-level">AI 난이도</label>
-      <select id="ai-level" class="board-size-select"></select>
-      <p style="font-size:12px;color:#888;margin:0;">※ 지금은 임시 휴리스틱 AI로 급수를 실수 확률로 흉내낸 것입니다. 추후 KataGo 엔진으로 교체 예정.</p>
+      <div class="panel">
+        <label for="board-size">보드 크기</label>
+        <select id="board-size" class="board-size-select">
+          <option value="9">9 x 9</option>
+          <option value="11">11 x 11</option>
+          <option value="13">13 x 13</option>
+          <option value="15">15 x 15</option>
+          <option value="17">17 x 17</option>
+          <option value="19" selected>19 x 19 (정식)</option>
+          <option value="21">21 x 21</option>
+          <option value="23">23 x 23</option>
+          <option value="25">25 x 25</option>
+        </select>
 
-      <div id="turn-indicator">현재 차례: 흑</div>
-      <div id="capture-indicator" style="font-size:13px;color:#555;">흑의 사석: 0 · 백의 사석: 0</div>
-      <div id="ai-thinking" style="font-size:13px;color:var(--accent);display:none;">AI가 생각 중...</div>
-      <div id="move-log" style="font-size: 13px; color: #555; max-height: 200px; overflow-y: auto;"></div>
+        <label for="ai-level">AI 난이도</label>
+        <select id="ai-level" class="board-size-select"></select>
+        <p style="font-size:12px;color:#888;margin:0 0 10px;">※ 지금은 임시 휴리스틱 AI로 급수를 실수 확률로 흉내낸 것입니다. 추후 KataGo 엔진으로 교체 예정.</p>
 
-      <button id="pass-btn">패스</button>
-      <button id="resign-btn">기권</button>
-      <button id="save-review-btn">복기용으로 저장</button>
-      <div id="save-msg" style="font-size:12px;color:var(--accent);display:none;">저장됐습니다. 복기 페이지에서 확인하세요.</div>
-    </aside>
+        <button id="pass-btn">패스</button>
+        <button id="resign-btn">기권</button>
+        <button id="save-review-btn">복기용으로 저장</button>
+        <div id="save-msg" style="font-size:12px;color:var(--accent);display:none;">저장됐습니다. 복기 페이지에서 확인하세요.</div>
+
+        <div id="turn-indicator" style="font-size:15px;font-weight:600;margin:10px 0;">현재 차례: 흑</div>
+        <div id="capture-indicator" style="font-size:13px;color:#555;">흑의 사석: 0 · 백의 사석: 0</div>
+        <div id="ai-thinking" style="font-size:13px;color:var(--accent);display:none;">AI가 생각 중...</div>
+        <div id="move-log" style="font-size: 13px; color: #555; max-height: 200px; overflow-y: auto; margin-top:10px; border-top:1px solid #eee; padding-top:8px;"></div>
+      </div>
+    </div>
   </main>
 
   <script type="module">
