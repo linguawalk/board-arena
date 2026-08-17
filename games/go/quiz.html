@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>바둑 사활 문제 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/board-common.css" />
+<style>
+  /* play_go_.html과 동일한 레이아웃 규칙 재사용 */
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
+  .board-col .board-container { width: 100%; height: 100%; display: block; }
+  .panel { flex: 1; min-width: 260px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .panel button.primary { background: var(--accent, #4a7cff); color: #fff; border-color: var(--accent, #4a7cff); }
+  .panel button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .quiz-prompt { font-size: 15px; font-weight: 600; margin: 0 0 12px; }
+  .quiz-feedback { font-size: 14px; padding: 10px 12px; border-radius: 8px; margin: 10px 0; display: none; }
+  .quiz-feedback.correct { background: #eaf7ee; color: #1c7a3a; display: block; }
+  .quiz-feedback.wrong { background: #fdeceb; color: #b3261e; display: block; }
+
+  .quiz-explanation { font-size: 14px; line-height: 1.7; color: #333; margin-top: 10px; display: none; }
+  .quiz-move-comments { margin-top: 10px; display: none; }
+  .quiz-move-comment { font-size: 13px; line-height: 1.6; color: #555; margin-bottom: 6px; }
+  .quiz-move-comment b { color: #222; }
+
+  .quiz-answer-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; display: none; }
+  .quiz-answer-tabs button { font-size: 12px; padding: 5px 10px; margin: 0; }
+  .quiz-answer-tabs button.active { background: var(--accent, #4a7cff); color: #fff; border-color: var(--accent, #4a7cff); }
+
+  .quiz-nav { display:flex; gap:8px; margin-bottom:14px; }
+  .quiz-nav a { display:inline-block; padding:7px 12px; border-radius:6px; border:1px solid var(--accent,#4a7cff); color:var(--accent,#4a7cff); text-decoration:none; font-size:13px; font-weight:600; }
+  .quiz-nav a:hover { background: var(--accent,#4a7cff); color:#fff; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>바둑 사활 문제</h1>
+
+    <nav class="quiz-nav">
+      <a href="play_go_.html">◀ 대국으로 돌아가기</a>
+    </nav>
+
+    <div class="layout">
+      <div id="board-col" class="board-col">
+        <div id="go-board-container" class="board-container"></div>
+      </div>
+
+      <div class="panel">
+        <div class="quiz-prompt" id="quiz-prompt"></div>
+
+        <div id="quiz-feedback" class="quiz-feedback"></div>
+
+        <button id="reveal-btn">정답/해설 보기</button>
+        <button id="next-btn" class="primary" disabled>다음 문제</button>
+
+        <div class="quiz-answer-tabs" id="answer-tabs"></div>
+        <div class="quiz-explanation" id="quiz-explanation"></div>
+        <div class="quiz-move-comments" id="quiz-move-comments"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { GoBoard } from './js/go-board.js';
+    import { STONE } from './go-rules.js';
+
+    // ── 문제 은행 ──
+    // 지금은 예시 1문제만 하드코딩. 나중에 여러 문제를 JSON 파일 배열로 불러오도록 확장하면 됩니다.
+    const PROBLEMS = [
+      {
+        id: 'go-life-death-0001',
+        boardSize: 9,
+        initialStones: [
+          { x: 2, y: 2, color: 'white' }, { x: 3, y: 2, color: 'white' }, { x: 4, y: 2, color: 'white' },
+          { x: 2, y: 3, color: 'white' }, { x: 4, y: 3, color: 'white' },
+          { x: 1, y: 2, color: 'black' }, { x: 1, y: 3, color: 'black' },
+          { x: 2, y: 4, color: 'black' }, { x: 3, y: 4, color: 'black' }, { x: 4, y: 4, color: 'black' },
+          { x: 5, y: 2, color: 'black' }, { x: 5, y: 3, color: 'black' }
+        ],
+        toMove: 'black',
+        prompt: '흑 차례입니다. 백 대마를 잡는 첫 수는 무엇일까요?',
+        correctAnswers: [
+          {
+            label: '정수',
+            isPrimary: true,
+            sequence: [
+              { move: { x: 3, y: 3, color: 'black' }, comment: '백 궁도의 급소를 먼저 차지합니다. 이 한 점으로 백의 공간이 둘로 갈립니다.' },
+              { move: { x: 3, y: 1, color: 'white' }, comment: '백이 위쪽으로 넓히려 해도' },
+              { move: { x: 2, y: 1, color: 'black' }, comment: '흑이 계속 막으면 백은 한 집밖에 낼 수 없어 죽습니다.' }
+            ]
+          },
+          {
+            label: '변화 (같은 결과)',
+            isPrimary: false,
+            sequence: [
+              { move: { x: 3, y: 1, color: 'black' }, comment: '먼저 위쪽 급소를 눌러도 결과적으로 동일하게 백을 잡습니다. 다만 한 수가 더 필요합니다.' }
+            ]
+          }
+        ],
+        commonWrongAnswers: [
+          { move: { x: 2, y: 1 }, why: '이 수는 급소에서 벗어나 있어, 백이 (3,3)에 두면 두 집을 내며 살 수 있습니다.' }
+        ],
+        explanation: '이 문제는 백 대마의 궁도사활 문제입니다. 백은 현재 넓어 보이는 공간을 갖고 있지만, 실제로 독립된 두 집을 낼 수 있는 급소는 (3,3) 한 곳뿐입니다. 흑이 이 급소를 먼저 차지하면 백의 공간은 좌우로 갈라지고, 어느 쪽도 두 집을 만들기엔 부족합니다.'
+      }
+    ];
+
+    let problemIndex = 0;
+    let board = null;
+    let answered = false;
+    let currentAnswerTab = 0;
+
+    const container = document.getElementById('go-board-container');
+    const promptEl = document.getElementById('quiz-prompt');
+    const feedbackEl = document.getElementById('quiz-feedback');
+    const explanationEl = document.getElementById('quiz-explanation');
+    const commentsEl = document.getElementById('quiz-move-comments');
+    const tabsEl = document.getElementById('answer-tabs');
+    const revealBtn = document.getElementById('reveal-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    function toStoneColor(colorStr) {
+      return colorStr === 'black' ? STONE.BLACK : STONE.WHITE;
+    }
+
+    function loadProblem(idx) {
+      const problem = PROBLEMS[idx];
+      answered = false;
+      currentAnswerTab = problem.correctAnswers.findIndex((a) => a.isPrimary);
+      if (currentAnswerTab < 0) currentAnswerTab = 0;
+
+      container.innerHTML = '';
+      board = new GoBoard({
+        container,
+        size: problem.boardSize,
+        interactive: true,
+        onPointClick: (x, y) => handleAnswer(problem, x, y)
+      });
+      const stones = problem.initialStones.map((s) => ({ x: s.x, y: s.y, color: toStoneColor(s.color) }));
+      board.loadPosition(stones);
+
+      promptEl.textContent = problem.prompt;
+      feedbackEl.style.display = 'none';
+      explanationEl.style.display = 'none';
+      commentsEl.style.display = 'none';
+      tabsEl.style.display = 'none';
+      tabsEl.innerHTML = '';
+      revealBtn.disabled = false;
+      revealBtn.textContent = '정답/해설 보기';
+      nextBtn.disabled = true;
+    }
+
+    function handleAnswer(problem, x, y) {
+      if (answered) return; // 채점 후엔 클릭으로 재시도하지 않음 (해설 보기로 확인)
+      answered = true;
+
+      // 여러 정답 중 첫 수가 클릭 위치와 일치하는지 확인 (다중 정답 지원)
+      const matched = problem.correctAnswers.find((a) => {
+        const first = a.sequence[0].move;
+        return first.x === x && first.y === y;
+      });
+
+      const primary = problem.correctAnswers.find((a) => a.isPrimary) || problem.correctAnswers[0];
+      const primaryFirstMove = primary.sequence[0].move;
+
+      board.markAnswerFeedback(
+        { x: primaryFirstMove.x, y: primaryFirstMove.y },
+        matched ? null : { x, y }
+      );
+
+      if (matched) {
+        feedbackEl.className = 'quiz-feedback correct';
+        feedbackEl.textContent = `정답입니다! (${matched.label})`;
+        currentAnswerTab = problem.correctAnswers.indexOf(matched);
+      } else {
+        const wrongInfo = problem.commonWrongAnswers?.find((w) => w.move.x === x && w.move.y === y);
+        feedbackEl.className = 'quiz-feedback wrong';
+        feedbackEl.textContent = wrongInfo
+          ? `아쉽습니다. ${wrongInfo.why}`
+          : '아쉽습니다. 아래 "정답/해설 보기"로 정답 수순을 확인해 보세요.';
+      }
+      feedbackEl.style.display = 'block';
+
+      showExplanation(problem);
+      nextBtn.disabled = false;
+    }
+
+    function showExplanation(problem) {
+      // 초기 배치 + 선택된 정답의 수순을 합쳐서 loadPosition + setMoveNumbers로 표시
+      const answer = problem.correctAnswers[currentAnswerTab];
+      const combined = problem.initialStones.map((s) => ({ x: s.x, y: s.y, color: toStoneColor(s.color) }));
+      const moveNumbers = new Map();
+      answer.sequence.forEach((step, i) => {
+        combined.push({ x: step.move.x, y: step.move.y, color: toStoneColor(step.move.color) });
+        moveNumbers.set(`${step.move.x},${step.move.y}`, i + 1);
+      });
+      board.loadPosition(combined);
+      board.setMoveNumbers(moveNumbers);
+
+      explanationEl.textContent = problem.explanation;
+      explanationEl.style.display = 'block';
+
+      commentsEl.innerHTML = answer.sequence
+        .map((step, i) => `<div class="quiz-move-comment"><b>${i + 1}.</b> ${escapeHtml(step.comment)}</div>`)
+        .join('');
+      commentsEl.style.display = 'block';
+
+      if (problem.correctAnswers.length > 1) {
+        tabsEl.innerHTML = problem.correctAnswers
+          .map((a, i) => `<button data-idx="${i}" class="${i === currentAnswerTab ? 'active' : ''}">${escapeHtml(a.label)}</button>`)
+          .join('');
+        tabsEl.style.display = 'flex';
+        tabsEl.querySelectorAll('button').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            currentAnswerTab = Number(btn.dataset.idx);
+            showExplanation(problem);
+          });
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    revealBtn.addEventListener('click', () => {
+      const problem = PROBLEMS[problemIndex];
+      if (!answered) {
+        answered = true;
+        feedbackEl.style.display = 'none';
+        nextBtn.disabled = false;
+      }
+      showExplanation(problem);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      problemIndex = (problemIndex + 1) % PROBLEMS.length;
+      loadProblem(problemIndex);
+    });
+
+    loadProblem(problemIndex);
+  </script>
+</body>
+</html>
