@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>체스 엔진 분석 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/square-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 300px; }
+  .panel select, .panel button { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+  .panel select { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+  .nav-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .nav-row button { flex: 1; min-width: 60px; }
+  .move-strip { font-size: 13px; color: #555; line-height: 1.8; margin-bottom: 14px; max-height: 100px; overflow-y: auto; }
+  .move-strip .cur { background: var(--accent, #4a7cff); color: #fff; padding: 1px 5px; border-radius: 4px; }
+
+  .analyze-btn { width: 100%; padding: 10px; background: var(--accent, #4a7cff); color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+  .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .analyze-status { font-size: 13px; color: #888; margin-bottom: 10px; min-height: 1.2em; }
+
+  .pv-line { border: 1px solid #eee; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .pv-line .pv-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .pv-bar-bg { background: #eee; border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+  .pv-bar-fill { background: var(--accent, #4a7cff); height: 100%; }
+  .pv-moves { font-size: 12px; color: #666; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>체스 엔진 분석 (확인용)</h1>
+    <p style="font-size:13px;color:#777;margin-top:-6px;">저장된 복기를 불러와 수순을 넘기면서, 각 국면에서 엔진(Stockfish)이 계산한 후보수와 승률을 확인합니다.</p>
+
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">불러올 복기</label>
+        <select id="review-select"></select>
+
+        <div class="nav-row">
+          <button id="first-btn">⏮ 처음</button>
+          <button id="prev-btn">◀ 이전</button>
+          <button id="next-btn">다음 ▶</button>
+          <button id="last-btn">마지막 ⏭</button>
+        </div>
+
+        <div class="move-strip" id="move-strip"></div>
+
+        <button id="analyze-btn" class="analyze-btn">🔍 이 국면 분석하기</button>
+        <div class="analyze-status" id="analyze-status"></div>
+        <div id="analyze-result"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { Chess } from '../../shared/js/vendor/chess.js';
+    import { SquareBoard } from '../../shared/js/square-board.js';
+
+    const GLYPHS = {
+      wk: '♔', wq: '♕', wr: '♖', wb: '♗', wn: '♘', wp: '♙',
+      bk: '♚', bq: '♛', br: '♜', bb: '♝', bn: '♞', bp: '♟',
+    };
+
+    const boardCol = document.getElementById('board-col');
+    const reviewSelect = document.getElementById('review-select');
+    const moveStrip = document.getElementById('move-strip');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const analyzeStatus = document.getElementById('analyze-status');
+    const analyzeResult = document.getElementById('analyze-result');
+
+    let chess = new Chess();
+    let board = null;
+    let fullHistoryUci = []; // 전체 대국의 UCI 수순
+    let fullHistorySan = []; // 화면 표시용 SAN
+    let cursor = 0; // 지금 보여주는 수까지의 개수 (0 = 시작 포지션)
+
+    function squareToXY(sq) {
+      const file = sq.charCodeAt(0) - 97;
+      const rank = parseInt(sq[1], 10);
+      return { x: file, y: 8 - rank };
+    }
+    function xyToSquare(x, y) {
+      return String.fromCharCode(97 + x) + (8 - y);
+    }
+
+    function loadReviewList() {
+      const games = JSON.parse(localStorage.getItem('board-arena-chess-games') || '[]');
+      reviewSelect.innerHTML = '';
+      if (games.length === 0) {
+        reviewSelect.innerHTML = '<option>저장된 복기가 없습니다</option>';
+        return [];
+      }
+      games.forEach((g, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        const date = new Date(g.savedAt).toLocaleString('ko-KR');
+        opt.textContent = `${date} (${g.pgn.split(' ').length}수 근처)`;
+        reviewSelect.appendChild(opt);
+      });
+      return games;
+    }
+
+    let games = loadReviewList();
+
+    function loadGame(idx) {
+      const g = games[idx];
+      if (!g) return;
+      const tmp = new Chess();
+      tmp.load_pgn ? tmp.load_pgn(g.pgn) : tmp.loadPgn(g.pgn); // chess.js 버전별 메서드명 차이 대응
+      const verbose = tmp.history({ verbose: true });
+      fullHistoryUci = verbose.map((m) => m.from + m.to + (m.promotion || ''));
+      fullHistorySan = verbose.map((m) => m.san);
+      cursor = fullHistoryUci.length; // 마지막 수까지 표시
+      renderCursor();
+    }
+
+    function renderCursor() {
+      chess = new Chess();
+      for (let i = 0; i < cursor; i++) {
+        const uci = fullHistoryUci[i];
+        const from = uci.slice(0, 2), to = uci.slice(2, 4), promotion = uci.length > 4 ? uci[4] : undefined;
+        chess.move({ from, to, promotion });
+      }
+
+      if (!board) {
+        board = new SquareBoard({ container: boardCol, width: 8, height: 8, interactive: false, pieceGlyphs: GLYPHS });
+      }
+      const pieceList = [];
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+          const p = chess.get(xyToSquare(x, y));
+          if (p) pieceList.push({ x, y, piece: p.color + p.type });
+        }
+      }
+      board.pieceGlyphs = GLYPHS;
+      board.loadPosition(pieceList);
+      if (cursor > 0) {
+        const from = fullHistoryUci[cursor - 1].slice(0, 2);
+        const to = fullHistoryUci[cursor - 1].slice(2, 4);
+        board.markLastMove(squareToXY(from), squareToXY(to));
+      }
+      board.render();
+
+      moveStrip.innerHTML = fullHistorySan
+        .map((san, i) => (i === cursor - 1 ? `<span class="cur">${i + 1}.${san}</span>` : `${i + 1}.${san}`))
+        .join(' ');
+
+      analyzeResult.innerHTML = '';
+      analyzeStatus.textContent = '';
+    }
+
+    document.getElementById('first-btn').addEventListener('click', () => { cursor = 0; renderCursor(); });
+    document.getElementById('prev-btn').addEventListener('click', () => { cursor = Math.max(0, cursor - 1); renderCursor(); });
+    document.getElementById('next-btn').addEventListener('click', () => { cursor = Math.min(fullHistoryUci.length, cursor + 1); renderCursor(); });
+    document.getElementById('last-btn').addEventListener('click', () => { cursor = fullHistoryUci.length; renderCursor(); });
+    reviewSelect.addEventListener('change', () => loadGame(Number(reviewSelect.value)));
+
+    analyzeBtn.addEventListener('click', async () => {
+      analyzeBtn.disabled = true;
+      analyzeStatus.textContent = '엔진 분석 중... (몇 초 걸릴 수 있습니다)';
+      analyzeResult.innerHTML = '';
+      try {
+        const res = await fetch('/api/analyze-chess', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ moves: fullHistoryUci.slice(0, cursor), depth: 16, multipv: 3 }),
+        });
+        const data = await res.json();
+        if (data.gameOver) {
+          analyzeStatus.textContent = '게임이 종료된 국면입니다 (분석할 수가 없음).';
+          return;
+        }
+        if (data.error) {
+          analyzeStatus.textContent = `오류: ${data.error}`;
+          return;
+        }
+        analyzeStatus.textContent = `분석 완료 (최선수: ${data.bestmove})`;
+        renderAnalysis(data.lines);
+      } catch (err) {
+        analyzeStatus.textContent = `요청 실패: ${err.message}`;
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    function uciToSanPreview(uci) {
+      // 표시용: 실제 국면에 두어보지 않고 좌표만 보기 좋게(예: e2e4 -> e2→e4)
+      const from = uci.slice(0, 2), to = uci.slice(2, 4);
+      const promo = uci.length > 4 ? `=${uci[4].toUpperCase()}` : '';
+      return `${from}→${to}${promo}`;
+    }
+
+    function renderAnalysis(lines) {
+      analyzeResult.innerHTML = lines.map((l) => {
+        const scoreLabel = l.scoreMate !== null ? `메이트 ${l.scoreMate}수` : `${(l.scoreCp / 100).toFixed(2)}`;
+        const pvText = l.pv.slice(0, 6).map(uciToSanPreview).join('  ');
+        return `
+          <div class="pv-line">
+            <div class="pv-head">
+              <span>#${l.rank} ${uciToSanPreview(l.pv[0])}</span>
+              <span>${scoreLabel} · 승률 ${l.winPercent}%</span>
+            </div>
+            <div class="pv-bar-bg"><div class="pv-bar-fill" style="width:${l.winPercent}%"></div></div>
+            <div class="pv-moves">${pvText}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    if (games.length > 0) loadGame(0);
+  </script>
+</body>
+</html>
