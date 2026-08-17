@@ -1,1 +1,33 @@
+rules_version = '2';
 
+// board-arena 전용 Firestore 프로젝트에 그대로 적용하세요.
+// Firebase 콘솔 → Firestore Database → 규칙(Rules) 탭에 붙여넣기.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // users/{uid}
+    //   email, displayName, credits(number), createdAt, updatedAt
+    match /users/{uid} {
+      // 로그인한 본인만 자기 문서를 읽을 수 있음 (크레딧 잔액 확인용)
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // 클라이언트에서의 직접 쓰기는 전면 금지.
+      // 크레딧 차감/충전은 반드시 /api/interpret.js (Firebase Admin SDK, 서비스 계정)를 통해서만 수행됩니다.
+      // 관리자가 Firestore 콘솔에서 수동으로 credits 값을 편집하는 것은 콘솔 자체가
+      // Admin 권한으로 동작하므로 이 규칙과 무관하게 항상 가능합니다.
+      allow write: if false;
+    }
+
+    // interpretations/{docId}
+    //   uid, game, moves, highlightCount, tier, creditsCost, resultText, highlights[], createdAt
+    match /interpretations/{docId} {
+      // 본인이 요청한 해석 기록만 조회 가능 (마이페이지 "내 해석 히스토리" 등에 사용)
+      allow read: if request.auth != null && request.auth.uid == resource.data.uid;
+
+      // 기록 생성도 서버(Admin SDK)에서만 수행. 클라이언트가 직접 로그를 조작해
+      // 크레딧 차감 없이 해석 결과를 위조하는 것을 방지합니다.
+      allow write: if false;
+    }
+  }
+}
