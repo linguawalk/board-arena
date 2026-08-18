@@ -64,6 +64,12 @@ function runStockfish(commands, timeoutMs = 15000) {
 }
 
 module.exports = async (req, res) => {
+  // warm container 재사용 시 WASM 엔진의 내부 상태(리스너, 메모리 등)가 남아
+  // 다음 요청을 멈추게 만드는 문제가 확인되어, 응답이 실제로 전송 완료된 직후
+  // 프로세스를 강제 종료합니다. 다음 요청은 항상 새 컨테이너(cold start)에서
+  // 시작되어 조금 느려지지만 확실히 응답합니다.
+  res.on('finish', () => process.exit(0));
+
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'POST만 지원합니다' });
     return;
