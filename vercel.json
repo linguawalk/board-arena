@@ -3,7 +3,13 @@
     "api/chess-engine.js": {
       "includeFiles": "engines/chess/**"
     },
+    "api/analyze-chess.js": {
+      "includeFiles": "engines/chess/**"
+    },
     "api/variant-engine.js": {
+      "includeFiles": "engines/variant/**"
+    },
+    "api/analyze-variant.js": {
       "includeFiles": "engines/variant/**"
     }
   }
