@@ -1,6 +1,10 @@
 // api/chess-engine.js
 // Vercel 서버리스 함수: 요청마다 Stockfish WASM을 새로 초기화해서(상태 없음)
 // 지금까지의 수순을 반영하고 다음 최선의 수를 반환한다.
+//
+// [수정] bestmove를 받은 뒤 UCI 표준 종료 명령 'quit'을 추가로 보내서
+// 엔진 내부 탐색 스레드/상태가 정리되도록 함. (warm container 재사용 시
+// 메모리가 누적되는 문제의 근본 해결은 아닐 수 있지만, 프로토콜상 안전한 조치)
 
 // Node 18+의 전역 fetch가 emscripten 로더의 로컬 파일 로딩과 충돌하는 문제 회피
 delete global.fetch;
@@ -39,6 +43,11 @@ function runStockfish(commands, timeoutMs = 10000) {
         for (const c of commands) {
           engine.sendCommand(c);
         }
+        // bestmove 수신 후 엔진에 종료를 알림 (UCI 표준 명령)
+        // finish()가 이미 console.log를 원상복구했을 수 있으니 별도 타이머로 살짝 지연
+        setTimeout(() => {
+          try { engine.sendCommand('quit'); } catch (e) { /* 무시 */ }
+        }, 50);
       })
       .catch((err) => {
         finish(() => reject(err));
