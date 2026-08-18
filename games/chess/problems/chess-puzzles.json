@@ -6,6 +6,7 @@
     "solution": ["e2e6", "f7f8", "e6f7"],
     "rating": 1576,
     "themes": ["mate", "mateIn2", "middlegame"],
+    "why": "흑 왕이 f7으로 나온 순간, 백 퀸이 e6에서 체크(Qxe6+)를 걸며 폰까지 잡습니다. 흑 왕은 갈 곳이 f8 한 칸뿐이라 강제로 물러날 수밖에 없고, 그 다음 Qf7이 외통입니다 — f8의 왕이 도망갈 수 있는 칸(e8, e7, g8)이 모두 자기 편 기물이나 백의 다른 기물 통제 아래 있어서 빠져나갈 곳이 없습니다.",
     "sourceUrl": "https://lichess.org/training/000hf"
   },
   {
@@ -15,6 +16,7 @@
     "solution": ["d6h2"],
     "rating": 602,
     "themes": ["mate", "mateIn1", "kingsideAttack"],
+    "why": "백 왕이 자기 폰(g2, h2)에 둘러싸여 코너에 갇혀 있는 상태입니다. 흑 퀸이 h2로 들어가 체크를 걸면, 이 퀸은 g4의 흑 나이트가 지켜주고 있어서 백 왕이 잡을 수도 없고, 막을 기물도 도망갈 칸도 없어 그대로 외통입니다.",
     "sourceUrl": "https://lichess.org/training/000rZ"
   },
   {
@@ -24,6 +26,7 @@
     "solution": ["f1f8"],
     "rating": 598,
     "themes": ["mate", "mateIn1", "middlegame"],
+    "why": "흑 왕이 방금 g8으로 나왔는데, 자기 편 폰(g7, h7)에 막혀 옆으로 피할 칸이 없습니다. 백 룩이 f1에서 f8로 들어가 마지막 줄(백랭크)을 따라 체크를 걸면, 아무도 막거나 잡을 수 없어 그대로 외통입니다.",
     "sourceUrl": "https://lichess.org/training/001KR"
   },
   {
@@ -33,6 +36,7 @@
     "solution": ["b8g3"],
     "rating": 1116,
     "themes": ["mate", "mateIn1", "master"],
+    "why": "백 왕이 방금 f2로 나왔는데, 이 순간 h2의 흑 비숍이 이미 대각선을 따라 왕 주변을 노리고 있는 상태였습니다. 흑 퀸이 b8에서 g3까지 한 번에 들어가면, 비숍의 지원을 받으며 체크를 거는 동시에 왕 주변 도피처를 모두 막아버려 외통이 됩니다.",
     "sourceUrl": "https://lichess.org/training/002HE"
   },
   {
@@ -42,6 +46,7 @@
     "solution": ["c2h7"],
     "rating": 1020,
     "themes": ["mate", "mateIn1", "kingsideAttack"],
+    "why": "흑 왕이 g8에 있고 h7의 폰이 유일한 방패인데, 백 퀸이 c2에서 h7까지 대각선으로 곧장 들어가 그 폰을 잡으며 체크를 겁니다. h7은 g5의 나이트가 지원하고 있어 왕이 되잡을 수 없고, 왕이 도망갈 칸(g8 주변)도 자기 폰들에 막혀 있어 외통입니다.",
     "sourceUrl": "https://lichess.org/training/003AX"
   },
   {
@@ -51,6 +56,7 @@
     "solution": ["d4a1", "a7a5", "f1c1"],
     "rating": 2619,
     "themes": ["advantage", "endgame", "pin"],
+    "why": "당장 잡히는 기물은 없지만, 백 퀸을 굳이 위험 지대(d4)에 놔둘 이유도 없습니다. Qa1으로 물러나면 첫 줄에서 안전하게 대각선을 계속 노려보며, 다음 수로 Rc1을 두어 c파일에 있는 흑 퀸을 룩으로 압박할 준비를 할 수 있습니다. 화려한 한 수보다 '위험을 없애고 다음 압박을 준비'하는 조용한 최선수입니다.",
     "sourceUrl": "https://lichess.org/training/0018S"
   },
   {
@@ -60,6 +66,7 @@
     "solution": ["d3c4", "b6c4", "d1a4", "d8d7", "a4c4"],
     "rating": 1522,
     "themes": ["advantage", "fork", "middlegame"],
+    "why": "교환이 오간 뒤 나이트가 c4에 도착하면, 이 나이트가 백의 비숍(e3)과 폰(b2)을 동시에 노리는 자리에 섭니다(포크). 백은 어느 한쪽을 지키면 다른 쪽을 내줘야 하는데, 실제로는 퀸이 나이트를 잡아내며(Qa4+ 이후 Qxc4) 정리하지만, 그 과정에서 흑이 기물 우세를 챙기게 됩니다.",
     "sourceUrl": "https://lichess.org/training/0017R"
   },
   {
@@ -69,6 +76,7 @@
     "solution": ["e8e1", "g1f2", "e1f1"],
     "rating": 1363,
     "themes": ["mate", "mateIn2", "endgame", "operaMate"],
+    "why": "흑 룩이 첫 줄로 들어가 체크(Re1+)를 걸면 백 왕은 f2로 나올 수밖에 없습니다(다른 곳은 룩이나 비숍이 막고 있음). 그다음 Rf1이 다시 체크인데, 왕이 f2에서 갈 수 있는 칸이 전부 흑의 비숍(b5)과 룩의 통제 아래 있어 빠져나갈 곳이 없어 외통입니다.",
     "sourceUrl": "https://lichess.org/training/000Zo"
   },
   {
@@ -78,6 +86,7 @@
     "solution": ["d1d8", "f6e8", "d8e8"],
     "rating": 538,
     "themes": ["mate", "mateIn2", "backRankMate"],
+    "why": "흑 왕이 첫 줄(백랭크)에 갇혀 있고 자기 폰(f7,g7,h7)이 도망갈 칸을 다 막고 있습니다. 백 룩이 d8로 들어가 체크를 걸면 흑은 나이트로 막을 수밖에 없는데(Ne8), 룩이 그 나이트까지 잡으며(Rxe8#) 그대로 외통이 됩니다 — 전형적인 백랭크메이트입니다.",
     "sourceUrl": "https://lichess.org/training/0030b"
   },
   {
@@ -87,6 +96,7 @@
     "solution": ["f8e8", "c6e8", "e5e8"],
     "rating": 2372,
     "themes": ["advantage", "middlegame", "quietMove"],
+    "why": "흑이 룩을 e8로 물려도(조용한 수처럼 보이지만) 백 퀸이 그 룩을 잡으며 체크를 걸 수밖에 없는 상황을 만들어 놓은 것이 핵심입니다. 백 퀸이 Qxe8+로 잡으면, 흑 퀸이 즉시 Qxe8로 되잡아 결과적으로 흑이 기물 교환에서 이득을 봅니다.",
     "sourceUrl": "https://lichess.org/training/002mG"
   }
 ]
