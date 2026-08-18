@@ -15,6 +15,7 @@
 
   .quiz-prompt { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
   .quiz-meta { font-size: 12px; color: #888; margin-bottom: 12px; }
+  .quiz-why { font-size: 14px; line-height: 1.7; color: #333; background: #f7f7f7; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }
   .quiz-feedback { font-size: 14px; padding: 10px 12px; border-radius: 8px; margin: 10px 0; display: none; }
   .quiz-feedback.correct { background: #eaf7ee; color: #1c7a3a; display: block; }
   .quiz-feedback.wrong { background: #fdeceb; color: #b3261e; display: block; }
@@ -42,6 +43,8 @@
         <div class="quiz-prompt" id="quiz-prompt"></div>
         <div class="quiz-meta" id="quiz-meta"></div>
 
+        <div class="quiz-why" id="quiz-why" style="display:none;"></div>
+
         <div class="quiz-feedback" id="quiz-feedback"></div>
 
         <div class="nav-row">
@@ -67,6 +70,7 @@
     const boardCol = document.getElementById('board-col');
     const promptEl = document.getElementById('quiz-prompt');
     const metaEl = document.getElementById('quiz-meta');
+    const whyEl = document.getElementById('quiz-why');
     const feedbackEl = document.getElementById('quiz-feedback');
     const sourceEl = document.getElementById('quiz-source');
     const hintBtn = document.getElementById('hint-btn');
@@ -131,6 +135,7 @@
       promptEl.textContent = `${solverColor === 'w' ? '백' : '흑'} 차례입니다. 최선의 수를 찾아보세요.`;
       metaEl.textContent = `난이도(레이팅) ${problem.rating} · 테마: ${problem.themes.join(', ')}`;
       feedbackEl.style.display = 'none';
+      whyEl.style.display = 'none';
       sourceEl.innerHTML = `출처: <a href="${problem.sourceUrl}" target="_blank" rel="noopener">Lichess 원본 문제</a> (CC0)`;
       nextBtn.disabled = true;
     }
@@ -184,6 +189,7 @@
           feedbackEl.textContent = '정답입니다! 🎉';
           feedbackEl.style.display = 'block';
           nextBtn.disabled = false;
+          revealWhy(problem);
         } else {
           // 상대의 응수를 자동 재생
           const oppMove = problem.solution[solveStep];
@@ -198,6 +204,7 @@
             solved = true;
             nextBtn.disabled = false;
             feedbackEl.textContent = '정답입니다! 🎉';
+            revealWhy(problem);
           }
         }
       } else {
@@ -219,6 +226,11 @@
       feedbackEl.style.display = 'block';
     });
 
+    function revealWhy(problem) {
+      whyEl.textContent = `💡 ${problem.why}`;
+      whyEl.style.display = 'block';
+    }
+
     skipBtn.addEventListener('click', () => {
       const problem = PROBLEMS[problemIndex];
       feedbackEl.className = 'quiz-feedback wrong';
@@ -226,6 +238,7 @@
       feedbackEl.style.display = 'block';
       solved = true;
       nextBtn.disabled = false;
+      revealWhy(problem);
     });
 
     nextBtn.addEventListener('click', () => {
