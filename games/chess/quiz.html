@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>체스 퀴즈 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/square-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 280px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .panel button.primary { background: var(--accent, #4a7cff); color: #fff; border-color: var(--accent, #4a7cff); }
+
+  .quiz-prompt { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+  .quiz-meta { font-size: 12px; color: #888; margin-bottom: 12px; }
+  .quiz-feedback { font-size: 14px; padding: 10px 12px; border-radius: 8px; margin: 10px 0; display: none; }
+  .quiz-feedback.correct { background: #eaf7ee; color: #1c7a3a; display: block; }
+  .quiz-feedback.wrong { background: #fdeceb; color: #b3261e; display: block; }
+  .quiz-source { font-size: 12px; color: #999; margin-top: 14px; }
+  .quiz-source a { color: var(--accent, #4a7cff); }
+
+  .nav-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .quiz-nav-top { display:flex; gap:8px; margin-bottom:14px; }
+  .quiz-nav-top a { display:inline-block; padding:7px 12px; border-radius:6px; border:1px solid var(--accent,#4a7cff); color:var(--accent,#4a7cff); text-decoration:none; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>체스 퀴즈</h1>
+    <p style="font-size:13px;color:#777;margin-top:-6px;">Lichess 퍼즐 데이터베이스(CC0)에서 가져온, 실제 대국에서 나온 검증된 문제입니다.</p>
+
+    <nav class="quiz-nav-top">
+      <a href="play.html">◀ 대국으로 돌아가기</a>
+    </nav>
+
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+
+      <div class="panel">
+        <div class="quiz-prompt" id="quiz-prompt"></div>
+        <div class="quiz-meta" id="quiz-meta"></div>
+
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+
+        <div class="nav-row">
+          <button id="hint-btn">힌트 (첫 수만)</button>
+          <button id="skip-btn">건너뛰기</button>
+          <button id="next-btn" class="primary" disabled>다음 문제</button>
+        </div>
+
+        <div class="quiz-source" id="quiz-source"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { Chess } from '../../shared/js/vendor/chess.js';
+    import { SquareBoard } from '../../shared/js/square-board.js';
+
+    const GLYPHS = {
+      wk: '♔', wq: '♕', wr: '♖', wb: '♗', wn: '♘', wp: '♙',
+      bk: '♚', bq: '♛', br: '♜', bb: '♝', bn: '♞', bp: '♟',
+    };
+
+    const boardCol = document.getElementById('board-col');
+    const promptEl = document.getElementById('quiz-prompt');
+    const metaEl = document.getElementById('quiz-meta');
+    const feedbackEl = document.getElementById('quiz-feedback');
+    const sourceEl = document.getElementById('quiz-source');
+    const hintBtn = document.getElementById('hint-btn');
+    const skipBtn = document.getElementById('skip-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    let PROBLEMS = [];
+    let problemIndex = 0;
+    let chess = new Chess();
+    let board = null;
+    let solveStep = 0;      // 지금까지 맞춘 정답 수 (0 = 아직 없음)
+    let solved = false;
+    let selectedSquare = null;
+    let solverColor = null; // 이 퍼즐에서 사람이 두어야 하는 색
+
+    function squareToXY(sq) {
+      const file = sq.charCodeAt(0) - 97;
+      const rank = parseInt(sq[1], 10);
+      return { x: file, y: 8 - rank };
+    }
+    function xyToSquare(x, y) {
+      return String.fromCharCode(97 + x) + (8 - y);
+    }
+
+    function renderBoard() {
+      const pieceList = [];
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+          const p = chess.get(xyToSquare(x, y));
+          if (p) pieceList.push({ x, y, piece: p.color + p.type });
+        }
+      }
+      board.pieceGlyphs = GLYPHS;
+      board.loadPosition(pieceList);
+      board.render();
+    }
+
+    function legalMovesFor(square) {
+      return chess.moves({ square, verbose: true });
+    }
+
+    function loadProblem(idx) {
+      const problem = PROBLEMS[idx];
+      chess = new Chess();
+      chess.load ? chess.load(problem.fen) : chess.load_fen ? chess.load_fen(problem.fen) : null;
+
+      // 세팅 수(상대가 이미 둔 수)를 자동 재생
+      const setup = problem.setupMove;
+      chess.move({ from: setup.slice(0, 2), to: setup.slice(2, 4), promotion: setup[4] });
+
+      solverColor = chess.turn(); // 이제부터 사람이 둘 차례의 색
+      solveStep = 0;
+      solved = false;
+      selectedSquare = null;
+
+      if (!board) {
+        board = new SquareBoard({ container: boardCol, width: 8, height: 8, interactive: true, onSquareClick: handleSquareClick, pieceGlyphs: GLYPHS });
+      }
+      renderBoard();
+      board.setSelection(null, []);
+
+      promptEl.textContent = `${solverColor === 'w' ? '백' : '흑'} 차례입니다. 최선의 수를 찾아보세요.`;
+      metaEl.textContent = `난이도(레이팅) ${problem.rating} · 테마: ${problem.themes.join(', ')}`;
+      feedbackEl.style.display = 'none';
+      sourceEl.innerHTML = `출처: <a href="${problem.sourceUrl}" target="_blank" rel="noopener">Lichess 원본 문제</a> (CC0)`;
+      nextBtn.disabled = true;
+    }
+
+    function handleSquareClick(x, y) {
+      if (solved) return;
+      const clickedSquare = xyToSquare(x, y);
+
+      if (selectedSquare) {
+        const legalMoves = legalMovesFor(selectedSquare);
+        const target = legalMoves.find((m) => m.to === clickedSquare);
+        if (target) {
+          attemptMove(selectedSquare, clickedSquare, target.flags.includes('p') ? 'q' : undefined);
+          selectedSquare = null;
+          board.setSelection(null, []);
+          return;
+        }
+      }
+
+      const piece = chess.get(clickedSquare);
+      if (piece && piece.color === solverColor) {
+        selectedSquare = clickedSquare;
+        const legalMoves = legalMovesFor(clickedSquare);
+        board.setSelection(squareToXY(clickedSquare), legalMoves.map((m) => squareToXY(m.to)));
+      } else {
+        selectedSquare = null;
+        board.setSelection(null, []);
+      }
+    }
+
+    function attemptMove(from, to, promotion) {
+      const problem = PROBLEMS[problemIndex];
+      const expected = problem.solution[solveStep];
+      const played = from + to + (promotion || '');
+
+      // mateIn1 문제는 체크메이트를 거는 어떤 수든 정답으로 인정 (Lichess 규칙과 동일)
+      const isMateIn1 = problem.themes.includes('mateIn1') && solveStep === 0;
+
+      const moveObj = chess.move({ from, to, promotion });
+      if (!moveObj) return; // 원칙적으로 여기 안 옴 (legalMoves에서 걸러짐)
+
+      const isCorrect = isMateIn1 ? chess.in_checkmate?.() ?? chess.isCheckmate?.() : played === expected;
+
+      if (isCorrect) {
+        solveStep++;
+        renderBoard();
+
+        if (solveStep >= problem.solution.length) {
+          solved = true;
+          feedbackEl.className = 'quiz-feedback correct';
+          feedbackEl.textContent = '정답입니다! 🎉';
+          feedbackEl.style.display = 'block';
+          nextBtn.disabled = false;
+        } else {
+          // 상대의 응수를 자동 재생
+          const oppMove = problem.solution[solveStep];
+          chess.move({ from: oppMove.slice(0, 2), to: oppMove.slice(2, 4), promotion: oppMove[4] });
+          solveStep++;
+          renderBoard();
+          feedbackEl.className = 'quiz-feedback correct';
+          feedbackEl.textContent = '맞았습니다! 상대의 응수 이후, 계속 최선수를 찾아보세요.';
+          feedbackEl.style.display = 'block';
+
+          if (solveStep >= problem.solution.length) {
+            solved = true;
+            nextBtn.disabled = false;
+            feedbackEl.textContent = '정답입니다! 🎉';
+          }
+        }
+      } else {
+        // 오답: 되돌리고 안내
+        chess.undo();
+        feedbackEl.className = 'quiz-feedback wrong';
+        feedbackEl.textContent = '아쉽습니다. 다시 생각해보세요. (힌트 버튼을 눌러도 됩니다)';
+        feedbackEl.style.display = 'block';
+      }
+    }
+
+    hintBtn.addEventListener('click', () => {
+      const problem = PROBLEMS[problemIndex];
+      const expected = problem.solution[solveStep];
+      if (!expected) return;
+      const from = expected.slice(0, 2);
+      feedbackEl.className = 'quiz-feedback correct';
+      feedbackEl.textContent = `힌트: ${from}에 있는 기물을 움직여보세요.`;
+      feedbackEl.style.display = 'block';
+    });
+
+    skipBtn.addEventListener('click', () => {
+      const problem = PROBLEMS[problemIndex];
+      feedbackEl.className = 'quiz-feedback wrong';
+      feedbackEl.textContent = `정답 수순: ${problem.solution.join(' → ')}`;
+      feedbackEl.style.display = 'block';
+      solved = true;
+      nextBtn.disabled = false;
+    });
+
+    nextBtn.addEventListener('click', () => {
+      problemIndex = (problemIndex + 1) % PROBLEMS.length;
+      loadProblem(problemIndex);
+    });
+
+    async function init() {
+      try {
+        const res = await fetch('./problems/chess-puzzles.json');
+        if (!res.ok) throw new Error(`문제 파일을 불러오지 못했습니다 (${res.status})`);
+        PROBLEMS = await res.json();
+        loadProblem(0);
+      } catch (err) {
+        promptEl.textContent = `문제를 불러오는 중 오류: ${err.message}`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
