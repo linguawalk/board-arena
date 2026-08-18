@@ -16,7 +16,7 @@ const SUPPORTED_VARIANTS = new Set([
   'kingofthehill', '3check', 'atomic', 'crazyhouse', 'horde', 'racingkings', 'fischerandom',
 ]);
 
-function runFairyAnalysis(commands, timeoutMs = 15000) {
+function runFairyAnalysis(commands, timeoutMs = 20000) {
   return new Promise((resolve, reject) => {
     let settled = false;
     const linesByRank = new Map();
@@ -79,7 +79,7 @@ module.exports = async (req, res) => {
       `setoption name MultiPV value ${multipv}`,
       'isready',
       positionCmd,
-      `go depth ${depth}`,
+      `go depth ${depth} movetime 12000`,
     ];
     const result = await runFairyAnalysis(commands);
     if (!result.bestmove || result.bestmove === '(none)') { res.status(200).json({ gameOver: true }); return; }

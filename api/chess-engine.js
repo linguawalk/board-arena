@@ -13,7 +13,7 @@ const path = require('path');
 const initEngine = require(path.join(__dirname, '..', 'engines', 'chess', 'sf-loader.js'));
 const ENGINE_PATH = path.join(__dirname, '..', 'engines', 'chess', 'stockfish-18-lite-single.js');
 
-function runStockfish(commands, timeoutMs = 10000) {
+function runStockfish(commands, timeoutMs = 15000) {
   return new Promise((resolve, reject) => {
     let settled = false;
     const originalLog = console.log;
@@ -68,7 +68,7 @@ module.exports = async (req, res) => {
       ? `position fen ${fen}${moves.length ? ' moves ' + moves.join(' ') : ''}`
       : `position startpos${moves.length ? ' moves ' + moves.join(' ') : ''}`;
 
-    const commands = ['uci', 'isready', positionCmd, `go depth ${depth}`];
+    const commands = ['uci', 'isready', positionCmd, `go depth ${depth} movetime 8000`];
 
     const bestmove = await runStockfish(commands);
 

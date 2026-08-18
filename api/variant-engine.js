@@ -12,7 +12,7 @@ const SUPPORTED_VARIANTS = new Set([
   'kingofthehill', '3check', 'atomic', 'crazyhouse', 'horde', 'racingkings', 'fischerandom',
 ]);
 
-function runFairyStockfish(commands, timeoutMs = 10000) {
+function runFairyStockfish(commands, timeoutMs = 15000) {
   return new Promise((resolve, reject) => {
     let settled = false;
     const timer = setTimeout(() => {
@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
     const positionCmd = fen
       ? `position fen ${fen}${moves.length ? ' moves ' + moves.join(' ') : ''}`
       : `position startpos${moves.length ? ' moves ' + moves.join(' ') : ''}`;
-    const commands = ['uci', `setoption name UCI_Variant value ${variant}`, 'isready', positionCmd, `go depth ${depth}`];
+    const commands = ['uci', `setoption name UCI_Variant value ${variant}`, 'isready', positionCmd, `go depth ${depth} movetime 8000`];
     const bestmove = await runFairyStockfish(commands);
     if (!bestmove || bestmove === '(none)') { res.status(200).json({ gameOver: true }); return; }
     res.status(200).json({ uci: bestmove });

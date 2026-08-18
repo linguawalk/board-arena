@@ -18,7 +18,7 @@ const ENGINE_PATH = path.join(__dirname, '..', 'engines', 'chess', 'stockfish-18
  * UCI 엔진에 명령을 보내고, 'bestmove'가 나올 때까지 모든 'info' 라인을 수집해서
  * multipv 순위별 최신 평가값/후보수를 반환한다.
  */
-function runAnalysis(commands, multipv, timeoutMs = 15000) {
+function runAnalysis(commands, multipv, timeoutMs = 20000) {
   return new Promise((resolve, reject) => {
     let settled = false;
     const originalLog = console.log;
@@ -89,7 +89,7 @@ module.exports = async (req, res) => {
       `setoption name MultiPV value ${multipv}`,
       'isready',
       positionCmd,
-      `go depth ${depth}`,
+      `go depth ${depth} movetime 12000`,
     ];
 
     const result = await runAnalysis(commands, multipv);
