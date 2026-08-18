@@ -32,15 +32,22 @@ function runStockfish(commands, timeoutMs = 15000) {
 
     console.log = (...args) => {
       const line = args.join(' ');
+      // [임시 진단] 실제로 어떤 줄이 오는지 원래 console.log로도 남김 (Vercel Logs에서 확인용)
+      originalLog('[ENGINE OUT]', line);
       if (line.startsWith('bestmove')) {
         const bestmove = line.split(' ')[1];
         finish(() => resolve(bestmove));
       }
     };
 
+    // [임시 진단] 명령을 실제로 보내기 직전/직후도 로그로 남김
+    originalLog('[ENGINE CMDS]', JSON.stringify(commands));
+
     initEngine(ENGINE_PATH)
       .then((engine) => {
+        originalLog('[ENGINE] 로드 완료, 명령 전송 시작');
         for (const c of commands) {
+          originalLog('[ENGINE SEND]', c);
           engine.sendCommand(c);
         }
         // bestmove 수신 후 엔진에 종료를 알림 (UCI 표준 명령)
@@ -50,6 +57,7 @@ function runStockfish(commands, timeoutMs = 15000) {
         }, 50);
       })
       .catch((err) => {
+        originalLog('[ENGINE] 로드 자체 실패:', err && err.message);
         finish(() => reject(err));
       });
   });
