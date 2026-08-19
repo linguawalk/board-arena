@@ -195,10 +195,10 @@
     let handState = {}; // { 'S': 2, 'r': 1, ... }
 
     function parseHandString(fen) {
-      const parts = fen.split(' ');
-      const handStr = parts[2] || '-';
+      const bracketMatch = fen.split(' ')[0].match(/\[([^\]]*)\]/);
+      const handStr = bracketMatch ? bracketMatch[1] : '';
       const hand = {};
-      if (handStr === '-') return hand;
+      if (!handStr) return hand;
       let i = 0;
       while (i < handStr.length) {
         let numStr = '';
@@ -339,8 +339,6 @@
 
       promptEl.textContent = '공격측 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.';
       metaEl.textContent = `난이도: ${problem.difficulty}수 외통 · 유형: ${problem.themes.map((t) => THEME_LABELS[t] || t).join(', ')}`;
-      const legalNow = board.legalMoves().split(' ').filter((m) => m.length > 0);
-      metaEl.textContent += ` [진단: fen()=${board.fen()} | 합법수 ${legalNow.length}개, 예) ${legalNow.slice(0, 5).join(', ')}]`;
       logEl.innerHTML = '';
       summaryEl.style.display = 'none';
       feedbackEl.style.display = 'none';
