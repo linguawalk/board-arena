@@ -264,7 +264,14 @@
             selectedDropPiece = letter.toUpperCase();
             [...handStrip.querySelectorAll('.hand-piece-btn')].forEach((b) => b.classList.remove('selected'));
             btn.classList.add('selected');
+            const allLegal = board.legalMoves().split(' ').filter((m) => m.length > 0);
             const drops = legalDropsForPiece(selectedDropPiece);
+            // [임시 진단] 실제 엔진 출력 형식을 눈으로 확인하기 위해 표시
+            const diagEl = document.getElementById('error-overlay');
+            diagEl.style.display = 'block';
+            diagEl.style.background = '#eef4ff';
+            diagEl.style.color = '#1a3d7a';
+            diagEl.textContent = `[진단] 전체 합법수(${allLegal.length}개): ${allLegal.join(' ')}\n[진단] "${selectedDropPiece}" 드롭으로 파싱된 것: ${drops.length}개 - ${JSON.stringify(drops)}`;
             ui.setSelection(null, drops.map((d) => squareToXY(d.to)));
           });
           myRow.appendChild(btn);
