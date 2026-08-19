@@ -188,6 +188,26 @@
       return a.from === b.from && a.to === b.to && !!a.promote === !!b.promote;
     }
 
+    // ffish의 fen() 손패 직렬화에 의존하지 않고, 이미 검증된 문제 데이터(sfen)에서 초기 손패를
+    // 직접 파싱한 뒤, 매 수마다 직접 갱신합니다 (드롭=차감, 캡처=상대 손패에 추가).
+    let handState = {}; // { 'S': 2, 'r': 1, ... }
+
+    function parseHandString(fen) {
+      const parts = fen.split(' ');
+      const handStr = parts[2] || '-';
+      const hand = {};
+      if (handStr === '-') return hand;
+      let i = 0;
+      while (i < handStr.length) {
+        let numStr = '';
+        while (i < handStr.length && /[0-9]/.test(handStr[i])) { numStr += handStr[i]; i++; }
+        const letter = handStr[i];
+        const count = numStr ? parseInt(numStr, 10) : 1;
+        hand[letter] = (hand[letter] || 0) + count;
+        i++;
+      }
+      return hand;
+    }
     function parseFenPieces(fen) {
       const rows = fen.split(' ')[0].split('/');
       const pieces = [];
@@ -213,15 +233,8 @@
     }
 
     function renderHand() {
-      const parts = board.fen().split(' ');
-      const handField = parts[2];
       handStrip.innerHTML = '';
-      if (!handField || handField === '-') {
-        handStrip.innerHTML = '<div>내 손패: (없음)</div><div style="color:#999;">상대 손패: (없음)</div>';
-        return;
-      }
       const isHumanUpper = solverColor === 'w';
-      const matches = [...handField.matchAll(/(\d*)([A-Za-z])/g)];
 
       const myRow = document.createElement('div');
       myRow.style.marginBottom = '6px';
@@ -237,9 +250,10 @@
       oppRow.appendChild(oppLabel);
 
       let myCount = 0, oppCount = 0;
-      for (const [, countStr, letter] of matches) {
+      for (const letter of Object.keys(handState)) {
+        const count = handState[letter];
+        if (!count) continue;
         const isUpper = letter === letter.toUpperCase();
-        const count = countStr ? parseInt(countStr, 10) : 1;
         if (isUpper === isHumanUpper) {
           myCount++;
           const btn = document.createElement('button');
@@ -302,6 +316,7 @@
       if (board) board.delete();
       board = new ffish.Board('shogi', problem.sfen);
       solverColor = board.turn() ? 'w' : 'b';
+      handState = parseHandString(problem.sfen);
       solveStep = 0;
       solved = false;
       selectedSquare = null;
@@ -384,6 +399,21 @@
       // (드롭 구분자 '*'/'@' 등 표기 차이에 안전하게 대응하기 위함)
       const all = board.legalMoves().split(' ').filter((m) => m.length > 0);
       const match = all.find((m) => movesEqual(parseUsiMove(m), structuredMove));
+
+      // handState를 직접 갱신 (엔진의 fen() 손패 직렬화에 기대지 않음)
+      const mover = board.turn() ? 'w' : 'b';
+      if (structuredMove.type === 'drop') {
+        const key = mover === 'w' ? structuredMove.piece : structuredMove.piece.toLowerCase();
+        handState[key] = (handState[key] || 0) - 1;
+      } else {
+        const captured = parseFenPieces(board.fen()).find((p) => xyToSquare(p.x, p.y) === structuredMove.to);
+        if (captured) {
+          const baseLetter = captured.piece.replace('+', '').toUpperCase();
+          const key = mover === 'w' ? baseLetter : baseLetter.toLowerCase();
+          handState[key] = (handState[key] || 0) + 1;
+        }
+      }
+
       board.push(match);
       return match;
     }
