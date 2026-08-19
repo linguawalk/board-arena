@@ -322,7 +322,19 @@
     function loadProblem(idx) {
       const problem = FILTERED[idx];
       if (board) board.delete();
-      board = new ffish.Board('shogi', problem.sfen);
+      board = new ffish.Board('shogi');
+      const validation = ffish.validateFen(problem.sfen, 'shogi');
+      if (validation !== 1) {
+        promptEl.textContent = `[진단] FEN 검증 실패 (코드 ${validation}): ${problem.sfen}`;
+        return;
+      }
+      board.setFen(problem.sfen);
+      // [임시 진단] 실제로 쇼기로 인식됐는지 확인
+      const diagEl = document.getElementById('error-overlay');
+      diagEl.style.display = 'block';
+      diagEl.style.background = '#eef4ff';
+      diagEl.style.color = '#1a3d7a';
+      diagEl.textContent = `[진단] setFen 이후 fen(): ${board.fen()}\n[진단] setFen 이후 legalMoves(): ${board.legalMoves()}`;
       solverColor = board.turn() ? 'w' : 'b';
       handState = parseHandString(problem.sfen);
       solveStep = 0;
