@@ -216,28 +216,56 @@
       const parts = board.fen().split(' ');
       const handField = parts[2];
       handStrip.innerHTML = '';
-      if (!handField || handField === '-') { handStrip.textContent = ''; return; }
+      if (!handField || handField === '-') {
+        handStrip.innerHTML = '<div>내 손패: (없음)</div><div style="color:#999;">상대 손패: (없음)</div>';
+        return;
+      }
       const isHumanUpper = solverColor === 'w';
       const matches = [...handField.matchAll(/(\d*)([A-Za-z])/g)];
-      let hasAny = false;
+
+      const myRow = document.createElement('div');
+      myRow.style.marginBottom = '6px';
+      const myLabel = document.createElement('span');
+      myLabel.style.cssText = 'font-size:12px;color:#555;margin-right:6px;';
+      myLabel.textContent = '내 손패:';
+      myRow.appendChild(myLabel);
+
+      const oppRow = document.createElement('div');
+      const oppLabel = document.createElement('span');
+      oppLabel.style.cssText = 'font-size:12px;color:#999;margin-right:6px;';
+      oppLabel.textContent = '상대 손패:';
+      oppRow.appendChild(oppLabel);
+
+      let myCount = 0, oppCount = 0;
       for (const [, countStr, letter] of matches) {
         const isUpper = letter === letter.toUpperCase();
-        if (isUpper !== isHumanUpper) continue;
-        hasAny = true;
         const count = countStr ? parseInt(countStr, 10) : 1;
-        const btn = document.createElement('button');
-        btn.className = 'hand-piece-btn';
-        btn.textContent = `${GLYPHS[letter.toUpperCase()]}${count > 1 ? '×' + count : ''}`;
-        btn.addEventListener('click', () => {
-          selectedSquare = null;
-          selectedDropPiece = letter.toUpperCase();
-          [...handStrip.children].forEach((b) => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          ui.setSelection(null, []);
-        });
-        handStrip.appendChild(btn);
+        if (isUpper === isHumanUpper) {
+          myCount++;
+          const btn = document.createElement('button');
+          btn.className = 'hand-piece-btn';
+          btn.textContent = `${GLYPHS[letter.toUpperCase()]}${count > 1 ? '×' + count : ''}`;
+          btn.addEventListener('click', () => {
+            selectedSquare = null;
+            selectedDropPiece = letter.toUpperCase();
+            [...handStrip.querySelectorAll('.hand-piece-btn')].forEach((b) => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            ui.setSelection(null, []);
+          });
+          myRow.appendChild(btn);
+        } else {
+          oppCount++;
+          const span = document.createElement('span');
+          span.style.cssText = 'font-size:18px;margin-right:8px;color:#999;';
+          span.textContent = `${GLYPHS[letter.toUpperCase()]}${count > 1 ? '×' + count : ''}`;
+          oppRow.appendChild(span);
+        }
       }
-      if (!hasAny) handStrip.textContent = '(손에 든 기물 없음)';
+      if (myCount === 0) { const s = document.createElement('span'); s.style.cssText='font-size:13px;color:#999;'; s.textContent='(없음)'; myRow.appendChild(s); }
+      if (oppCount === 0) { const s = document.createElement('span'); s.style.cssText='font-size:13px;color:#bbb;'; s.textContent='(없음)'; oppRow.appendChild(s); }
+
+      handStrip.appendChild(myRow);
+      handStrip.appendChild(oppRow);
     }
 
     function applyFilter() {
@@ -311,7 +339,7 @@
         const target = drops.find((d) => d.to === clickedSquare);
         if (target) attemptMove({ type: 'drop', piece: selectedDropPiece, to: clickedSquare });
         selectedDropPiece = null;
-        [...handStrip.children].forEach((b) => b.classList.remove('selected'));
+        [...handStrip.querySelectorAll('.hand-piece-btn')].forEach((b) => b.classList.remove('selected'));
         ui.setSelection(null, []);
         return;
       }
