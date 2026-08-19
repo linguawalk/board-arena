@@ -316,10 +316,11 @@
     function loadProblem(idx) {
       const problem = FILTERED[idx];
       if (board) board.delete();
+      board = new ffish.Board('shogi'); // play.html에서 검증된 방식: 변형만 지정
       try {
-        board = new ffish.Board('shogi', problem.sfen);
+        board.setFen(problem.sfen);
       } catch (err) {
-        promptEl.textContent = `국면을 불러오지 못했습니다: ${err.message || err}`;
+        promptEl.textContent = `setFen 실패: ${err.message || err}`;
         return;
       }
       solverColor = board.turn() ? 'w' : 'b';
@@ -337,7 +338,7 @@
       promptEl.textContent = '공격측 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.';
       metaEl.textContent = `난이도: ${problem.difficulty}수 외통 · 유형: ${problem.themes.map((t) => THEME_LABELS[t] || t).join(', ')}`;
       const legalNow = board.legalMoves().split(' ').filter((m) => m.length > 0);
-      metaEl.textContent += ` [진단: 합법수 ${legalNow.length}개, 예) ${legalNow.slice(0, 5).join(', ')}]`;
+      metaEl.textContent += ` [진단: fen()=${board.fen()} | 합법수 ${legalNow.length}개, 예) ${legalNow.slice(0, 5).join(', ')}]`;
       logEl.innerHTML = '';
       summaryEl.style.display = 'none';
       feedbackEl.style.display = 'none';
