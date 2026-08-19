@@ -205,14 +205,16 @@
       const fileLabels = document.getElementById('file-labels');
       rankLabels.innerHTML = '';
       fileLabels.innerHTML = '';
+      // 옆(세로): 랭크 숫자, 위쪽이 큰 수 (y=0 → rank=size, y=size-1 → rank=1)
       for (let y = 0; y < size; y++) {
         const span = document.createElement('span');
-        span.textContent = String.fromCharCode(97 + y); // a, b, c ...
+        span.textContent = String(size - y);
         rankLabels.appendChild(span);
       }
+      // 아래(가로): 파일 알파벳, 왼쪽부터 a,b,c...
       for (let x = 0; x < size; x++) {
         const span = document.createElement('span');
-        span.textContent = String(x + 1); // fileToX(f)=f-1 이므로 x=0(왼쪽)이 파일1
+        span.textContent = String.fromCharCode(97 + x);
         fileLabels.appendChild(span);
       }
     }

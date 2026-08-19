@@ -32,6 +32,12 @@
   .quiz-source { font-size: 12px; color: #999; margin-top: 14px; }
 
   .hand-strip { font-size: 13px; color: #555; margin-bottom: 10px; }
+  .hand-row { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 8px; border-radius: 8px; margin-bottom: 6px; }
+  .hand-row.mine { background: #eaf1ff; border: 1px solid #b9d0ff; }
+  .hand-row.opp { background: #f2f2f2; border: 1px solid #ddd; }
+  .hand-row-label { font-size: 12px; font-weight: 600; margin-right: 6px; }
+  .hand-row.mine .hand-row-label { color: #1a4fc4; }
+  .hand-row.opp .hand-row-label { color: #777; }
   .hand-piece-btn { font-size: 20px; padding: 4px 10px; margin-right: 6px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
   .hand-piece-btn.selected { background: var(--accent, #4a7cff); color: #fff; }
 
@@ -76,14 +82,14 @@
       <div class="board-outer">
         <div class="board-with-ranks">
           <div class="rank-labels">
-            <span>a</span><span>b</span><span>c</span><span>d</span>
-            <span>e</span><span>f</span><span>g</span><span>h</span><span>i</span>
+            <span>9</span><span>8</span><span>7</span><span>6</span>
+            <span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
           </div>
           <div id="board-col" class="board-col"></div>
         </div>
         <div class="file-labels">
-          <span>1</span><span>2</span><span>3</span><span>4</span>
-          <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span>
+          <span>a</span><span>b</span><span>c</span><span>d</span>
+          <span>e</span><span>f</span><span>g</span><span>h</span><span>i</span>
         </div>
       </div>
 
@@ -240,16 +246,17 @@
       const isHumanUpper = solverColor === 'w';
 
       const myRow = document.createElement('div');
-      myRow.style.marginBottom = '6px';
+      myRow.className = 'hand-row mine';
       const myLabel = document.createElement('span');
-      myLabel.style.cssText = 'font-size:12px;color:#555;margin-right:6px;';
-      myLabel.textContent = '내 손패:';
+      myLabel.className = 'hand-row-label';
+      myLabel.textContent = '🔵 내 손패:';
       myRow.appendChild(myLabel);
 
       const oppRow = document.createElement('div');
+      oppRow.className = 'hand-row opp';
       const oppLabel = document.createElement('span');
-      oppLabel.style.cssText = 'font-size:12px;color:#999;margin-right:6px;';
-      oppLabel.textContent = '상대 손패:';
+      oppLabel.className = 'hand-row-label';
+      oppLabel.textContent = '⚪ 상대 손패:';
       oppRow.appendChild(oppLabel);
 
       let myCount = 0, oppCount = 0;
@@ -274,7 +281,7 @@
         } else {
           oppCount++;
           const span = document.createElement('span');
-          span.style.cssText = 'font-size:18px;margin-right:8px;color:#999;';
+          span.style.cssText = 'font-size:18px;margin-right:8px;color:#777;';
           span.textContent = `${GLYPHS[letter.toUpperCase()]}${count > 1 ? '×' + count : ''}`;
           oppRow.appendChild(span);
         }
