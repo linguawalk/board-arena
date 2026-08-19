@@ -8,7 +8,13 @@
 <link rel="stylesheet" href="../../shared/css/square-board.css" />
 <style>
   .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
-  .board-col { width: 470px; flex-shrink: 0; }
+  .board-outer { flex-shrink: 0; }
+  .board-with-ranks { display: flex; }
+  .rank-labels { display: flex; flex-direction: column; width: 20px; }
+  .rank-labels span { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; }
+  .file-labels { display: flex; width: 470px; margin-left: 20px; }
+  .file-labels span { flex: 1; text-align: center; font-size: 12px; color: #888; padding-top: 4px; }
+  .board-col { width: 470px; aspect-ratio: 1 / 1; flex-shrink: 0; }
   .panel { flex: 1; min-width: 260px; }
   .panel select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #ccc; box-sizing: border-box; }
   .panel label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
@@ -44,6 +50,9 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>쇼기 대국</h1>
+    <nav style="display:flex;gap:8px;margin-bottom:14px;">
+      <a href="quiz.html" style="display:inline-block;padding:7px 12px;border-radius:6px;border:1px solid var(--accent,#4a7cff);color:var(--accent,#4a7cff);text-decoration:none;font-size:13px;font-weight:600;">🧩 퀴즈 풀기 (쓰메쇼기)</a>
+    </nav>
     <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
       <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
       <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
@@ -66,7 +75,13 @@
     </details>
 
     <div class="layout">
-      <div id="board-col" class="board-col"></div>
+      <div class="board-outer">
+        <div class="board-with-ranks">
+          <div class="rank-labels" id="rank-labels"></div>
+          <div id="board-col" class="board-col"></div>
+        </div>
+        <div class="file-labels" id="file-labels"></div>
+      </div>
       <div class="panel">
         <label for="variant-select">규칙</label>
         <select id="variant-select">
@@ -183,6 +198,23 @@
     function xyToSquare(x, y) { return `${x + 1}${String.fromCharCode(97 + y)}`; }
     function squareToXY(sq) { return { x: fileToX(sq[0]), y: rankToY(sq[1]) }; }
 
+    function renderCoordLabels(size) {
+      const rankLabels = document.getElementById('rank-labels');
+      const fileLabels = document.getElementById('file-labels');
+      rankLabels.innerHTML = '';
+      fileLabels.innerHTML = '';
+      for (let y = 0; y < size; y++) {
+        const span = document.createElement('span');
+        span.textContent = String.fromCharCode(97 + y); // a, b, c ...
+        rankLabels.appendChild(span);
+      }
+      for (let x = 0; x < size; x++) {
+        const span = document.createElement('span');
+        span.textContent = String(x + 1); // fileToX(f)=f-1 이므로 x=0(왼쪽)이 파일1
+        fileLabels.appendChild(span);
+      }
+    }
+
     function moveIsPromo(m) { return m.length > 4 && m[4] === '+'; }
     function moveToSquare(m) { return m.slice(2, 4); }
     function moveFromSquare(m) { return m.slice(0, 2); }
@@ -293,6 +325,7 @@
       if (board) board.delete();
       board = new ffish.Board(variantSelect.value);
       boardSize = BOARD_SIZE[variantSelect.value] || 9;
+      renderCoordLabels(boardSize);
       gameOver = false;
       selectedSquare = null;
       selectedDropPiece = null;
