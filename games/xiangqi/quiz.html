@@ -265,9 +265,12 @@
       const moves = legalMovesFromSquare(clickedSquare);
       if (moves.length > 0) {
         selectedPoint = { x, y };
-        // 퀴즈에서는 목적지(특히 "잡을 수 있는 칸")를 미리 보여주면 정답이 드러나므로
-        // 선택한 기물만 표시하고 이동 가능한 칸은 표시하지 않습니다.
-        ui.setSelection({ x, y }, []);
+        // 빈 칸으로 이동하는 표시는 유지하되, "잡을 수 있는 칸"은 정답을 노출하므로 표시에서 제외
+        const occupied = new Set(parseFenPieces(board.fen()).map((p) => `${p.x},${p.y}`));
+        const quietTargets = moves
+          .map((m) => squareToXY(splitUciMove(m).to))
+          .filter((pt) => !occupied.has(`${pt.x},${pt.y}`));
+        ui.setSelection({ x, y }, quietTargets);
       }
     }
 
