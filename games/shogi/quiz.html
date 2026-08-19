@@ -193,10 +193,10 @@
     let handState = {}; // { 'S': 2, 'r': 1, ... }
 
     function parseHandString(fen) {
-      const bracketMatch = fen.split(' ')[0].match(/\[([^\]]*)\]/);
-      const handStr = bracketMatch ? bracketMatch[1] : '';
+      const parts = fen.split(' ');
+      const handStr = parts[2] || '-';
       const hand = {};
-      if (!handStr) return hand;
+      if (handStr === '-') return hand;
       let i = 0;
       while (i < handStr.length) {
         let numStr = '';
@@ -316,13 +316,23 @@
     function loadProblem(idx) {
       const problem = FILTERED[idx];
       if (board) board.delete();
-      board = new ffish.Board('shogi');
-      const validation = ffish.validateFen(problem.sfen, 'shogi');
+      let validation;
+      try {
+        validation = ffish.validateFen(problem.sfen);
+      } catch (err) {
+        promptEl.textContent = `validateFen 자체에서 예외 발생: ${err.message || err}`;
+        return;
+      }
       if (validation !== 1) {
         promptEl.textContent = `문제를 불러오지 못했습니다 (FEN 검증 코드 ${validation}).`;
         return;
       }
-      board.setFen(problem.sfen);
+      try {
+        board = new ffish.Board('shogi', problem.sfen);
+      } catch (err) {
+        promptEl.textContent = `Board 생성 중 예외 발생: ${err.message || err}`;
+        return;
+      }
       solverColor = board.turn() ? 'w' : 'b';
       handState = parseHandString(problem.sfen);
       solveStep = 0;
