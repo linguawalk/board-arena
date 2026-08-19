@@ -264,7 +264,8 @@
             selectedDropPiece = letter.toUpperCase();
             [...handStrip.querySelectorAll('.hand-piece-btn')].forEach((b) => b.classList.remove('selected'));
             btn.classList.add('selected');
-            ui.setSelection(null, []);
+            const drops = legalDropsForPiece(selectedDropPiece);
+            ui.setSelection(null, drops.map((d) => squareToXY(d.to)));
           });
           myRow.appendChild(btn);
         } else {
