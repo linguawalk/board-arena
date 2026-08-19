@@ -10,7 +10,12 @@
     "moveComments": [
       "e8e9 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 1
+    "difficulty": 1,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "capture",
+      "rookMate"
+    ]
   },
   {
     "id": "puzzle_1",
@@ -23,7 +28,12 @@
     "moveComments": [
       "g5f5 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 1
+    "difficulty": 1,
+    "matingPieceLabel": "포(砲)",
+    "themes": [
+      "quietMove",
+      "cannonMate"
+    ]
   },
   {
     "id": "puzzle_2",
@@ -36,7 +46,12 @@
     "moveComments": [
       "c3c1 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 1
+    "difficulty": 1,
+    "matingPieceLabel": "포(砲)",
+    "themes": [
+      "capture",
+      "cannonMate"
+    ]
   },
   {
     "id": "puzzle_3",
@@ -49,7 +64,12 @@
     "moveComments": [
       "a3c2 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 1
+    "difficulty": 1,
+    "matingPieceLabel": "마(馬)",
+    "themes": [
+      "quietMove",
+      "knightMate"
+    ]
   },
   {
     "id": "puzzle_4",
@@ -62,7 +82,12 @@
     "moveComments": [
       "f7g9 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 1
+    "difficulty": 1,
+    "matingPieceLabel": "마(馬)",
+    "themes": [
+      "quietMove",
+      "knightMate"
+    ]
   },
   {
     "id": "puzzle_1061",
@@ -79,7 +104,12 @@
       "(상대 응수) d9e9 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "f8f9 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 2
+    "difficulty": 2,
+    "matingPieceLabel": "병(兵)",
+    "themes": [
+      "quietMove",
+      "pawnMate"
+    ]
   },
   {
     "id": "puzzle_1062",
@@ -96,7 +126,12 @@
       "(상대 응수) e4e6 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "f9f10 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 2
+    "difficulty": 2,
+    "matingPieceLabel": "병(兵)",
+    "themes": [
+      "capture",
+      "pawnMate"
+    ]
   },
   {
     "id": "puzzle_1063",
@@ -113,7 +148,12 @@
       "(상대 응수) d8d9 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "c8a8 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 2
+    "difficulty": 2,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "quietMove",
+      "rookMate"
+    ]
   },
   {
     "id": "puzzle_1064",
@@ -130,7 +170,12 @@
       "(상대 응수) f10f9 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "b10b9 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 2
+    "difficulty": 2,
+    "matingPieceLabel": "포(砲)",
+    "themes": [
+      "quietMove",
+      "cannonMate"
+    ]
   },
   {
     "id": "puzzle_1065",
@@ -147,7 +192,12 @@
       "(상대 응수) e9f10 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "h9f8 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 2
+    "difficulty": 2,
+    "matingPieceLabel": "마(馬)",
+    "themes": [
+      "quietMove",
+      "knightMate"
+    ]
   },
   {
     "id": "puzzle_2079",
@@ -168,7 +218,12 @@
       "(상대 응수) d2d10 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "c10d10 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 3
+    "difficulty": 3,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "capture",
+      "rookMate"
+    ]
   },
   {
     "id": "puzzle_2080",
@@ -189,7 +244,12 @@
       "(상대 응수) f8d7 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "d5d7 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 3
+    "difficulty": 3,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "capture",
+      "rookMate"
+    ]
   },
   {
     "id": "puzzle_2081",
@@ -210,7 +270,12 @@
       "(상대 응수) c9d9 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "b8b10 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 3
+    "difficulty": 3,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "quietMove",
+      "rookMate"
+    ]
   },
   {
     "id": "puzzle_2082",
@@ -231,7 +296,12 @@
       "(상대 응수) e10e9 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "g10g9 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 3
+    "difficulty": 3,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "quietMove",
+      "rookMate"
+    ]
   },
   {
     "id": "puzzle_2083",
@@ -252,6 +322,11 @@
       "(상대 응수) f9f8 — 이 상황에서 유일하게 버틸 수 있는 응수입니다(다른 수는 더 빨리 집니다).",
       "h10h8 — 마지막 수. 왕이 도망갈 곳도, 막을 기물도 없어 그대로 외통입니다."
     ],
-    "difficulty": 3
+    "difficulty": 3,
+    "matingPieceLabel": "차(車)",
+    "themes": [
+      "quietMove",
+      "rookMate"
+    ]
   }
 ]
