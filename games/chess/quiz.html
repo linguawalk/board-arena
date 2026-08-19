@@ -251,7 +251,9 @@
       if (piece && piece.color === solverColor) {
         selectedSquare = clickedSquare;
         const legalMoves = legalMovesFor(clickedSquare);
-        board.setSelection(squareToXY(clickedSquare), legalMoves.map((m) => squareToXY(m.to)));
+        // 빈 칸으로 이동하는 표시는 유지하되, "잡을 수 있는 칸"은 정답을 노출하므로 표시에서 제외
+        const quietTargets = legalMoves.filter((m) => !m.flags.includes('c') && !m.flags.includes('e'));
+        board.setSelection(squareToXY(clickedSquare), quietTargets.map((m) => squareToXY(m.to)));
       } else {
         selectedSquare = null;
         board.setSelection(null, []);
