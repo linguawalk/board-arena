@@ -82,6 +82,7 @@
 
   <script type="module">
     import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+    import { mountIntersectionCoords, standardFileLabels, standardRankLabels } from '../../shared/js/intersection-board-coords.js';
 
     window.addEventListener('error', (e) => {
       const el = document.getElementById('error-overlay');
@@ -202,6 +203,7 @@
         riverGap: { yTop: 4, yBottom: 5 },
         pieceColorClasses: { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-black' },
       });
+      mountIntersectionCoords(boardCol, boardWidth, boardHeight, standardFileLabels(boardWidth), standardRankLabels(boardHeight));
       syncBoard();
       ui.setSelection(null, []);
 

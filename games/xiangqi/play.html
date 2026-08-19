@@ -41,6 +41,7 @@
     <h1>샹치 대국</h1>
     <nav style="display:flex;gap:8px;margin-bottom:14px;">
       <a href="quiz.html" style="display:inline-block;padding:7px 12px;border-radius:6px;border:1px solid var(--accent,#4a7cff);color:var(--accent,#4a7cff);text-decoration:none;font-size:13px;font-weight:600;">🧩 퀴즈 풀기</a>
+      <a href="analyze.html" style="display:inline-block;padding:7px 12px;border-radius:6px;border:1px solid var(--accent,#4a7cff);color:var(--accent,#4a7cff);text-decoration:none;font-size:13px;font-weight:600;">🔍 저장된 복기 보기</a>
     </nav>
     <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
       <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
@@ -88,6 +89,7 @@
 
   <script type="module">
     import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+    import { mountIntersectionCoords, standardFileLabels, standardRankLabels } from '../../shared/js/intersection-board-coords.js';
 
     async function loadFfish() {
       const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
@@ -258,6 +260,10 @@
         riverGap: cfg.riverGap,
         pieceColorClasses: { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-black' },
       });
+      mountIntersectionCoords(
+        boardCol, cfg.width, cfg.height,
+        standardFileLabels(cfg.width), standardRankLabels(cfg.height)
+      );
       syncBoardFromFfish();
       updateStatus();
       log(`새 게임 시작 (${variantSelect.options[variantSelect.selectedIndex].text})`);
