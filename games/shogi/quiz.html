@@ -165,9 +165,11 @@
     let selectedDropPiece = null;
     let solverColor = null;
 
-    function fileToX(f) { return parseInt(f, 10) - 1; }
-    function rankToY(r) { return r.charCodeAt(0) - 97; }
-    function xyToSquare(x, y) { return `${x + 1}${String.fromCharCode(97 + y)}`; }
+    // 실제로 확인된 ffish 쇼기 표기: 파일=알파벳(a~i, 왼쪽→오른쪽), 랭크=숫자(1~9, 아래→위 기준 반전)
+    // 예: 룩의 시작 위치는 표준 표기로 "2h"지만 이 엔진에서는 "h2"로 나옴 (2026-08-19 실측 확인)
+    function fileToX(f) { return f.charCodeAt(0) - 97; }       // 'a'→0, ..., 'i'→8
+    function rankToY(r) { return 9 - parseInt(r, 10); }         // '9'→0(맨 위), '1'→8(맨 아래)
+    function xyToSquare(x, y) { return `${String.fromCharCode(97 + x)}${9 - y}`; }
     function squareToXY(sq) { return { x: fileToX(sq[0]), y: rankToY(sq[1]) }; }
 
     // USI 계열 이동 문자열을 구조적으로 파싱 ('*'와 '@' 드롭 표기 둘 다 지원)

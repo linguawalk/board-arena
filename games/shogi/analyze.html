@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>쇼기 복기 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/square-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-outer { flex-shrink: 0; }
+  .board-with-ranks { display: flex; }
+  .rank-labels { display: flex; flex-direction: column; width: 20px; }
+  .rank-labels span { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; }
+  .file-labels { display: flex; width: 460px; margin-left: 20px; }
+  .file-labels span { flex: 1; text-align: center; font-size: 12px; color: #888; padding-top: 4px; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
+
+  .panel { flex: 1; min-width: 300px; }
+  .panel select, .panel button { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+  .panel select { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+  .nav-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .nav-row button { flex: 1; min-width: 60px; }
+  .move-strip { font-size: 13px; color: #555; line-height: 1.8; margin-bottom: 14px; max-height: 100px; overflow-y: auto; }
+  .move-strip .cur { background: var(--accent, #4a7cff); color: #fff; padding: 1px 5px; border-radius: 4px; }
+
+  .analyze-btn { width: 100%; padding: 10px; background: var(--accent, #4a7cff); color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+  .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .analyze-status { font-size: 13px; color: #888; margin-bottom: 10px; min-height: 1.2em; }
+
+  .pv-line { border: 1px solid #eee; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .pv-line .pv-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .pv-bar-bg { background: #eee; border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+  .pv-bar-fill { background: var(--accent, #4a7cff); height: 100%; }
+  .pv-moves { font-size: 12px; color: #666; }
+
+  .quiz-nav-top { display:flex; gap:8px; margin-bottom:14px; }
+  .quiz-nav-top a { display:inline-block; padding:7px 12px; border-radius:6px; border:1px solid var(--accent,#4a7cff); color:var(--accent,#4a7cff); text-decoration:none; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>쇼기 복기</h1>
+    <p style="font-size:13px;color:#777;margin-top:-6px;">저장된 대국을 불러와 수순을 넘기면서, 각 국면에서 엔진(Fairy-Stockfish)이 계산한 후보수와 승률을 확인합니다.</p>
+
+    <nav class="quiz-nav-top">
+      <a href="play.html">◀ 대국으로 돌아가기</a>
+      <a href="quiz.html">🧩 퀴즈 풀기</a>
+    </nav>
+
+    <div class="layout">
+      <div class="board-outer">
+        <div class="board-with-ranks">
+          <div class="rank-labels">
+            <span>9</span><span>8</span><span>7</span><span>6</span>
+            <span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+          </div>
+          <div id="board-col" class="board-col"></div>
+        </div>
+        <div class="file-labels">
+          <span>a</span><span>b</span><span>c</span><span>d</span>
+          <span>e</span><span>f</span><span>g</span><span>h</span><span>i</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">불러올 복기</label>
+        <select id="review-select"></select>
+
+        <div class="nav-row">
+          <button id="first-btn">⏮ 처음</button>
+          <button id="prev-btn">◀ 이전</button>
+          <button id="next-btn">다음 ▶</button>
+          <button id="last-btn">마지막 ⏭</button>
+        </div>
+
+        <div class="move-strip" id="move-strip"></div>
+
+        <button id="analyze-btn" class="analyze-btn">🔍 이 국면 분석하기</button>
+        <div class="analyze-status" id="analyze-status"></div>
+        <div id="analyze-result"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { SquareBoard } from '../../shared/js/square-board.js';
+
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+
+    async function loadFfish() {
+      const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
+      const wasmResponse = await fetch(wasmUrl);
+      if (!wasmResponse.ok) throw new Error(`ffish.wasm 요청 실패: HTTP ${wasmResponse.status}`);
+      const wasmBinary = new Uint8Array(await wasmResponse.arrayBuffer());
+      const mod = await import('../../shared/js/vendor/ffish.js');
+      return mod.default({ wasmBinary });
+    }
+
+    const GLYPHS = {
+      K: '王', k: '玉',
+      R: '飛', r: '飛', '+R': '龍', '+r': '龍',
+      B: '角', b: '角', '+B': '馬', '+b': '馬',
+      G: '金', g: '金',
+      S: '銀', s: '銀', '+S': '全', '+s': '全',
+      N: '桂', n: '桂', '+N': '圭', '+n': '圭',
+      L: '香', l: '香', '+L': '杏', '+l': '杏',
+      P: '歩', p: '歩', '+P': 'と', '+p': 'と',
+    };
+
+    const boardCol = document.getElementById('board-col');
+    const reviewSelect = document.getElementById('review-select');
+    const moveStrip = document.getElementById('move-strip');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const analyzeStatus = document.getElementById('analyze-status');
+    const analyzeResult = document.getElementById('analyze-result');
+
+    let ffish = null;
+    let ui = null;
+    let fullHistoryMoves = [];
+    let cursor = 0;
+    let games = [];
+
+    // 실제로 확인된 ffish 쇼기 표기: 파일=알파벳(a~i), 랭크=숫자(1~9, 반전)
+    function fileToX(f) { return f.charCodeAt(0) - 97; }
+    function rankToY(r) { return 9 - parseInt(r, 10); }
+    function xyToSquare(x, y) { return `${String.fromCharCode(97 + x)}${9 - y}`; }
+    function squareToXY(sq) { return { x: fileToX(sq[0]), y: rankToY(sq[1]) }; }
+
+    function parseFenPieces(fen) {
+      const placement = fen.split(' ')[0].split('[')[0];
+      const rows = placement.split('/');
+      const pieces = [];
+      for (let y = 0; y < rows.length; y++) {
+        let x = 0, i = 0;
+        while (i < rows[y].length) {
+          const ch = rows[y][i];
+          if (/[0-9]/.test(ch)) { x += parseInt(ch, 10); i++; }
+          else if (ch === '+') { pieces.push({ x, y, piece: '+' + rows[y][i + 1] }); x++; i += 2; }
+          else { pieces.push({ x, y, piece: ch }); x++; i++; }
+        }
+      }
+      return pieces;
+    }
+
+    function loadReviewList() {
+      games = JSON.parse(localStorage.getItem('board-arena-shogi-games') || '[]');
+      reviewSelect.innerHTML = '';
+      if (games.length === 0) {
+        reviewSelect.innerHTML = '<option>저장된 복기가 없습니다</option>';
+        return;
+      }
+      games.forEach((g, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        const date = new Date(g.savedAt).toLocaleString('ko-KR');
+        const moveLabel = (g.moves?.length || 0) === 0 ? '수를 두지 않고 저장됨' : `${g.moves.length}수`;
+        opt.textContent = `${date} · ${g.variant || 'shogi'} (${moveLabel})`;
+        reviewSelect.appendChild(opt);
+      });
+    }
+
+    function loadGame(idx) {
+      const g = games[idx];
+      if (!g) return;
+      fullHistoryMoves = g.moves || [];
+      cursor = fullHistoryMoves.length;
+      renderCursor();
+    }
+
+    function currentVariant() {
+      const idx = reviewSelect.value ? Number(reviewSelect.value) : 0;
+      return games[idx]?.variant || 'shogi';
+    }
+
+    function renderCursor() {
+      const variant = currentVariant();
+      const board = new ffish.Board(variant);
+      for (let i = 0; i < cursor; i++) board.push(fullHistoryMoves[i]);
+      const fen = board.fen();
+      const boardSize = variant === 'minishogi' ? 5 : 9;
+      board.delete();
+
+      boardCol.innerHTML = '';
+      ui = new SquareBoard({ container: boardCol, width: boardSize, height: boardSize, interactive: false, pieceGlyphs: GLYPHS });
+      const pieces = parseFenPieces(fen);
+      ui.loadPosition(pieces);
+      if (cursor > 0) {
+        const mv = fullHistoryMoves[cursor - 1];
+        if (!mv.includes('*')) {
+          const core = mv.endsWith('+') ? mv.slice(0, -1) : mv;
+          ui.markLastMove(squareToXY(core.slice(0, 2)), squareToXY(core.slice(2, 4)));
+        }
+      }
+      ui.render();
+
+      moveStrip.innerHTML = fullHistoryMoves
+        .map((mv, i) => (i === cursor - 1 ? `<span class="cur">${i + 1}.${mv}</span>` : `${i + 1}.${mv}`))
+        .join(' ');
+
+      analyzeResult.innerHTML = '';
+      analyzeStatus.textContent = '';
+    }
+
+    document.getElementById('first-btn').addEventListener('click', () => { cursor = 0; renderCursor(); });
+    document.getElementById('prev-btn').addEventListener('click', () => { cursor = Math.max(0, cursor - 1); renderCursor(); });
+    document.getElementById('next-btn').addEventListener('click', () => { cursor = Math.min(fullHistoryMoves.length, cursor + 1); renderCursor(); });
+    document.getElementById('last-btn').addEventListener('click', () => { cursor = fullHistoryMoves.length; renderCursor(); });
+    reviewSelect.addEventListener('change', () => loadGame(Number(reviewSelect.value)));
+
+    analyzeBtn.addEventListener('click', async () => {
+      const variant = currentVariant();
+      analyzeBtn.disabled = true;
+      analyzeStatus.textContent = '엔진 분석 중... (몇 초 걸릴 수 있습니다)';
+      analyzeResult.innerHTML = '';
+      try {
+        const res = await fetch('/api/analyze-variant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ variant, moves: fullHistoryMoves.slice(0, cursor), depth: 10, multipv: 3 }),
+        });
+        const data = await res.json();
+        if (data.gameOver) { analyzeStatus.textContent = '게임이 종료된 국면입니다.'; return; }
+        if (data.error) { analyzeStatus.textContent = `오류: ${data.error}`; return; }
+        analyzeStatus.textContent = `분석 완료 (최선수: ${data.bestmove})`;
+        renderAnalysis(data.lines || []);
+      } catch (err) {
+        analyzeStatus.textContent = `요청 실패: ${err.message} (analyze-variant.js가 배포되어 있는지 확인해 주세요)`;
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    function renderAnalysis(lines) {
+      analyzeResult.innerHTML = lines.map((l) => {
+        const scoreLabel = l.scoreMate !== null && l.scoreMate !== undefined ? `메이트 ${l.scoreMate}수` : `${(l.scoreCp / 100).toFixed(2)}`;
+        const pvText = l.pv.slice(0, 6).join('  ');
+        return `
+          <div class="pv-line">
+            <div class="pv-head"><span>#${l.rank} ${l.pv[0]}</span><span>${scoreLabel} · 승률 ${l.winPercent}%</span></div>
+            <div class="pv-bar-bg"><div class="pv-bar-fill" style="width:${l.winPercent}%"></div></div>
+            <div class="pv-moves">${pvText}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function init() {
+      analyzeStatus.textContent = '엔진 불러오는 중...';
+      ffish = await loadFfish();
+      analyzeStatus.textContent = '';
+      loadReviewList();
+      if (games.length > 0) loadGame(0);
+    }
+
+    init();
+  </script>
+</body>
+</html>
