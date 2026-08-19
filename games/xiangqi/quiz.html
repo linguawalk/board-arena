@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>샹치 퀴즈 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/intersection-piece-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { width: 480px; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 280px; }
+  .panel button { padding: 8px 14px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; margin-right: 6px; margin-bottom: 10px; }
+  .panel button.primary { background: var(--accent, #4a7cff); color: #fff; border-color: var(--accent, #4a7cff); }
+
+  .quiz-prompt { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+  .quiz-meta { font-size: 12px; color: #888; margin-bottom: 12px; }
+  .quiz-log { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .quiz-log-item { font-size: 13.5px; line-height: 1.6; padding: 8px 10px; border-radius: 6px; background: #f0f6ff; color: #1a3d7a; }
+  .quiz-log-item.opp { background: #f5f5f5; color: #555; font-style: italic; }
+  .quiz-summary { font-size: 14px; line-height: 1.7; color: #333; background: #eaf7ee; border: 1px solid #cdeed8; border-radius: 8px; padding: 12px 14px; margin: 10px 0; display: none; }
+  .quiz-feedback { font-size: 14px; padding: 10px 12px; border-radius: 8px; margin: 10px 0; display: none; }
+  .quiz-feedback.correct { background: #eaf7ee; color: #1c7a3a; display: block; }
+  .quiz-feedback.wrong { background: #fdeceb; color: #b3261e; display: block; }
+  .quiz-source { font-size: 12px; color: #999; margin-top: 14px; }
+
+  .nav-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .quiz-nav-top { display:flex; gap:8px; margin-bottom:14px; }
+  .quiz-nav-top a { display:inline-block; padding:7px 12px; border-radius:6px; border:1px solid var(--accent,#4a7cff); color:var(--accent,#4a7cff); text-decoration:none; font-size:13px; font-weight:600; }
+
+  .quiz-filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; background: #f7f7f7; border-radius: 8px; padding: 12px 14px; }
+  .quiz-filters label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+  .quiz-filters select { padding: 6px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; }
+  .quiz-filters .filter-count { font-size: 12px; color: #999; align-self: flex-end; margin-left: auto; }
+</style>
+</head>
+<body>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>샹치 퀴즈</h1>
+    <p style="font-size:13px;color:#777;margin-top:-6px;">실제 세계선수권·중국/홍콩 챔피언십 기보에서 나온 외통 문제입니다. 엔진으로 재검증된 수순만 사용합니다.</p>
+
+    <nav class="quiz-nav-top">
+      <a href="play.html">◀ 대국으로 돌아가기</a>
+    </nav>
+
+    <div class="quiz-filters">
+      <div>
+        <label for="level-select">난이도</label>
+        <select id="level-select">
+          <option value="">전체</option>
+          <option value="1">외통 1수</option>
+          <option value="2">외통 2수</option>
+          <option value="3">외통 3수</option>
+        </select>
+      </div>
+      <div class="filter-count" id="filter-count"></div>
+    </div>
+
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+
+      <div class="panel">
+        <div class="quiz-prompt" id="quiz-prompt"></div>
+        <div class="quiz-meta" id="quiz-meta"></div>
+
+        <div class="quiz-log" id="quiz-log"></div>
+        <div class="quiz-summary" id="quiz-summary"></div>
+
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+
+        <div class="nav-row">
+          <button id="hint-btn">힌트 (첫 수만)</button>
+          <button id="skip-btn">건너뛰기</button>
+          <button id="next-btn" class="primary" disabled>다음 문제</button>
+        </div>
+
+        <div class="quiz-source" id="quiz-source"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+
+    async function loadFfish() {
+      const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
+      const wasmResponse = await fetch(wasmUrl);
+      if (!wasmResponse.ok) throw new Error(`ffish.wasm 요청 실패: HTTP ${wasmResponse.status}`);
+      const wasmBinary = new Uint8Array(await wasmResponse.arrayBuffer());
+      const mod = await import('../../shared/js/vendor/ffish.js');
+      return mod.default({ wasmBinary });
+    }
+
+    const GLYPHS = {
+      K: '帥', A: '仕', E: '相', B: '相', H: '馬', N: '馬', R: '車', C: '砲', P: '兵',
+      k: '將', a: '士', e: '象', b: '象', h: '馬', n: '馬', r: '車', c: '砲', p: '卒',
+    };
+
+    const boardCol = document.getElementById('board-col');
+    const promptEl = document.getElementById('quiz-prompt');
+    const metaEl = document.getElementById('quiz-meta');
+    const logEl = document.getElementById('quiz-log');
+    const summaryEl = document.getElementById('quiz-summary');
+    const feedbackEl = document.getElementById('quiz-feedback');
+    const sourceEl = document.getElementById('quiz-source');
+    const hintBtn = document.getElementById('hint-btn');
+    const skipBtn = document.getElementById('skip-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const levelSelect = document.getElementById('level-select');
+    const filterCountEl = document.getElementById('filter-count');
+
+    let ffish = null;
+    let ALL_PROBLEMS = [];
+    let FILTERED = [];
+    let problemIndex = 0;
+    let board = null;
+    let ui = null;
+    let solveStep = 0;
+    let solved = false;
+    let selectedPoint = null;
+    let solverColor = null;
+    let boardWidth = 9, boardHeight = 10;
+
+    function fileToX(f) { return f.charCodeAt(0) - 97; }
+    function xToFile(x) { return String.fromCharCode(97 + x); }
+    function rankToY(r) { return boardHeight - r; }
+    function yToRank(y) { return boardHeight - y; }
+    function xyToSquare(x, y) { return `${xToFile(x)}${yToRank(y)}`; }
+    function squareToXY(sq) {
+      const m = sq.match(/^([a-i])(10|[1-9])/);
+      return { x: fileToX(m[1]), y: rankToY(parseInt(m[2], 10)) };
+    }
+    function parseSquareToken(str) {
+      const m = str.match(/^([a-i])(10|[1-9])/);
+      return { token: m[0] };
+    }
+    function splitUciMove(move) {
+      const first = parseSquareToken(move);
+      const rest = move.slice(first.token.length);
+      const second = parseSquareToken(rest);
+      return { from: first.token, to: second.token };
+    }
+    function parseFenPieces(fen) {
+      const rows = fen.split(' ')[0].split('/');
+      const pieces = [];
+      for (let y = 0; y < rows.length; y++) {
+        let x = 0;
+        for (const ch of rows[y]) {
+          if (/[0-9]/.test(ch)) { x += parseInt(ch, 10); }
+          else { pieces.push({ x, y, piece: ch }); x += 1; }
+        }
+      }
+      return pieces;
+    }
+
+    function syncBoard() {
+      const fen = board.fen();
+      const pieces = parseFenPieces(fen);
+      ui.pieceGlyphs = GLYPHS;
+      ui.loadPosition(pieces.map((p) => ({ x: p.x, y: p.y, piece: p.piece })));
+      ui.render();
+    }
+
+    function legalMovesFromSquare(square) {
+      const all = board.legalMoves().split(' ').filter((m) => m.length > 0);
+      return all.filter((m) => splitUciMove(m).from === square);
+    }
+
+    function applyFilter() {
+      const level = levelSelect.value;
+      FILTERED = ALL_PROBLEMS.filter((p) => !level || String(p.difficulty) === level);
+      filterCountEl.textContent = `${FILTERED.length}문제 해당`;
+      problemIndex = 0;
+      if (FILTERED.length > 0) loadProblem(0);
+      else {
+        promptEl.textContent = '해당하는 문제가 없습니다.';
+        logEl.innerHTML = ''; summaryEl.style.display = 'none'; feedbackEl.style.display = 'none';
+        nextBtn.disabled = true;
+      }
+    }
+
+    function loadProblem(idx) {
+      const problem = FILTERED[idx];
+      if (board) board.delete();
+      board = new ffish.Board('xiangqi', problem.fen);
+      solverColor = board.turn() ? 'w' : 'b';
+      solveStep = 0;
+      solved = false;
+      selectedPoint = null;
+
+      boardCol.innerHTML = '';
+      ui = new IntersectionPieceBoard({
+        container: boardCol, width: boardWidth, height: boardHeight,
+        interactive: true, onPointClick: handlePointClick, pieceGlyphs: GLYPHS,
+        palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }],
+        riverGap: { yTop: 4, yBottom: 5 },
+        pieceColorClasses: { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-black' },
+      });
+      syncBoard();
+      ui.setSelection(null, []);
+
+      promptEl.textContent = `${solverColor === 'w' ? '홍(紅)' : '흑(黑)'} 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.`;
+      metaEl.textContent = `난이도: 외통 ${problem.difficulty}수`;
+      logEl.innerHTML = '';
+      summaryEl.style.display = 'none';
+      feedbackEl.style.display = 'none';
+      sourceEl.textContent = `출처: ${problem.source}`;
+      nextBtn.disabled = true;
+    }
+
+    function handlePointClick(x, y) {
+      if (solved) return;
+      const humanTurn = (board.turn() ? 'w' : 'b') === solverColor;
+      if (!humanTurn) return;
+      const clickedSquare = xyToSquare(x, y);
+
+      if (selectedPoint) {
+        const selectedSquare = xyToSquare(selectedPoint.x, selectedPoint.y);
+        const moves = legalMovesFromSquare(selectedSquare);
+        const target = moves.find((m) => splitUciMove(m).to === clickedSquare);
+        if (target) {
+          attemptMove(target);
+          selectedPoint = null;
+          ui.setSelection(null, []);
+          return;
+        }
+        selectedPoint = null;
+        ui.setSelection(null, []);
+      }
+      const moves = legalMovesFromSquare(clickedSquare);
+      if (moves.length > 0) {
+        selectedPoint = { x, y };
+        ui.setSelection({ x, y }, moves.map((m) => squareToXY(splitUciMove(m).to)));
+      }
+    }
+
+    function addLogLine(text, isOpponent = false) {
+      const div = document.createElement('div');
+      div.className = 'quiz-log-item' + (isOpponent ? ' opp' : '');
+      div.textContent = text;
+      logEl.appendChild(div);
+    }
+
+    function attemptMove(uci) {
+      const problem = FILTERED[problemIndex];
+      const expected = problem.solution[solveStep];
+
+      if (uci !== expected) {
+        feedbackEl.className = 'quiz-feedback wrong';
+        feedbackEl.textContent = '아쉽습니다. 다시 생각해보세요. (힌트 버튼을 눌러도 됩니다)';
+        feedbackEl.style.display = 'block';
+        return;
+      }
+
+      board.push(uci);
+      const { from, to } = splitUciMove(uci);
+      addLogLine(`✅ ${problem.moveComments[solveStep]}`);
+      solveStep++;
+      syncBoard();
+      ui.markLastMove(squareToXY(from), squareToXY(to));
+
+      if (solveStep >= problem.solution.length) {
+        finishPuzzle(problem, true);
+        return;
+      }
+
+      const oppMove = problem.solution[solveStep];
+      board.push(oppMove);
+      const oppSplit = splitUciMove(oppMove);
+      addLogLine(problem.moveComments[solveStep], true);
+      solveStep++;
+      syncBoard();
+      ui.markLastMove(squareToXY(oppSplit.from), squareToXY(oppSplit.to));
+
+      if (solveStep >= problem.solution.length) {
+        finishPuzzle(problem, true);
+      } else {
+        feedbackEl.className = 'quiz-feedback correct';
+        feedbackEl.textContent = '맞았습니다! 상대의 응수 이후, 계속 최선수를 찾아보세요.';
+        feedbackEl.style.display = 'block';
+      }
+    }
+
+    function finishPuzzle(problem, wasCorrect) {
+      solved = true;
+      nextBtn.disabled = false;
+      feedbackEl.className = 'quiz-feedback correct';
+      feedbackEl.textContent = wasCorrect ? '정답입니다! 🎉' : '';
+      feedbackEl.style.display = wasCorrect ? 'block' : 'none';
+      summaryEl.textContent = `💡 ${problem.why}`;
+      summaryEl.style.display = 'block';
+    }
+
+    hintBtn.addEventListener('click', () => {
+      const problem = FILTERED[problemIndex];
+      const expected = problem.solution[solveStep];
+      if (!expected) return;
+      const from = splitUciMove(expected).from;
+      feedbackEl.className = 'quiz-feedback correct';
+      feedbackEl.textContent = `힌트: ${from}에 있는 기물을 움직여보세요.`;
+      feedbackEl.style.display = 'block';
+    });
+
+    skipBtn.addEventListener('click', () => {
+      const problem = FILTERED[problemIndex];
+      for (let i = solveStep; i < problem.solution.length; i++) {
+        addLogLine(problem.moveComments[i], i % 2 === 1);
+      }
+      feedbackEl.className = 'quiz-feedback wrong';
+      feedbackEl.textContent = `정답 수순: ${problem.solution.join(' → ')}`;
+      feedbackEl.style.display = 'block';
+      finishPuzzle(problem, false);
+    });
+
+    nextBtn.addEventListener('click', () => {
+      problemIndex = (problemIndex + 1) % FILTERED.length;
+      loadProblem(problemIndex);
+    });
+
+    levelSelect.addEventListener('change', applyFilter);
+
+    async function init() {
+      try {
+        promptEl.textContent = '엔진 불러오는 중...';
+        ffish = await loadFfish();
+        const res = await fetch('./problems/xiangqi-puzzles.json');
+        if (!res.ok) throw new Error(`문제 파일을 불러오지 못했습니다 (${res.status})`);
+        ALL_PROBLEMS = await res.json();
+        applyFilter();
+      } catch (err) {
+        promptEl.textContent = `초기화 오류: ${err.message}`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
