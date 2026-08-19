@@ -46,6 +46,10 @@
 
     <div class="quiz-filters">
       <div>
+        <label for="theme-select">유형</label>
+        <select id="theme-select"><option value="">전체</option></select>
+      </div>
+      <div>
         <label for="level-select">난이도</label>
         <select id="level-select">
           <option value="">전체</option>
@@ -103,6 +107,12 @@
       k: '將', a: '士', e: '象', b: '象', h: '馬', n: '馬', r: '車', c: '砲', p: '卒',
     };
 
+    const THEME_LABELS = {
+      capture: '잡는 수', quietMove: '조용한 수',
+      rookMate: '차(車) 외통', cannonMate: '포(砲) 외통', knightMate: '마(馬) 외통',
+      pawnMate: '병/졸 외통', advisorMate: '사(仕/士) 외통', bishopMate: '상(相/象) 외통',
+    };
+
     const boardCol = document.getElementById('board-col');
     const promptEl = document.getElementById('quiz-prompt');
     const metaEl = document.getElementById('quiz-meta');
@@ -114,6 +124,7 @@
     const skipBtn = document.getElementById('skip-btn');
     const nextBtn = document.getElementById('next-btn');
     const levelSelect = document.getElementById('level-select');
+    const themeSelect = document.getElementById('theme-select');
     const filterCountEl = document.getElementById('filter-count');
 
     let ffish = null;
@@ -175,7 +186,12 @@
 
     function applyFilter() {
       const level = levelSelect.value;
-      FILTERED = ALL_PROBLEMS.filter((p) => !level || String(p.difficulty) === level);
+      const theme = themeSelect.value;
+      FILTERED = ALL_PROBLEMS.filter((p) => {
+        if (level && String(p.difficulty) !== level) return false;
+        if (theme && !p.themes.includes(theme)) return false;
+        return true;
+      });
       filterCountEl.textContent = `${FILTERED.length}문제 해당`;
       problemIndex = 0;
       if (FILTERED.length > 0) loadProblem(0);
@@ -184,6 +200,17 @@
         logEl.innerHTML = ''; summaryEl.style.display = 'none'; feedbackEl.style.display = 'none';
         nextBtn.disabled = true;
       }
+    }
+
+    function populateThemeOptions() {
+      const themes = new Set();
+      ALL_PROBLEMS.forEach((p) => p.themes.forEach((t) => themes.add(t)));
+      [...themes].sort().forEach((t) => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = THEME_LABELS[t] || t;
+        themeSelect.appendChild(opt);
+      });
     }
 
     function loadProblem(idx) {
@@ -208,7 +235,7 @@
       ui.setSelection(null, []);
 
       promptEl.textContent = `${solverColor === 'w' ? '홍(紅)' : '흑(黑)'} 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.`;
-      metaEl.textContent = `난이도: 외통 ${problem.difficulty}수`;
+      metaEl.textContent = `난이도: 외통 ${problem.difficulty}수 · 유형: ${problem.themes.map((t) => THEME_LABELS[t] || t).join(', ')}`;
       logEl.innerHTML = '';
       summaryEl.style.display = 'none';
       feedbackEl.style.display = 'none';
@@ -238,7 +265,9 @@
       const moves = legalMovesFromSquare(clickedSquare);
       if (moves.length > 0) {
         selectedPoint = { x, y };
-        ui.setSelection({ x, y }, moves.map((m) => squareToXY(splitUciMove(m).to)));
+        // 퀴즈에서는 목적지(특히 "잡을 수 있는 칸")를 미리 보여주면 정답이 드러나므로
+        // 선택한 기물만 표시하고 이동 가능한 칸은 표시하지 않습니다.
+        ui.setSelection({ x, y }, []);
       }
     }
 
@@ -326,6 +355,7 @@
     });
 
     levelSelect.addEventListener('change', applyFilter);
+    themeSelect.addEventListener('change', applyFilter);
 
     async function init() {
       try {
@@ -334,6 +364,7 @@
         const res = await fetch('./problems/xiangqi-puzzles.json');
         if (!res.ok) throw new Error(`문제 파일을 불러오지 못했습니다 (${res.status})`);
         ALL_PROBLEMS = await res.json();
+        populateThemeOptions();
         applyFilter();
       } catch (err) {
         promptEl.textContent = `초기화 오류: ${err.message}`;
