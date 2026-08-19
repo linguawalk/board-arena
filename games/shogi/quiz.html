@@ -316,21 +316,10 @@
     function loadProblem(idx) {
       const problem = FILTERED[idx];
       if (board) board.delete();
-      let validation;
-      try {
-        validation = ffish.validateFen(problem.sfen);
-      } catch (err) {
-        promptEl.textContent = `validateFen 자체에서 예외 발생: ${err.message || err}`;
-        return;
-      }
-      if (validation !== 1) {
-        promptEl.textContent = `문제를 불러오지 못했습니다 (FEN 검증 코드 ${validation}).`;
-        return;
-      }
       try {
         board = new ffish.Board('shogi', problem.sfen);
       } catch (err) {
-        promptEl.textContent = `Board 생성 중 예외 발생: ${err.message || err}`;
+        promptEl.textContent = `국면을 불러오지 못했습니다: ${err.message || err}`;
         return;
       }
       solverColor = board.turn() ? 'w' : 'b';
