@@ -193,10 +193,10 @@
     let handState = {}; // { 'S': 2, 'r': 1, ... }
 
     function parseHandString(fen) {
-      const parts = fen.split(' ');
-      const handStr = parts[2] || '-';
+      const bracketMatch = fen.split(' ')[0].match(/\[([^\]]*)\]/);
+      const handStr = bracketMatch ? bracketMatch[1] : '';
       const hand = {};
-      if (handStr === '-') return hand;
+      if (!handStr) return hand;
       let i = 0;
       while (i < handStr.length) {
         let numStr = '';
@@ -209,7 +209,8 @@
       return hand;
     }
     function parseFenPieces(fen) {
-      const rows = fen.split(' ')[0].split('/');
+      const placement = fen.split(' ')[0].split('[')[0]; // 대괄호(손패) 부분은 기물 배치 파싱에서 제외
+      const rows = placement.split('/');
       const pieces = [];
       for (let y = 0; y < rows.length; y++) {
         let x = 0, i = 0;
@@ -264,14 +265,7 @@
             selectedDropPiece = letter.toUpperCase();
             [...handStrip.querySelectorAll('.hand-piece-btn')].forEach((b) => b.classList.remove('selected'));
             btn.classList.add('selected');
-            const allLegal = board.legalMoves().split(' ').filter((m) => m.length > 0);
             const drops = legalDropsForPiece(selectedDropPiece);
-            // [임시 진단] 실제 엔진 출력 형식을 눈으로 확인하기 위해 표시
-            const diagEl = document.getElementById('error-overlay');
-            diagEl.style.display = 'block';
-            diagEl.style.background = '#eef4ff';
-            diagEl.style.color = '#1a3d7a';
-            diagEl.textContent = `[진단] 전체 합법수(${allLegal.length}개): ${allLegal.join(' ')}\n[진단] "${selectedDropPiece}" 드롭으로 파싱된 것: ${drops.length}개 - ${JSON.stringify(drops)}`;
             ui.setSelection(null, drops.map((d) => squareToXY(d.to)));
           });
           myRow.appendChild(btn);
@@ -325,16 +319,10 @@
       board = new ffish.Board('shogi');
       const validation = ffish.validateFen(problem.sfen, 'shogi');
       if (validation !== 1) {
-        promptEl.textContent = `[진단] FEN 검증 실패 (코드 ${validation}): ${problem.sfen}`;
+        promptEl.textContent = `문제를 불러오지 못했습니다 (FEN 검증 코드 ${validation}).`;
         return;
       }
       board.setFen(problem.sfen);
-      // [임시 진단] 실제로 쇼기로 인식됐는지 확인
-      const diagEl = document.getElementById('error-overlay');
-      diagEl.style.display = 'block';
-      diagEl.style.background = '#eef4ff';
-      diagEl.style.color = '#1a3d7a';
-      diagEl.textContent = `[진단] setFen 이후 fen(): ${board.fen()}\n[진단] setFen 이후 legalMoves(): ${board.legalMoves()}`;
       solverColor = board.turn() ? 'w' : 'b';
       handState = parseHandString(problem.sfen);
       solveStep = 0;
@@ -349,6 +337,8 @@
 
       promptEl.textContent = '공격측 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.';
       metaEl.textContent = `난이도: ${problem.difficulty}수 외통 · 유형: ${problem.themes.map((t) => THEME_LABELS[t] || t).join(', ')}`;
+      const legalNow = board.legalMoves().split(' ').filter((m) => m.length > 0);
+      metaEl.textContent += ` [진단: 합법수 ${legalNow.length}개, 예) ${legalNow.slice(0, 5).join(', ')}]`;
       logEl.innerHTML = '';
       summaryEl.style.display = 'none';
       feedbackEl.style.display = 'none';
