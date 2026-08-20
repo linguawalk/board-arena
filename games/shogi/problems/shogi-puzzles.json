@@ -88,7 +88,7 @@
       "L*i8"
     ],
     "mateLength": 3,
-    "difficulty": 2,
+    "difficulty": 3,
     "themes": [
       "moveMate"
     ],
@@ -108,7 +108,7 @@
       "L*i8"
     ],
     "mateLength": 3,
-    "difficulty": 2,
+    "difficulty": 3,
     "themes": [
       "moveMate"
     ],
@@ -128,7 +128,7 @@
       "f7h5+"
     ],
     "mateLength": 3,
-    "difficulty": 2,
+    "difficulty": 3,
     "themes": [
       "dropMate"
     ],
@@ -148,7 +148,7 @@
       "S*h8"
     ],
     "mateLength": 3,
-    "difficulty": 2,
+    "difficulty": 3,
     "themes": [
       "moveMate"
     ],
@@ -168,7 +168,7 @@
       "h7h8"
     ],
     "mateLength": 3,
-    "difficulty": 2,
+    "difficulty": 3,
     "themes": [
       "moveMate"
     ],
@@ -190,7 +190,7 @@
       "L*i8"
     ],
     "mateLength": 5,
-    "difficulty": 3,
+    "difficulty": 5,
     "themes": [
       "dropMate"
     ],
@@ -214,7 +214,7 @@
       "L*i8"
     ],
     "mateLength": 5,
-    "difficulty": 3,
+    "difficulty": 5,
     "themes": [
       "moveMate"
     ],
@@ -238,7 +238,7 @@
       "h9i8"
     ],
     "mateLength": 5,
-    "difficulty": 3,
+    "difficulty": 5,
     "themes": [
       "moveMate"
     ],
@@ -262,7 +262,7 @@
       "h7h8"
     ],
     "mateLength": 5,
-    "difficulty": 3,
+    "difficulty": 5,
     "themes": [
       "moveMate"
     ],
@@ -286,7 +286,7 @@
       "N*h7"
     ],
     "mateLength": 5,
-    "difficulty": 3,
+    "difficulty": 5,
     "themes": [
       "moveMate"
     ],
