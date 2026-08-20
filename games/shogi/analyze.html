@@ -186,7 +186,7 @@
       board.delete();
 
       boardCol.innerHTML = '';
-      ui = new SquareBoard({ container: boardCol, width: boardSize, height: boardSize, interactive: false, pieceGlyphs: GLYPHS });
+      ui = new SquareBoard({ container: boardCol, width: boardSize, height: boardSize, interactive: false, pieceGlyphs: GLYPHS, colorByCase: true });
       const pieces = parseFenPieces(fen);
       ui.loadPosition(pieces);
       if (cursor > 0) {

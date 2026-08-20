@@ -26,6 +26,10 @@
   .quiz-log-item { font-size: 13.5px; line-height: 1.6; padding: 8px 10px; border-radius: 6px; background: #f0f6ff; color: #1a3d7a; }
   .quiz-log-item.opp { background: #f5f5f5; color: #555; font-style: italic; }
   .quiz-summary { font-size: 14px; line-height: 1.7; color: #333; background: #eaf7ee; border: 1px solid #cdeed8; border-radius: 8px; padding: 12px 14px; margin: 10px 0; display: none; }
+  .answer-diagram { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+  .answer-diagram-step { width: 150px; }
+  .answer-diagram-board { width: 150px; height: 150px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+  .answer-diagram-caption { font-size: 11px; color: #555; line-height: 1.4; margin-top: 4px; text-align: center; }
   .quiz-feedback { font-size: 14px; padding: 10px 12px; border-radius: 8px; margin: 10px 0; display: none; }
   .quiz-feedback.correct { background: #eaf7ee; color: #1c7a3a; display: block; }
   .quiz-feedback.wrong { background: #fdeceb; color: #b3261e; display: block; }
@@ -100,13 +104,14 @@
         <div class="quiz-meta" id="quiz-meta"></div>
 
         <div class="quiz-log" id="quiz-log"></div>
+        <div class="answer-diagram" id="answer-diagram"></div>
         <div class="quiz-summary" id="quiz-summary"></div>
 
         <div class="quiz-feedback" id="quiz-feedback"></div>
 
         <div class="nav-row">
           <button id="hint-btn">힌트 (첫 수만)</button>
-          <button id="skip-btn">건너뛰기</button>
+          <button id="skip-btn">정답 보기</button>
           <button id="next-btn" class="primary" disabled>다음 문제</button>
         </div>
 
@@ -150,6 +155,7 @@
     const metaEl = document.getElementById('quiz-meta');
     const logEl = document.getElementById('quiz-log');
     const summaryEl = document.getElementById('quiz-summary');
+    const answerDiagramEl = document.getElementById('answer-diagram');
     const feedbackEl = document.getElementById('quiz-feedback');
     const sourceEl = document.getElementById('quiz-source');
     const hintBtn = document.getElementById('hint-btn');
@@ -340,13 +346,14 @@
       selectedDropPiece = null;
 
       boardCol.innerHTML = '';
-      ui = new SquareBoard({ container: boardCol, width: 9, height: 9, interactive: true, onSquareClick: handleSquareClick, pieceGlyphs: GLYPHS });
+      ui = new SquareBoard({ container: boardCol, width: 9, height: 9, interactive: true, onSquareClick: handleSquareClick, pieceGlyphs: GLYPHS, colorByCase: true });
       syncBoard();
       ui.setSelection(null, []);
 
       promptEl.textContent = '공격측 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.';
       metaEl.textContent = `난이도: ${problem.difficulty}수 외통 · 유형: ${problem.themes.map((t) => THEME_LABELS[t] || t).join(', ')}`;
       logEl.innerHTML = '';
+      answerDiagramEl.innerHTML = '';
       summaryEl.style.display = 'none';
       feedbackEl.style.display = 'none';
       sourceEl.textContent = '출처: tanuki-tsume-shogi (MIT License, df-pn 솔버 검증)';
@@ -478,6 +485,49 @@
       feedbackEl.style.display = wasCorrect ? 'block' : 'none';
       summaryEl.textContent = `💡 ${problem.why}`;
       summaryEl.style.display = 'block';
+      renderAnswerDiagram(problem);
+    }
+
+    /**
+     * 정답 수순을 텍스트 로그 대신(또는 그와 함께) 작은 보드 이미지로 보여줌.
+     * 시작 국면부터 정답 수순을 하나씩 재생하며, 각 단계의 보드 스냅샷을
+     * 별도의 SquareBoard 인스턴스로 렌더링해서 나란히 배치.
+     */
+    function renderAnswerDiagram(problem) {
+      answerDiagramEl.innerHTML = '';
+      const replayBoard = new ffish.Board('shogi');
+      replayBoard.setFen(problem.sfen);
+
+      problem.solution.forEach((mv, i) => {
+        replayBoard.push(mv);
+        const fen = replayBoard.fen();
+        const pieces = parseFenPieces(fen);
+
+        const stepEl = document.createElement('div');
+        stepEl.className = 'answer-diagram-step';
+
+        const boardHost = document.createElement('div');
+        boardHost.className = 'answer-diagram-board';
+        stepEl.appendChild(boardHost);
+
+        const snapshotUi = new SquareBoard({ container: boardHost, width: 9, height: 9, interactive: false, pieceGlyphs: GLYPHS, colorByCase: true });
+        snapshotUi.loadPosition(pieces);
+        const isDrop = mv.includes('*');
+        if (!isDrop) {
+          const core = mv.endsWith('+') ? mv.slice(0, -1) : mv;
+          snapshotUi.markLastMove(squareToXY(core.slice(0, 2)), squareToXY(core.slice(2, 4)));
+        }
+        snapshotUi.render();
+
+        const caption = document.createElement('div');
+        caption.className = 'answer-diagram-caption';
+        caption.textContent = `${i + 1}. ${mv}${i % 2 === 1 ? ' (상대)' : ''}`;
+        stepEl.appendChild(caption);
+
+        answerDiagramEl.appendChild(stepEl);
+      });
+
+      replayBoard.delete();
     }
 
     hintBtn.addEventListener('click', () => {
