@@ -499,7 +499,14 @@
       replayBoard.setFen(problem.sfen);
 
       problem.solution.forEach((mv, i) => {
-        replayBoard.push(mv);
+        const expected = parseUsiMove(mv);
+        const legalNow = replayBoard.legalMoves().split(' ').filter((m) => m.length > 0);
+        const actualMove = legalNow.find((m) => movesEqual(parseUsiMove(m), expected));
+        if (!actualMove) {
+          console.error('정답 다이어그램: 합법수 목록에서 일치하는 수를 못 찾음 ->', mv);
+          return;
+        }
+        replayBoard.push(actualMove);
         const fen = replayBoard.fen();
         const pieces = parseFenPieces(fen);
 
