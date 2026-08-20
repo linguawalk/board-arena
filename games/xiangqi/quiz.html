@@ -19,6 +19,10 @@
   .quiz-log-item { font-size: 13.5px; line-height: 1.6; padding: 8px 10px; border-radius: 6px; background: #f0f6ff; color: #1a3d7a; }
   .quiz-log-item.opp { background: #f5f5f5; color: #555; font-style: italic; }
   .quiz-summary { font-size: 14px; line-height: 1.7; color: #333; background: #eaf7ee; border: 1px solid #cdeed8; border-radius: 8px; padding: 12px 14px; margin: 10px 0; display: none; }
+  .answer-diagram { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+  .answer-diagram-step { width: 150px; }
+  .answer-diagram-board { width: 150px; height: 165px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
+  .answer-diagram-caption { font-size: 11px; color: #555; line-height: 1.4; margin-top: 4px; text-align: center; }
   .quiz-feedback { font-size: 14px; padding: 10px 12px; border-radius: 8px; margin: 10px 0; display: none; }
   .quiz-feedback.correct { background: #eaf7ee; color: #1c7a3a; display: block; }
   .quiz-feedback.wrong { background: #fdeceb; color: #b3261e; display: block; }
@@ -69,6 +73,7 @@
         <div class="quiz-meta" id="quiz-meta"></div>
 
         <div class="quiz-log" id="quiz-log"></div>
+        <div class="answer-diagram" id="answer-diagram"></div>
         <div class="quiz-summary" id="quiz-summary"></div>
 
         <div class="quiz-feedback" id="quiz-feedback"></div>
@@ -118,6 +123,7 @@
     const metaEl = document.getElementById('quiz-meta');
     const logEl = document.getElementById('quiz-log');
     const summaryEl = document.getElementById('quiz-summary');
+    const answerDiagramEl = document.getElementById('answer-diagram');
     const feedbackEl = document.getElementById('quiz-feedback');
     const sourceEl = document.getElementById('quiz-source');
     const hintBtn = document.getElementById('hint-btn');
@@ -237,6 +243,7 @@
       promptEl.textContent = `${solverColor === 'w' ? '홍(紅)' : '흑(黑)'} 차례입니다. 외통으로 이어지는 최선의 수를 찾아보세요.`;
       metaEl.textContent = `난이도: 외통 ${problem.difficulty}수 · 유형: ${problem.themes.map((t) => THEME_LABELS[t] || t).join(', ')}`;
       logEl.innerHTML = '';
+      answerDiagramEl.innerHTML = '';
       summaryEl.style.display = 'none';
       feedbackEl.style.display = 'none';
       sourceEl.textContent = `출처: ${problem.source}`;
@@ -329,6 +336,45 @@
       feedbackEl.style.display = wasCorrect ? 'block' : 'none';
       summaryEl.textContent = `💡 ${problem.why}`;
       summaryEl.style.display = 'block';
+      renderAnswerDiagram(problem);
+    }
+
+    /** 정답 수순을 텍스트 대신 작은 보드 이미지로 한 수씩 보여줌 */
+    function renderAnswerDiagram(problem) {
+      answerDiagramEl.innerHTML = '';
+      const replay = new ffish.Board('xiangqi', problem.fen);
+
+      problem.solution.forEach((uci, i) => {
+        replay.push(uci);
+        const fen = replay.fen();
+        const pieces = parseFenPieces(fen);
+
+        const stepEl = document.createElement('div');
+        stepEl.className = 'answer-diagram-step';
+        const boardHost = document.createElement('div');
+        boardHost.className = 'answer-diagram-board';
+        stepEl.appendChild(boardHost);
+
+        const snapshotUi = new IntersectionPieceBoard({
+          container: boardHost, width: boardWidth, height: boardHeight, interactive: false,
+          pieceGlyphs: GLYPHS, palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }],
+          riverGap: { yTop: 4, yBottom: 5 },
+          pieceColorClasses: { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-black' },
+        });
+        snapshotUi.loadPosition(pieces.map((p) => ({ x: p.x, y: p.y, piece: p.piece })));
+        const { from, to } = splitUciMove(uci);
+        snapshotUi.markLastMove(squareToXY(from), squareToXY(to));
+        snapshotUi.render();
+
+        const caption = document.createElement('div');
+        caption.className = 'answer-diagram-caption';
+        caption.textContent = `${i + 1}. ${uci}${i % 2 === 1 ? ' (상대)' : ''}`;
+        stepEl.appendChild(caption);
+
+        answerDiagramEl.appendChild(stepEl);
+      });
+
+      replay.delete();
     }
 
     hintBtn.addEventListener('click', () => {
