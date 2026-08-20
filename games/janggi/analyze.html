@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>장기 복기 - Board Arena</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/intersection-piece-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-col { flex-shrink: 0; }
+  .panel { flex: 1; min-width: 300px; }
+  .panel select, .panel button { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+  .panel select { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+  .nav-row { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .nav-row button { flex: 1; min-width: 60px; }
+  .move-strip { font-size: 13px; color: #555; line-height: 1.8; margin-bottom: 14px; max-height: 100px; overflow-y: auto; }
+  .move-strip .cur { background: var(--accent, #4a7cff); color: #fff; padding: 1px 5px; border-radius: 4px; }
+
+  .analyze-btn { width: 100%; padding: 10px; background: var(--accent, #4a7cff); color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+  .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .analyze-status { font-size: 13px; color: #888; margin-bottom: 10px; min-height: 1.2em; }
+
+  .pv-line { border: 1px solid #eee; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .pv-line .pv-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .pv-bar-bg { background: #eee; border-radius: 4px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+  .pv-bar-fill { background: var(--accent, #4a7cff); height: 100%; }
+  .pv-moves { font-size: 12px; color: #666; }
+
+  .quiz-nav-top { display:flex; gap:8px; margin-bottom:14px; }
+  .quiz-nav-top a { display:inline-block; padding:7px 12px; border-radius:6px; border:1px solid var(--accent,#4a7cff); color:var(--accent,#4a7cff); text-decoration:none; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+  <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
+  <main>
+    <h1>장기 복기</h1>
+    <p style="font-size:13px;color:#777;margin-top:-6px;">저장된 대국을 불러와 수순을 넘기면서, 각 국면에서 엔진(Fairy-Stockfish)이 계산한 후보수와 승률을 확인합니다.</p>
+
+    <nav class="quiz-nav-top">
+      <a href="play.html">◀ 대국으로 돌아가기</a>
+    </nav>
+
+    <div class="layout">
+      <div id="board-col" class="board-col"></div>
+
+      <div class="panel">
+        <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;">불러올 복기</label>
+        <select id="review-select"></select>
+
+        <div class="nav-row">
+          <button id="first-btn">⏮ 처음</button>
+          <button id="prev-btn">◀ 이전</button>
+          <button id="next-btn">다음 ▶</button>
+          <button id="last-btn">마지막 ⏭</button>
+        </div>
+
+        <div class="move-strip" id="move-strip"></div>
+
+        <button id="analyze-btn" class="analyze-btn">🔍 이 국면 분석하기</button>
+        <div class="analyze-status" id="analyze-status"></div>
+        <div id="analyze-result"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+    import { mountIntersectionCoords, standardFileLabels, standardRankLabels } from '../../shared/js/intersection-board-coords.js';
+
+    window.addEventListener('error', (e) => {
+      const el = document.getElementById('error-overlay');
+      if (el) { el.style.display = 'block'; el.textContent = '오류 발생: ' + (e.message || e.error); }
+    });
+
+    async function loadFfish() {
+      const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
+      const wasmResponse = await fetch(wasmUrl);
+      if (!wasmResponse.ok) throw new Error(`ffish.wasm 요청 실패: HTTP ${wasmResponse.status}`);
+      const wasmBinary = new Uint8Array(await wasmResponse.arrayBuffer());
+      const mod = await import('../../shared/js/vendor/ffish.js');
+      return mod.default({ wasmBinary });
+    }
+
+    const GLYPHS = {
+      R: '車', C: '包', H: '馬', E: '象', A: '士', P: '兵', K: '漢', N: '馬', B: '象',
+      r: '車', c: '包', h: '馬', e: '象', a: '士', p: '卒', k: '楚', n: '馬', b: '象',
+    };
+
+    const BOARD_CONFIG = {
+      janggi: { width: 9, height: 10, palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }], riverGap: null },
+      janggicasual: { width: 9, height: 10, palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }], riverGap: null },
+      janggimodern: { width: 9, height: 10, palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }], riverGap: null },
+      janggitraditional: { width: 9, height: 10, palaces: [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }], riverGap: null },
+    };
+
+    const boardCol = document.getElementById('board-col');
+    const reviewSelect = document.getElementById('review-select');
+    const moveStrip = document.getElementById('move-strip');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const analyzeStatus = document.getElementById('analyze-status');
+    const analyzeResult = document.getElementById('analyze-result');
+
+    let ffish = null;
+    let ui = null;
+    let currentVariant = 'janggi';
+    let fullHistoryUci = [];
+    let cursor = 0;
+    let games = [];
+
+    function fileToX(f) { return f.charCodeAt(0) - 97; }
+    function xToFile(x) { return String.fromCharCode(97 + x); }
+    function yToRank(y, h) { return h - y; }
+    function squareToXY(sq, h) {
+      const m = sq.match(/^([a-i])(10|[1-9])/);
+      return { x: fileToX(m[1]), y: h - parseInt(m[2], 10) };
+    }
+    function parseSquareToken(str) {
+      const m = str.match(/^([a-i])(10|[1-9])/);
+      return { token: m[0] };
+    }
+    function splitUciMove(move) {
+      const first = parseSquareToken(move);
+      const rest = move.slice(first.token.length);
+      const second = parseSquareToken(rest);
+      return { from: first.token, to: second.token };
+    }
+    function parseFenPieces(fen) {
+      const rows = fen.split(' ')[0].split('/');
+      const pieces = [];
+      for (let y = 0; y < rows.length; y++) {
+        let x = 0;
+        for (const ch of rows[y]) {
+          if (/[0-9]/.test(ch)) { x += parseInt(ch, 10); }
+          else { pieces.push({ x, y, piece: ch }); x += 1; }
+        }
+      }
+      return pieces;
+    }
+
+    function loadReviewList() {
+      games = JSON.parse(localStorage.getItem('board-arena-janggi-games') || '[]');
+      reviewSelect.innerHTML = '';
+      if (games.length === 0) {
+        reviewSelect.innerHTML = '<option>저장된 복기가 없습니다</option>';
+        return;
+      }
+      games.forEach((g, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        const date = new Date(g.savedAt).toLocaleString('ko-KR');
+        const moveLabel = (g.moves?.length || 0) === 0 ? '수를 두지 않고 저장됨' : `${g.moves.length}수`;
+        opt.textContent = `${date} · ${g.variant || 'janggi'} (${moveLabel})`;
+        reviewSelect.appendChild(opt);
+      });
+    }
+
+    function loadGame(idx) {
+      const g = games[idx];
+      if (!g) return;
+      currentVariant = g.variant || 'janggi';
+      fullHistoryUci = g.moves || [];
+      cursor = fullHistoryUci.length;
+      renderCursor();
+    }
+
+    function renderCursor() {
+      const cfg = BOARD_CONFIG[currentVariant] || BOARD_CONFIG.janggi;
+      const board = new ffish.Board(currentVariant);
+      for (let i = 0; i < cursor; i++) board.push(fullHistoryUci[i]);
+      const fen = board.fen();
+      board.delete();
+
+      boardCol.innerHTML = '';
+      ui = new IntersectionPieceBoard({
+        container: boardCol, width: cfg.width, height: cfg.height, interactive: false,
+        pieceGlyphs: GLYPHS, palaces: cfg.palaces, riverGap: cfg.riverGap,
+        pieceColorClasses: { light: 'ipb-piece-disk-red', dark: 'ipb-piece-disk-black' },
+      });
+      mountIntersectionCoords(boardCol, cfg.width, cfg.height, standardFileLabels(cfg.width), standardRankLabels(cfg.height));
+
+      const pieces = parseFenPieces(fen);
+      ui.pieceGlyphs = GLYPHS;
+      ui.loadPosition(pieces);
+      if (cursor > 0) {
+        const { from, to } = splitUciMove(fullHistoryUci[cursor - 1]);
+        ui.markLastMove(squareToXY(from, cfg.height), squareToXY(to, cfg.height));
+      }
+      ui.render();
+
+      moveStrip.innerHTML = fullHistoryUci
+        .map((mv, i) => (i === cursor - 1 ? `<span class="cur">${i + 1}.${mv}</span>` : `${i + 1}.${mv}`))
+        .join(' ');
+
+      analyzeResult.innerHTML = '';
+      analyzeStatus.textContent = '';
+    }
+
+    document.getElementById('first-btn').addEventListener('click', () => { cursor = 0; renderCursor(); });
+    document.getElementById('prev-btn').addEventListener('click', () => { cursor = Math.max(0, cursor - 1); renderCursor(); });
+    document.getElementById('next-btn').addEventListener('click', () => { cursor = Math.min(fullHistoryUci.length, cursor + 1); renderCursor(); });
+    document.getElementById('last-btn').addEventListener('click', () => { cursor = fullHistoryUci.length; renderCursor(); });
+    reviewSelect.addEventListener('change', () => loadGame(Number(reviewSelect.value)));
+
+    analyzeBtn.addEventListener('click', async () => {
+      analyzeBtn.disabled = true;
+      analyzeStatus.textContent = '엔진 분석 중... (몇 초 걸릴 수 있습니다)';
+      analyzeResult.innerHTML = '';
+      try {
+        const res = await fetch('/api/analyze-variant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ variant: currentVariant, moves: fullHistoryUci.slice(0, cursor), depth: 12, multipv: 3 }),
+        });
+        const data = await res.json();
+        if (data.gameOver) { analyzeStatus.textContent = '게임이 종료된 국면입니다.'; return; }
+        if (data.error) { analyzeStatus.textContent = `오류: ${data.error}`; return; }
+        analyzeStatus.textContent = `분석 완료 (최선수: ${data.bestmove})`;
+        renderAnalysis(data.lines || []);
+      } catch (err) {
+        analyzeStatus.textContent = `요청 실패: ${err.message} (analyze-variant.js가 배포되어 있는지 확인해 주세요)`;
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    function renderAnalysis(lines) {
+      analyzeResult.innerHTML = lines.map((l) => {
+        const scoreLabel = l.scoreMate !== null && l.scoreMate !== undefined ? `메이트 ${l.scoreMate}수` : `${(l.scoreCp / 100).toFixed(2)}`;
+        const pvText = l.pv.slice(0, 6).join('  ');
+        return `
+          <div class="pv-line">
+            <div class="pv-head"><span>#${l.rank} ${l.pv[0]}</span><span>${scoreLabel} · 승률 ${l.winPercent}%</span></div>
+            <div class="pv-bar-bg"><div class="pv-bar-fill" style="width:${l.winPercent}%"></div></div>
+            <div class="pv-moves">${pvText}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function init() {
+      analyzeStatus.textContent = '엔진 불러오는 중...';
+      ffish = await loadFfish();
+      analyzeStatus.textContent = '';
+      loadReviewList();
+      if (games.length > 0) loadGame(0);
+    }
+
+    init();
+  </script>
+</body>
+</html>

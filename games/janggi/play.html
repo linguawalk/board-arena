@@ -39,6 +39,9 @@
   <div id="error-overlay" style="display:none;background:#fce8e6;color:#b3261e;padding:12px;border-radius:8px;margin-bottom:16px;font-size:13px;white-space:pre-wrap;"></div>
   <main>
     <h1>장기 대국</h1>
+    <nav style="display:flex;gap:8px;margin-bottom:14px;">
+      <a href="analyze.html" style="display:inline-block;padding:7px 12px;border-radius:6px;border:1px solid var(--accent,#4a7cff);color:var(--accent,#4a7cff);text-decoration:none;font-size:13px;font-weight:600;">🔍 저장된 복기 보기</a>
+    </nav>
     <details style="background:#f7f7f7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
       <summary style="cursor:pointer;font-weight:600;font-size:14px;color:#333;">자세한 규칙 보기 (기물 이동법 · 승리 조건)</summary>
       <div style="font-size:13px;color:#555;line-height:1.7;margin-top:10px;">
@@ -87,6 +90,7 @@
 
   <script type="module">
     import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+    import { mountIntersectionCoords, standardFileLabels, standardRankLabels } from '../../shared/js/intersection-board-coords.js';
 
     // Fairy-Stockfish(ffish-es6)는 원래 브라우저의 fetch로 wasm을 불러오도록 만들어져 있는데,
     // 내부 locateFile 경로 계산이 module script 환경(document.currentScript 없음)에서 어긋나는 문제가 있어,
@@ -249,6 +253,7 @@
         pieceGlyphs: GLYPHS,
         palaces: PALACES,
       });
+      mountIntersectionCoords(boardCol, WIDTH, HEIGHT, standardFileLabels(WIDTH), standardRankLabels(HEIGHT));
       syncBoardFromFfish();
       updateStatus();
       log(`새 게임 시작 (${variantSelect.options[variantSelect.selectedIndex].text})`);
