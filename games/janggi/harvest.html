@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>장기 퀴즈 채굴 도구 (관리자용)</title>
+<link rel="stylesheet" href="../../shared/css/common.css" />
+<link rel="stylesheet" href="../../shared/css/intersection-piece-board.css" />
+<style>
+  .layout { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .board-outer { flex-shrink: 0; }
+  .board-with-ranks { display: flex; }
+  .rank-labels { display: flex; flex-direction: column; width: 20px; }
+  .rank-labels span { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #888; }
+  .file-labels { display: flex; width: 460px; margin-left: 20px; }
+  .file-labels span { flex: 1; text-align: center; font-size: 12px; color: #888; padding-top: 4px; }
+  .board-col { width: 460px; aspect-ratio: 1 / 1; flex-shrink: 0; }
+  .panel { flex: 1; min-width: 300px; }
+  .panel button, .panel input, .panel select { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; }
+  .panel label { font-size: 13px; color: #555; display: block; margin: 8px 0 4px; }
+  .status-box { background: #f7f7f7; border-radius: 8px; padding: 12px; font-size: 13px; color: #444; margin: 12px 0; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+  .found-list { max-height: 400px; overflow-y: auto; }
+  .found-item { border: 1px solid #cdeed8; background: #eaf7ee; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; font-size: 13px; }
+  .primary-btn { background: var(--accent, #4a7cff); color: #fff; border: none; font-weight: 600; }
+  .primary-btn:disabled { opacity: 0.5; }
+  .warn { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>장기 퀴즈 채굴 도구 (관리자 전용)</h1>
+    <div class="warn">⚠️ 이 페이지는 일반 사용자용이 아니라, 실제 엔진 API를 여러 번 호출해서 검증된 외통 문제를 자동으로 수집하는 <b>관리자 도구</b>입니다. 실행하는 브라우저에서 <code>/api/variant-engine</code>, <code>/api/analyze-variant</code>를 반복 호출합니다.</div>
+
+    <div class="layout">
+      <div class="board-outer">
+        <div class="board-with-ranks">
+          <div class="rank-labels" id="rank-labels">
+            <span>9</span><span>8</span><span>7</span><span>6</span>
+            <span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+          </div>
+          <div id="board-col" class="board-col"></div>
+        </div>
+        <div class="file-labels" id="file-labels">
+          <span>a</span><span>b</span><span>c</span><span>d</span>
+          <span>e</span><span>f</span><span>g</span><span>h</span><span>i</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <label for="variant-select">규칙</label>
+        <select id="variant-select">
+          <option value="janggi">정식 (janggi)</option>
+        </select>
+
+        <label for="target-count">목표 문제 개수</label>
+        <input id="target-count" type="number" value="15" min="1" max="50" style="width:80px;" />
+
+        <label for="max-mate-len">최대 외통 길이(수)</label>
+        <input id="max-mate-len" type="number" value="5" min="1" max="9" style="width:80px;" />
+
+        <div style="margin-top:14px;">
+          <button id="start-btn" class="primary-btn">채굴 시작</button>
+          <button id="stop-btn" disabled>중지</button>
+          <button id="download-btn" disabled>JSON 다운로드</button>
+        </div>
+
+        <div class="status-box" id="status-box">대기 중...</div>
+
+        <h3 style="font-size:14px;margin-top:16px;">찾은 문제 (<span id="found-count">0</span>개)</h3>
+        <div class="found-list" id="found-list"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { IntersectionPieceBoard } from '../../shared/js/intersection-piece-board.js';
+
+    async function loadFfish() {
+      const wasmUrl = new URL('../../shared/js/vendor/ffish.wasm', import.meta.url).href;
+      const wasmResponse = await fetch(wasmUrl);
+      if (!wasmResponse.ok) throw new Error(`ffish.wasm 요청 실패: HTTP ${wasmResponse.status}`);
+      const wasmBinary = new Uint8Array(await wasmResponse.arrayBuffer());
+      const mod = await import('../../shared/js/vendor/ffish.js');
+      return mod.default({ wasmBinary });
+    }
+
+    const GLYPHS = {
+      R: '車', C: '包', H: '馬', E: '象', A: '士', P: '兵', K: '漢', N: '馬', B: '象',
+      r: '車', c: '包', h: '馬', e: '象', a: '士', p: '卒', k: '楚', n: '馬', b: '象',
+    };
+    const WIDTH = 9, HEIGHT = 10;
+    const PALACES = [{ cx: 4, cy: 1 }, { cx: 4, cy: 8 }];
+
+    const boardCol = document.getElementById('board-col');
+    const variantSelect = document.getElementById('variant-select');
+    const targetCountInput = document.getElementById('target-count');
+    const maxMateLenInput = document.getElementById('max-mate-len');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const statusBox = document.getElementById('status-box');
+    const foundList = document.getElementById('found-list');
+    const foundCountEl = document.getElementById('found-count');
+
+    let ffish = null;
+    let ui = null;
+    let stopRequested = false;
+    let foundPuzzles = [];
+
+    function fileToX(f) { return f.charCodeAt(0) - 97; }
+    function rankToY(r) { return HEIGHT - r; }
+    function xyToSquare(x, y) { return `${String.fromCharCode(97 + x)}${HEIGHT - y}`; }
+    function squareToXY(sq) {
+      const m = sq.match(/^([a-i])(10|[1-9])/);
+      return { x: fileToX(m[1]), y: rankToY(parseInt(m[2], 10)) };
+    }
+    function splitUciMove(move) {
+      const m1 = move.match(/^([a-i])(10|[1-9])/);
+      const rest = move.slice(m1[0].length);
+      const m2 = rest.match(/^([a-i])(10|[1-9])/);
+      return { from: m1[0], to: m2[0] };
+    }
+    function parseFenPieces(fen) {
+      const rows = fen.split(' ')[0].split('/');
+      const pieces = [];
+      for (let y = 0; y < rows.length; y++) {
+        let x = 0;
+        for (const ch of rows[y]) {
+          if (/[0-9]/.test(ch)) x += parseInt(ch, 10);
+          else { pieces.push({ x, y, piece: ch }); x += 1; }
+        }
+      }
+      return pieces;
+    }
+
+    function log(msg) {
+      statusBox.textContent += `\n${msg}`;
+      statusBox.scrollTop = statusBox.scrollHeight;
+    }
+
+    function renderBoard(board) {
+      if (!ui) {
+        boardCol.innerHTML = '';
+        ui = new IntersectionPieceBoard({ container: boardCol, width: WIDTH, height: HEIGHT, interactive: false, pieceGlyphs: GLYPHS, palaces: PALACES });
+      }
+      ui.loadPosition(parseFenPieces(board.fen()));
+      ui.render();
+    }
+
+    async function requestBestMove(variant, moves, depth) {
+      const res = await fetch('/api/variant-engine', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variant, moves, depth }),
+      });
+      const data = await res.json();
+      return data;
+    }
+
+    async function requestAnalysis(variant, moves, depth, multipv = 1) {
+      const res = await fetch('/api/analyze-variant', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variant, moves, depth, multipv }),
+      });
+      return res.json();
+    }
+
+    async function harvestOneGame(variant, maxMateLen, targetCount) {
+      const board = new ffish.Board(variant);
+      const moves = [];
+      const maxPlies = 120;
+
+      for (let ply = 0; ply < maxPlies; ply++) {
+        if (stopRequested || foundPuzzles.length >= targetCount) break;
+        if (board.isGameOver()) break;
+
+        renderBoard(board);
+        log(`대국 진행 중... ${ply + 1}수째 (지금까지 찾은 문제: ${foundPuzzles.length}개)`);
+
+        // 이 국면에서 강제 외통이 있는지 얕은 깊이로 우선 확인 (빠르게 스캔)
+        const analysis = await requestAnalysis(variant, moves, 12, 1);
+        const line = analysis.lines && analysis.lines[0];
+        if (line && line.scoreMate !== null && line.scoreMate !== undefined) {
+          const mateLen = Math.abs(line.scoreMate);
+          if (mateLen >= 1 && mateLen <= maxMateLen && line.pv.length >= mateLen) {
+            const puzzle = {
+              id: `janggi_gen_${Date.now()}_${foundPuzzles.length}`,
+              variant,
+              fen: board.fen(),
+              solution: line.pv.slice(0, mateLen * 2 - 1), // 공격측 수 기준이므로 왕복 포함해 넉넉히
+              mateLength: mateLen,
+            };
+            foundPuzzles.push(puzzle);
+            renderFoundList();
+            log(`✅ 외통 발견! (${mateLen}수) - ${puzzle.solution.join(' ')}`);
+            downloadBtn.disabled = false;
+          }
+        }
+
+        if (stopRequested || foundPuzzles.length >= targetCount) break;
+
+        // 실제 진행: 양쪽 다 AI(변동성을 위해 적당한 깊이)로 한 수 진행
+        const best = await requestBestMove(variant, moves, 8);
+        if (best.gameOver || !best.uci) break;
+        board.push(best.uci);
+        moves.push(best.uci);
+      }
+      board.delete();
+    }
+
+    function renderFoundList() {
+      foundCountEl.textContent = String(foundPuzzles.length);
+      foundList.innerHTML = foundPuzzles.map((p) => `
+        <div class="found-item">
+          <b>${p.id}</b> — 외통 ${p.mateLength}수<br/>
+          수순: ${p.solution.join(' ')}
+        </div>
+      `).join('');
+    }
+
+    startBtn.addEventListener('click', async () => {
+      stopRequested = false;
+      foundPuzzles = [];
+      renderFoundList();
+      downloadBtn.disabled = true;
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+      statusBox.textContent = '엔진 불러오는 중...';
+
+      try {
+        if (!ffish) ffish = await loadFfish();
+        const variant = variantSelect.value;
+        const targetCount = parseInt(targetCountInput.value, 10);
+        const maxMateLen = parseInt(maxMateLenInput.value, 10);
+
+        let gameNum = 0;
+        while (!stopRequested && foundPuzzles.length < targetCount && gameNum < 100) {
+          gameNum++;
+          log(`\n=== 자가대국 ${gameNum}판째 시작 ===`);
+          await harvestOneGame(variant, maxMateLen, targetCount);
+        }
+        log(`\n채굴 종료. 총 ${foundPuzzles.length}개 문제 확보 (${gameNum}판 진행).`);
+      } catch (err) {
+        log(`오류 발생: ${err.message}`);
+      } finally {
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+    });
+
+    stopBtn.addEventListener('click', () => {
+      stopRequested = true;
+      log('중지 요청됨. 현재 진행 중인 수까지만 마치고 멈춥니다.');
+    });
+
+    downloadBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(foundPuzzles, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'janggi-harvested-puzzles.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
